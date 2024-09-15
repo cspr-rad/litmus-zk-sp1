@@ -66,19 +66,16 @@ pub fn verify_signature(digest: DigestBytesRaw, sig: SignatureBytesRaw, vk: Veri
             assert_eq!(vk.verify(&sig, &digest), Ok(()));
         }
         VerificationKeyBytes::SECP256K1(vk) => {
-            use secp256k1::{ecdsa::Signature, Message, PublicKey};
+            use secp256k1::{ecdsa::Signature, Message, PublicKey, Secp256k1};
 
-            let _ = Message::from_digest_slice(&digest).unwrap();
-            let _ = PublicKey::from_slice(vk.as_slice()).unwrap();
-            let _ = Signature::from_compact(&sig).unwrap();
+            let msg = Message::from_digest_slice(&digest).unwrap();
+            let sig = PublicKey::from_slice(vk.as_slice()).unwrap();
+            let pbk = Signature::from_compact(&sig).unwrap();
 
-            // assert_eq!(
-            //     Secp256k1::verification_only().verify_ecdsa(&msg, &sig, &pbk),
-            //     Ok(())
-            // );
-            // assert!(Secp256k1::verification_only()
-            //     .verify_ecdsa(&msg, &sig, &vk)
-            //     .is_ok());
+            assert_eq!(
+                Secp256k1::verification_only().verify_ecdsa(&msg, &sig, &pbk),
+                Ok(())
+            );
         }
     }
 }
