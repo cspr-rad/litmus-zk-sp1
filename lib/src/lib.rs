@@ -69,8 +69,8 @@ pub fn verify_signature(digest: DigestBytesRaw, sig: SignatureBytesRaw, vk: Veri
             use secp256k1::{ecdsa::Signature, Message, PublicKey, Secp256k1};
 
             let msg = Message::from_digest_slice(&digest).unwrap();
-            let sig = PublicKey::from_slice(vk.as_slice()).unwrap();
-            let pbk = Signature::from_compact(&sig).unwrap();
+            let pbk = PublicKey::from_slice(vk.as_slice()).unwrap();
+            let sig = Signature::from_compact(&sig).unwrap();
 
             assert_eq!(
                 Secp256k1::verification_only().verify_ecdsa(&msg, &sig, &pbk),
