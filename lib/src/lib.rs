@@ -1,6 +1,13 @@
+// Length of fixed byte digest array.
 const LENGTH_OF_DIGEST: usize = 32;
+
+// Length of fixed byte signature array.
 const LENGTH_OF_SIGNATURE: usize = 64;
+
+// Length of fixed byte ed25519 verification key array.
 const LENGTH_OF_VERIFIER_KEY_ED25519: usize = 32;
+
+// Length of fixed byte secp256k1 verification key array.
 const LENGTH_OF_VERIFIER_KEY_SECP256K1: usize = 33;
 
 // Raw digest bytes.
