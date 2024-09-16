@@ -1,0 +1,33 @@
+{
+  "digests": [
+    {
+      "data": "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎",
+      "digests": [
+        {
+          "algo": "BLAKE2B",
+          "digest": "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4"
+        }
+      ]
+    }
+  ],
+  "signatures": [
+    {
+      "data": "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4",
+      "key": {
+        "algo": "ED25519",
+        "pbk": "764f83295812c03354e0cd64718a7e50b452696799dc9d6e446338d668f3b2d9",
+        "pvk": "e541eed0cc0fa324fa8f34ab6faa186d98826777344c5518819fed5e20448282"
+      },
+      "sig": "2fa8e929a7514496545d098e86841463ef66358ff0930073fde3b138f66a2cef5304d884baa693a971d002d7e071f658fb16de8c1e5c80ba5ecea8b3866f8106"
+    },
+    {
+      "data": "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4",
+      "key": {
+        "algo": "SECP256K1",
+        "pbk": "03eed4eb0b40b3131679c365e3a23780eabfeaeb01776b0f908223ad1d4bd06f0d",
+        "pvk": "0b0e6094077ebae48bc119b35a134890424e0e5dbb71e667edae1978c49e7089"
+      },
+      "sig": "ba07224f974d973682d93dca27517b2bbbacca42df551ef22be3f80c65bc4923bad512c31a85f996345be08a8a2557f814cefc04c3e8a8ddb58c3749a65d4ce4"
+    }
+  ]
+}
