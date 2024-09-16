@@ -9,14 +9,16 @@ pub const _ELF: &[u8] = include_bytes!("../../../elf/riscv32im-succinct-zkvm-elf
 /// TODO: read from fsys.
 const BLAKE2B_DIGEST: &str = "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
 const BLAKE2B_MSG: &str = "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎";
+
 const ED25519_MSG: &str = "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
 const ED25519_PBK: &str = "764f83295812c03354e0cd64718a7e50b452696799dc9d6e446338d668f3b2d9";
 const _ED25519_PVK: &str = "e541eed0cc0fa324fa8f34ab6faa186d98826777344c5518819fed5e20448282";
 const ED25519_SIG: &str = "2fa8e929a7514496545d098e86841463ef66358ff0930073fde3b138f66a2cef5304d884baa693a971d002d7e071f658fb16de8c1e5c80ba5ecea8b3866f8106";
+
 const SECP256K1_MSG: &str = "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
 const SECP256K1_PBK: &str = "03eed4eb0b40b3131679c365e3a23780eabfeaeb01776b0f908223ad1d4bd06f0d";
 const _SECP256K1_PVK: &str = "0b0e6094077ebae48bc119b35a134890424e0e5dbb71e667edae1978c49e7089";
-const SECP256K1_SIG: &str = "ba07224f974d973682d93dca27517b2bbbacca42df551ef22be3f80c65bc4923bad512c31a85f996345be08a8a2557f814cefc04c3e8a8ddb58c3749a65d4ce4";
+const SECP256K1_SIG: &str = "5ed6e5b71fa8f87dfb197a3d85c926d075f0b15651b59224a9a41a9fa1deb8cc2b2de5a8312a310af9b5321f67b744e1b3814994b13ec6db2769e9e6a9cc9364";
 
 /// The arguments for the command.
 #[derive(Parser, Debug)]
