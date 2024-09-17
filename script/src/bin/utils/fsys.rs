@@ -1,9 +1,7 @@
 #![allow(dead_code)]
 use serde_json;
-use std::error::Error;
 use std::fs;
-
-use super::typeset::Fixtures;
+use super::fixtures::Fixtures;
 
 pub fn get_fixtures() -> Fixtures {
     let fpath = "fixtures/crypto.json";

@@ -46,7 +46,7 @@ fn main() {
     // Execute | Prove.
     let client = ProverClient::new();
     if args.execute {
-        let (output, report) = client.execute(_ELF, stdin).run().unwrap();
+        let (_, report) = client.execute(_ELF, stdin).run().unwrap();
         println!("EXECUTION: # vm cycles   : {}", report.total_instruction_count());
         println!("EXECUTION: # calls to sys: {}", report.total_syscall_count());
     } else {

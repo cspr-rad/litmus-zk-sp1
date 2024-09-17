@@ -1,5 +1,4 @@
 mod fsys;
-mod typeset;
+mod fixtures;
 
 pub use fsys::get_fixtures;
-pub use typeset::*;
