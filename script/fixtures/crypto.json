@@ -2,12 +2,8 @@
   "digests": [
     {
       "data": "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎",
-      "digests": [
-        {
-          "algo": "BLAKE2B",
-          "digest": "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4"
-        }
-      ]
+      "algo": "BLAKE2B",
+      "digest": "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4"
     }
   ],
   "signatures": [
@@ -27,7 +23,7 @@
         "pbk": "03eed4eb0b40b3131679c365e3a23780eabfeaeb01776b0f908223ad1d4bd06f0d",
         "pvk": "0b0e6094077ebae48bc119b35a134890424e0e5dbb71e667edae1978c49e7089"
       },
-      "sig": "ba07224f974d973682d93dca27517b2bbbacca42df551ef22be3f80c65bc4923bad512c31a85f996345be08a8a2557f814cefc04c3e8a8ddb58c3749a65d4ce4"
+      "sig": "5ed6e5b71fa8f87dfb197a3d85c926d075f0b15651b59224a9a41a9fa1deb8cc2b2de5a8312a310af9b5321f67b744e1b3814994b13ec6db2769e9e6a9cc9364"
     }
   ]
 }

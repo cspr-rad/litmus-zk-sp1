@@ -17,7 +17,7 @@ clap = { version = "4.0", features = ["derive", "env"] }
 hex = "0.4.3"
 litmus-zk-lib = { path = "../lib" }
 sp1-sdk = "1.2.0"
-serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+serde_json = { version = "1.0.128" }
 serde = { version = "1.0", default-features = false, features = ["derive"] }
 tracing = "0.1.40"
 
