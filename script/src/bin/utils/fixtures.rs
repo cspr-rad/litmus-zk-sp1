@@ -64,6 +64,23 @@ impl From<Fixtures> for Vec<SP1Stdin> {
 const VERIFICATION_TYPE_DIGEST: u8 = 0;
 const VERIFICATION_TYPE_SIGNATURE: u8 = 1;
 
+fn get_stdin_for_verify_digest(fixture: Digest) -> SP1Stdin {
+    let mut stdin = SP1Stdin::new();
+    stdin.write(&VERIFICATION_TYPE_DIGEST);
+    match fixture.algo.as_str() {
+        "BLAKE2B" => {
+            stdin.write(&0u8);
+        }
+        _ => {
+            panic!("Unsupported hashing algo.")
+        }
+    }
+    stdin.write_vec(hex::decode(fixture.digest).unwrap());
+    stdin.write_vec(fixture.data.as_bytes().to_vec());
+
+    stdin
+}
+
 fn get_stdin_for_verify_signature(fixture: Signature) -> SP1Stdin {
     let mut stdin = SP1Stdin::new();
     stdin.write(&VERIFICATION_TYPE_SIGNATURE);
@@ -81,23 +98,6 @@ fn get_stdin_for_verify_signature(fixture: Signature) -> SP1Stdin {
     stdin.write_vec(hex::decode(fixture.data).unwrap());
     stdin.write_vec(hex::decode(fixture.sig).unwrap());
     stdin.write_vec(hex::decode(fixture.key.pbk).unwrap());
-
-    stdin
-}
-
-fn get_stdin_for_verify_digest(fixture: Digest) -> SP1Stdin {
-    let mut stdin = SP1Stdin::new();
-    stdin.write(&VERIFICATION_TYPE_DIGEST);
-    match fixture.algo.as_str() {
-        "BLAKE2B" => {
-            stdin.write(&0u8);
-        }
-        _ => {
-            panic!("Unsupported hashing algo.")
-        }
-    }
-    stdin.write_vec(fixture.data.as_bytes().to_vec());
-    stdin.write_vec(hex::decode(fixture.digest).unwrap());
 
     stdin
 }
