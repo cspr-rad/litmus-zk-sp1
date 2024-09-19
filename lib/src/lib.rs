@@ -1,3 +1,4 @@
+pub mod constants;
 mod crypto;
 
 pub use crypto::verify_digest;

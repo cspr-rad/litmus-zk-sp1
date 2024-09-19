@@ -36,6 +36,7 @@ pub enum VerificationKeyBytes {
 ///
 #[sp1_derive::cycle_tracker]
 pub fn verify_digest(data: Vec<u8>, digest: DigestBytes) {
+    println!("DIG: {:?} :: {:?}", 0, 0);
     match digest {
         DigestBytes::BLAKE2B(digest) => {
             use blake2::{
