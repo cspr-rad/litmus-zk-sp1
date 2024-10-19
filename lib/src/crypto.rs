@@ -16,10 +16,10 @@ pub enum DigestBytes {
 }
 
 // Raw digest bytes.
-type DigestBytesRaw = [u8; LENGTH_OF_DIGEST];
+pub type DigestBytesRaw = [u8; LENGTH_OF_DIGEST];
 
 // Raw signature bytes.
-type SignatureBytesRaw = [u8; LENGTH_OF_SIGNATURE];
+pub type SignatureBytesRaw = [u8; LENGTH_OF_SIGNATURE];
 
 /// Raw verification key bytes scoped by ECC algo type.
 pub enum VerificationKeyBytes {

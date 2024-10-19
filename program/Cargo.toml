@@ -3,6 +3,9 @@ version = "0.1.0"
 name = "litmus-zk-program"
 edition = "2021"
 
+[build-dependencies]
+sp1-build = "2.0.0"
+
 [dependencies]
 litmus-zk-lib = { path = "../lib" }
 sp1-zkvm = "1.2.0"
