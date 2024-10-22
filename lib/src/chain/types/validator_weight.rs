@@ -10,20 +10,22 @@ pub struct ValidatorWeight {
     weight: Motes,
 }
 
-impl ValidatorWeight {
-    pub fn validator_id(&self) -> ValidatorID {
-        self.validator_id
-    }
-    pub fn weight(&self) -> Motes {
-        self.weight
-    }
-}
-
+/// Constructors.
 impl ValidatorWeight {
     pub fn new(validator_id: ValidatorID, weight: Motes) -> Self {
         Self {
             validator_id,
             weight,
         }
+    }
+}
+
+/// Accessors.
+impl ValidatorWeight {
+    pub fn validator_id(&self) -> ValidatorID {
+        self.validator_id
+    }
+    pub fn weight(&self) -> Motes {
+        self.weight
     }
 }

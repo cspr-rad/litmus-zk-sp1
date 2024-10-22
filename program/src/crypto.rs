@@ -24,7 +24,8 @@ pub fn do_digest_verification() {
     };
 
     // Verify.
-    verify_digest(digest_bytes, data);
+    digest_bytes.verify(data);
+    // verify_digest(digest_bytes, data);
 }
 
 pub fn do_signature_verification() {
