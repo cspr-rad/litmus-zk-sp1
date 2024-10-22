@@ -11,6 +11,7 @@ const LENGTH_OF_VERIFIER_KEY_ED25519: usize = 32;
 const LENGTH_OF_VERIFIER_KEY_SECP256K1: usize = 33;
 
 /// Raw digest bytes scoped by hashing algo type.
+#[derive(Clone, Debug)]
 pub enum DigestBytes {
     BLAKE2B(DigestBytesRaw),
 }
@@ -22,6 +23,7 @@ pub type DigestBytesRaw = [u8; LENGTH_OF_DIGEST];
 pub type SignatureBytesRaw = [u8; LENGTH_OF_SIGNATURE];
 
 /// Raw verification key bytes scoped by ECC algo type.
+#[derive(Clone, Debug)]
 pub enum VerificationKeyBytes {
     ED25519(VerificationKeyBytesRawEd25519),
     SECP256K1(VerificationKeyBytesRawSecp256k1),
@@ -32,6 +34,10 @@ type VerificationKeyBytesRawEd25519 = [u8; LENGTH_OF_VERIFIER_KEY_ED25519];
 
 // Raw verification key bytes -> secp256k1.
 type VerificationKeyBytesRawSecp256k1 = [u8; LENGTH_OF_VERIFIER_KEY_SECP256K1];
+
+pub fn get_hash_blake2b(data: Vec<u8>) {
+    println!("dsadsad");
+}
 
 /// Verifies a digest over passed data.
 ///

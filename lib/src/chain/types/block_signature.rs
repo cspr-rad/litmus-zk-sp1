@@ -1,31 +1,30 @@
 use crate::crypto::{SignatureBytesRaw, VerificationKeyBytes};
 
-/// Type declaration.
 /// A signature over a block within the context of some form of consensus process.
 pub struct BlockSignature {
-    /// A validator's signature over a block.
+    /// Signature over a block issued by an entity, e.g. validator.
     signature: SignatureBytesRaw,
 
-    /// A validator's verification key.
-    validator_vkey: VerificationKeyBytes,
+    /// Verification key associated with signing key used to issue block signature.
+    verification_key: VerificationKeyBytes,
 }
 
-/// Type field accessors.
+/// Constructors.
+impl BlockSignature {
+    pub fn new(signature: SignatureBytesRaw, verification_key: VerificationKeyBytes) -> Self {
+        Self {
+            signature,
+            verification_key,
+        }
+    }
+}
+
+/// Accessors.
 impl BlockSignature {
     pub fn signature(&self) -> SignatureBytesRaw {
         self.signature
     }
-    pub fn validator_vkey(&self) -> VerificationKeyBytes {
-        self.validator_vkey
-    }
-}
-
-/// Type constructors.
-impl BlockSignature {
-    pub fn new(signature: SignatureBytesRaw, validator_vkey: VerificationKeyBytes) -> Self {
-        Self {
-            signature,
-            validator_vkey,
-        }
+    pub fn verification_key(&self) -> &VerificationKeyBytes {
+        &self.verification_key
     }
 }

@@ -1,5 +1,5 @@
+use super::Motes;
 use super::ValidatorID;
-use super::Weight;
 
 /// Weight of an identity's vote within the context of some form of governance process.
 pub struct ValidatorWeight {
@@ -7,20 +7,20 @@ pub struct ValidatorWeight {
     validator_id: ValidatorID,
 
     /// Relative weight of vote.
-    weight: Weight,
+    weight: Motes,
 }
 
 impl ValidatorWeight {
     pub fn validator_id(&self) -> ValidatorID {
         self.validator_id
     }
-    pub fn weight(&self) -> Weight {
+    pub fn weight(&self) -> Motes {
         self.weight
     }
 }
 
 impl ValidatorWeight {
-    pub fn new(validator_id: ValidatorID, weight: Weight) -> Self {
+    pub fn new(validator_id: ValidatorID, weight: Motes) -> Self {
         Self {
             validator_id,
             weight,
