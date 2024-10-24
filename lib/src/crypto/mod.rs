@@ -1,5 +1,5 @@
-mod digests;
-mod signatures;
+mod digest;
+mod signature;
 
-pub use digests::{DigestBytes, DigestBytesRaw};
-pub use signatures::{SignatureBytesRaw, VerificationKeyBytes};
+pub use digest::{Digest, DigestBytes};
+pub use signature::{SignatureBytesRaw, VerificationKeyBytes};

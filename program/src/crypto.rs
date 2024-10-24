@@ -1,28 +1,28 @@
 use std::panic;
 
 use crate::constants;
-use litmus_zk_lib::{DigestBytes, DigestBytesRaw, SignatureBytesRaw, VerificationKeyBytes};
+use litmus_zk_lib::{Digest, DigestBytes, SignatureBytesRaw, VerificationKeyBytes};
 
 pub fn do_digest_verification() {
     // Buffer 1..1: digest type tag.
     let digest_type_tag = sp1_zkvm::io::read::<u8>();
 
     // Buffer 2..34: digest bytes.
-    let digest_bytes_raw = sp1_zkvm::io::read::<DigestBytesRaw>();
+    let digest_bytes = sp1_zkvm::io::read::<DigestBytes>();
 
     // Buffer 35..N: data over which digest has been computed.
     let data = sp1_zkvm::io::read_vec();
 
     // Map raw digest -> typed digest.
-    let digest_bytes = match digest_type_tag {
-        constants::DIGEST_TYPE_BLAKE2B => DigestBytes::BLAKE2B(digest_bytes_raw),
+    let digest = match digest_type_tag {
+        constants::DIGEST_TYPE_BLAKE2B => Digest::BLAKE2B(digest_bytes),
         _ => {
             panic!("Unsupported digest type")
         }
     };
 
     // Verify.
-    digest_bytes.verify(data);
+    digest.verify(data);
 }
 
 pub fn do_signature_verification() {

@@ -1,24 +1,32 @@
 // Length of fixed byte digest array.
 const LENGTH_OF_DIGEST: usize = 32;
 
-/// Raw digest bytes scoped by hashing algo type.
+// Raw digest bytes.
+pub type DigestBytes = [u8; LENGTH_OF_DIGEST];
+
+/// Digest bytes scoped by hashing algo type.
 #[derive(Clone, Debug)]
-pub enum DigestBytes {
-    BLAKE2B(DigestBytesRaw),
+pub enum Digest {
+    BLAKE2B(DigestBytes),
 }
 
-// Raw digest bytes.
-pub type DigestBytesRaw = [u8; LENGTH_OF_DIGEST];
-
-impl DigestBytes {
-    fn as_raw(&self) -> &DigestBytesRaw {
+impl Digest {
+    fn to_bytes(&self) -> &DigestBytes {
         match self {
             Self::BLAKE2B(digest) => digest,
         }
     }
 }
 
-impl DigestBytes {
+// impl From<&Digest> for DigestBytes {
+//     fn from(x: &Digest) -> Self {
+//         match x {
+//             Digest::BLAKE2B(digest) => digest,
+//         }
+//     }
+// }
+
+impl Digest {
     /// Verifies a digest over passed data.
     ///
     /// # Arguments
@@ -26,9 +34,12 @@ impl DigestBytes {
     /// * `data` - Data over which to generate a digest.
     ///
     pub fn verify(&self, data: Vec<u8>) {
+        // let f: &DigestBytes = self.into();
+        // let f = self.into<DigestBytesRaw>();
+
         match self {
-            DigestBytes::BLAKE2B(digest) => {
-                assert_eq!(digest, get_blake2b(data).as_raw().as_slice())
+            Digest::BLAKE2B(digest) => {
+                assert_eq!(digest, get_blake2b(data).to_bytes().as_slice())
             }
         }
     }
@@ -40,7 +51,7 @@ impl DigestBytes {
 ///
 /// * `data` - Data over which to generate a digest.
 ///
-fn get_blake2b(data: Vec<u8>) -> DigestBytes {
+fn get_blake2b(data: Vec<u8>) -> Digest {
     use blake2::{
         digest::{Update, VariableOutput},
         Blake2bVar,
@@ -51,5 +62,5 @@ fn get_blake2b(data: Vec<u8>) -> DigestBytes {
     let mut buffer = [0u8; LENGTH_OF_DIGEST];
     hasher.finalize_variable(&mut buffer).unwrap();
 
-    DigestBytes::BLAKE2B(buffer)
+    Digest::BLAKE2B(buffer)
 }

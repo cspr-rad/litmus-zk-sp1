@@ -1,4 +1,4 @@
-use super::digests::DigestBytesRaw;
+use super::digest::DigestBytes;
 
 // Length of fixed byte signature array.
 const LENGTH_OF_SIGNATURE: usize = 64;
@@ -34,7 +34,7 @@ impl VerificationKeyBytes {
     /// * `digest` - Digest over a message over which signature was claimed to have been isssued.
     ///
     #[sp1_derive::cycle_tracker]
-    pub fn verify_signature_over_digest(&self, sig: SignatureBytesRaw, digest: DigestBytesRaw) {
+    pub fn verify_signature_over_digest(&self, sig: SignatureBytesRaw, digest: DigestBytes) {
         match self {
             VerificationKeyBytes::ED25519(vk) => verify_ed25519(digest, sig, vk.to_owned()),
             VerificationKeyBytes::SECP256K1(vk) => verify_sec256k1(digest, sig, vk.to_owned()),
@@ -42,11 +42,7 @@ impl VerificationKeyBytes {
     }
 }
 
-fn verify_ed25519(
-    digest: DigestBytesRaw,
-    sig: SignatureBytesRaw,
-    vk: VerificationKeyBytesRawEd25519,
-) {
+fn verify_ed25519(digest: DigestBytes, sig: SignatureBytesRaw, vk: VerificationKeyBytesRawEd25519) {
     use ed25519_consensus::{Signature, VerificationKey};
 
     let sig = Signature::try_from(sig.as_slice()).unwrap();
@@ -56,7 +52,7 @@ fn verify_ed25519(
 }
 
 fn verify_sec256k1(
-    digest: DigestBytesRaw,
+    digest: DigestBytes,
     sig: SignatureBytesRaw,
     vk: VerificationKeyBytesRawSecp256k1,
 ) {
