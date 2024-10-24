@@ -12,9 +12,9 @@ use std::panic;
 ///
 /// N.B. Arguments are read from the zk-vm's i/o buffer:
 pub fn main() {
-    // Buffer 0..0: verification type.
-    let verification_type = sp1_zkvm::io::read::<u8>();
-    match verification_type {
+    // Buffer 0..0: verification type tag.
+    let verification_type_tag = sp1_zkvm::io::read::<u8>();
+    match verification_type_tag {
         constants::VERIFICATION_TYPE_BLOCK => chain::do_block_verification(),
         constants::VERIFICATION_TYPE_DIGEST => crypto::do_digest_verification(),
         constants::VERIFICATION_TYPE_SIGNATURE => crypto::do_signature_verification(),

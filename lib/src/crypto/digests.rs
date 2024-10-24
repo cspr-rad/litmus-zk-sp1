@@ -25,29 +25,11 @@ impl DigestBytes {
     ///
     /// * `data` - Data over which to generate a digest.
     ///
-    #[sp1_derive::cycle_tracker]
     pub fn verify(&self, data: Vec<u8>) {
-        verify(self.to_owned(), data);
-        // match self {
-        //     DigestBytes::BLAKE2B(digest) => {
-        //         assert_eq!(digest, get_blake2b(data).inner().as_slice())
-        //     }
-        // }
-    }
-}
-
-/// Verifies a digest over passed data.
-///
-/// # Arguments
-///
-/// * `data` - Data over which to generate a digest.
-/// * `digest` - Digest to be verified.
-///
-#[sp1_derive::cycle_tracker(ident.name = "dsadas")]
-pub fn verify(digest: DigestBytes, data: Vec<u8>) {
-    match digest {
-        DigestBytes::BLAKE2B(digest) => {
-            assert_eq!(digest, get_blake2b(data).as_raw().as_slice())
+        match self {
+            DigestBytes::BLAKE2B(digest) => {
+                assert_eq!(digest, get_blake2b(data).as_raw().as_slice())
+            }
         }
     }
 }

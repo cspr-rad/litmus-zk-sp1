@@ -25,19 +25,20 @@ type VerificationKeyBytesRawEd25519 = [u8; LENGTH_OF_VERIFIER_KEY_ED25519];
 // Raw verification key bytes -> secp256k1.
 type VerificationKeyBytesRawSecp256k1 = [u8; LENGTH_OF_VERIFIER_KEY_SECP256K1];
 
-/// Verifies an ECC signature.
-///
-/// # Arguments
-///
-/// * `digest` - Digest over a message.
-/// * `sig` - Signature to be verified.
-/// * `vk` - Verification key associated over message digest signing key.
-///
-#[sp1_derive::cycle_tracker]
-pub fn verify(digest: DigestBytesRaw, sig: SignatureBytesRaw, vk: VerificationKeyBytes) {
-    match vk {
-        VerificationKeyBytes::ED25519(vk) => verify_ed25519(digest, sig, vk),
-        VerificationKeyBytes::SECP256K1(vk) => verify_sec256k1(digest, sig, vk),
+impl VerificationKeyBytes {
+    /// Verifies an ECC signature over a digest.
+    ///
+    /// # Arguments
+    ///
+    /// * `sig` - Signature to be verified.
+    /// * `digest` - Digest over a message over which signature was claimed to have been isssued.
+    ///
+    #[sp1_derive::cycle_tracker]
+    pub fn verify_signature_over_digest(&self, sig: SignatureBytesRaw, digest: DigestBytesRaw) {
+        match self {
+            VerificationKeyBytes::ED25519(vk) => verify_ed25519(digest, sig, vk.to_owned()),
+            VerificationKeyBytes::SECP256K1(vk) => verify_sec256k1(digest, sig, vk.to_owned()),
+        }
     }
 }
 
