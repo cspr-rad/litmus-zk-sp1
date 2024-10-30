@@ -5,8 +5,9 @@ use litmus_zk_lib::{
     Bytes32, Bytes64, Digest, DigestBytes, SignatureBytesRaw, VerificationKeyBytes,
 };
 
+/// Verifies a digest over a byte vector.
 pub fn verify_digest() {
-    fn get_inputs() -> (u8, Bytes32, Vec<u8>) {
+    fn parse_input_stream() -> (u8, Bytes32, Vec<u8>) {
         // 0     : digest type tag.
         // 1..33 : digest bytes.
         // 34..N : data over which digest has been computed.
@@ -17,8 +18,8 @@ pub fn verify_digest() {
         )
     }
 
-    // Decode inputs.
-    let (digest_type_tag, digest_bytes, data) = get_inputs();
+    // Parse input byte stream.
+    let (digest_type_tag, digest_bytes, data) = parse_input_stream();
 
     // Map raw digest -> typed digest.
     let digest = match digest_type_tag {
@@ -32,8 +33,9 @@ pub fn verify_digest() {
     digest.verify(data);
 }
 
+/// Verifies a digest signature.
 pub fn verify_signature() {
-    fn get_inputs() -> (u8, Bytes64, Bytes32, Vec<u8>) {
+    fn parse_input_stream() -> (u8, Bytes64, Bytes32, Vec<u8>) {
         // 0      : signature type tag.
         // 1..64  : signature bytes.
         // 65..96 : digest over which signature has been computed.
@@ -46,8 +48,8 @@ pub fn verify_signature() {
         )
     }
 
-    // Decode inputs.
-    let (signature_type_tag, signature, digest, verification_key_raw) = get_inputs();
+    // Parse input byte stream.
+    let (signature_type_tag, signature, digest, verification_key_raw) = parse_input_stream();
 
     // Map raw verification key -> typed verification key.
     let verification_key = match signature_type_tag {

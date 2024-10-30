@@ -1,4 +1,4 @@
-/// Binary codec type constants.
+// Input bytes stream constants.
 pub const DIGEST_TYPE_BLAKE2B: u8 = 0;
 pub const SIGNATURE_TYPE_ED25519: u8 = 0;
 pub const SIGNATURE_TYPE_SECP256K1: u8 = 1;
