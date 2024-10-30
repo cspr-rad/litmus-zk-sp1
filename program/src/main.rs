@@ -15,9 +15,9 @@ pub fn main() {
     // Buffer 0..0: verification type tag.
     let verification_type_tag = sp1_zkvm::io::read::<u8>();
     match verification_type_tag {
-        constants::VERIFICATION_TYPE_BLOCK => chain::do_block_verification(),
-        constants::VERIFICATION_TYPE_DIGEST => crypto::do_digest_verification(),
-        constants::VERIFICATION_TYPE_SIGNATURE => crypto::do_signature_verification(),
+        constants::VERIFICATION_TYPE_BLOCK => chain::verify_block(),
+        constants::VERIFICATION_TYPE_DIGEST => crypto::verify_digest(),
+        constants::VERIFICATION_TYPE_SIGNATURE => crypto::verify_signature(),
         _ => {
             panic!("Unsupported verification type")
         }

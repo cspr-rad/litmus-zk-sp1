@@ -1,4 +1,4 @@
-use super::digest::DigestBytes;
+use super::digest_bytes::DigestBytes;
 
 // Length of fixed byte signature array.
 const LENGTH_OF_SIGNATURE: usize = 64;
@@ -48,7 +48,7 @@ fn verify_ed25519(digest: DigestBytes, sig: SignatureBytesRaw, vk: VerificationK
     let sig = Signature::try_from(sig.as_slice()).unwrap();
     let vk = VerificationKey::try_from(vk.as_slice()).unwrap();
 
-    assert_eq!(vk.verify(&sig, &digest), Ok(()));
+    assert_eq!(vk.verify(&sig, &digest.to_vec().as_slice()), Ok(()));
 }
 
 fn verify_sec256k1(
@@ -58,7 +58,7 @@ fn verify_sec256k1(
 ) {
     use secp256k1::{ecdsa::Signature, Message, PublicKey, Secp256k1};
 
-    let msg = Message::from_digest_slice(digest.as_slice()).unwrap();
+    let msg = Message::from_digest_slice(digest.to_vec().as_slice()).unwrap();
     let pbk = PublicKey::from_slice(vk.as_slice()).unwrap();
     let sig = Signature::from_compact(&sig).unwrap();
 

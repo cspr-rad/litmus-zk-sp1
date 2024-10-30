@@ -1,5 +1,5 @@
 use std::panic;
 
-pub fn do_block_verification() {
+pub fn verify_block() {
     panic!("TODO: verifiy a block");
 }

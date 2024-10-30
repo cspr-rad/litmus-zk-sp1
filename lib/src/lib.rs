@@ -2,7 +2,4 @@ mod chain;
 mod crypto;
 
 pub use chain::verify_block;
-pub use crypto::Digest;
-pub use crypto::DigestBytes;
-pub use crypto::SignatureBytesRaw;
-pub use crypto::VerificationKeyBytes;
+pub use crypto::{Bytes32, Bytes64, Digest, DigestBytes, SignatureBytesRaw, VerificationKeyBytes};
