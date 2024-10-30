@@ -5,17 +5,19 @@ sp1_zkvm::entrypoint!(main);
 mod chain;
 mod constants;
 mod crypto;
+use litmus_zk_lib::Byte;
 
 /// Program entry point - wrapped by sp1 for execution within zk-vm.
 ///
 /// N.B. Arguments are parsed from SP1 ZK-VM i/o buffer:
 pub fn main() {
-    fn parse_input_stream() -> u8 {
-        // 0      : verification type tag.
-        sp1_zkvm::io::read::<u8>()
+    // Parse input byte stream.
+    // 0      : verification type tag.
+    fn parse_input_stream() -> Byte {
+        sp1_zkvm::io::read::<Byte>()
     }
 
-    // Parse input byte stream.
+    // Set inputs.
     let verification_type_tag = parse_input_stream();
 
     // Invoke verification function.

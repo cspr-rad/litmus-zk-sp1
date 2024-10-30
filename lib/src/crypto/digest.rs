@@ -1,4 +1,5 @@
 use super::digest_bytes::DigestBytes;
+use crate::utils::bites::VecOfBytes;
 
 /// Digest scoped by hashing algo type.
 #[derive(Clone, Debug)]
@@ -8,7 +9,7 @@ pub enum Digest {
 
 // Constructors.
 impl Digest {
-    pub fn new_blake2b(data: Vec<u8>) -> Self {
+    pub fn new_blake2b(data: VecOfBytes) -> Self {
         Self::BLAKE2B(DigestBytes::new_blake2b(data))
     }
 }
@@ -30,7 +31,7 @@ impl Digest {
     ///
     /// * `data` - Data over which to generate a digest.
     ///
-    pub fn verify(&self, data: Vec<u8>) {
+    pub fn verify(&self, data: VecOfBytes) {
         match self {
             Digest::BLAKE2B(inner) => {
                 assert_eq!(inner, &DigestBytes::new_blake2b(data))

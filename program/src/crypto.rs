@@ -2,15 +2,16 @@ use std::panic;
 
 use crate::constants;
 use litmus_zk_lib::{
-    Bytes32, Bytes64, Digest, DigestBytes, SignatureBytesRaw, VerificationKeyBytes,
+    Byte, Bytes32, Bytes64, Digest, DigestBytes, SignatureBytesRaw, VerificationKeyBytes,
 };
 
 /// Verifies a digest over a byte vector.
 pub fn verify_digest() {
-    fn parse_input_stream() -> (u8, Bytes32, Vec<u8>) {
-        // 0     : digest type tag.
-        // 1..33 : digest bytes.
-        // 34..N : data over which digest has been computed.
+    // Parse input byte stream.
+    // 0     : digest type tag.
+    // 1..33 : digest bytes.
+    // 34..N : data over which digest has been computed.
+    fn parse_input_stream() -> (Byte, Bytes32, Vec<Byte>) {
         (
             sp1_zkvm::io::read::<u8>(),
             sp1_zkvm::io::read::<Bytes32>(),
@@ -18,7 +19,7 @@ pub fn verify_digest() {
         )
     }
 
-    // Parse input byte stream.
+    // Set inputs.
     let (digest_type_tag, digest_bytes, data) = parse_input_stream();
 
     // Map raw digest -> typed digest.
@@ -29,26 +30,28 @@ pub fn verify_digest() {
         }
     };
 
-    // Verify.
+    // Invoke verification function.
     digest.verify(data);
 }
 
 /// Verifies a digest signature.
 pub fn verify_signature() {
-    fn parse_input_stream() -> (u8, Bytes64, Bytes32, Vec<u8>) {
-        // 0      : signature type tag.
-        // 1..64  : signature bytes.
-        // 65..96 : digest over which signature has been computed.
-        // 97..N  : verification key.
+    // Parse input byte stream.
+    // 0      : signature type tag.
+    // 1..64  : signature bytes.
+    // 65..96 : digest over which signature has been computed.
+    // 97..N  : verification key.
+    fn parse_input_stream() -> (Byte, Bytes64, Bytes32, Vec<Byte>) {
         (
-            sp1_zkvm::io::read::<u8>(),
+            sp1_zkvm::io::read::<Byte>(),
+            // sp1_zkvm::io::read::<Bytes64>(),
             sp1_zkvm::io::read_vec().try_into().unwrap(),
             sp1_zkvm::io::read::<Bytes32>(),
             sp1_zkvm::io::read_vec(),
         )
     }
 
-    // Parse input byte stream.
+    // Set inputs.
     let (signature_type_tag, signature, digest, verification_key_raw) = parse_input_stream();
 
     // Map raw verification key -> typed verification key.
@@ -64,6 +67,6 @@ pub fn verify_signature() {
         }
     };
 
-    // Verify.
+    // Invoke verification function.
     verification_key.verify_signature_over_digest(signature, DigestBytes::new(digest));
 }
