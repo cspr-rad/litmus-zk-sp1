@@ -1,4 +1,4 @@
-use crate::utils::bites::{Bytes32, VecOfBytes, SIZE_32 as SIZE_BYTES_32};
+use crate::utils::bites::{Bytes, Bytes32, SIZE_32 as SIZE_BYTES_32};
 
 // Raw bytes that represent a digest of some type.
 pub type DigestBytesRaw = Bytes32;
@@ -13,7 +13,7 @@ impl DigestBytes {
         Self(inner)
     }
 
-    pub fn new_blake2b(data: VecOfBytes) -> Self {
+    pub fn new_blake2b(data: Bytes) -> Self {
         use blake2::{
             digest::{Update, VariableOutput},
             Blake2bVar,
@@ -30,7 +30,7 @@ impl DigestBytes {
 
 // Convertors.
 impl DigestBytes {
-    pub fn to_vec(&self) -> VecOfBytes {
+    pub fn to_vec(&self) -> Bytes {
         self.0.to_vec()
     }
 }

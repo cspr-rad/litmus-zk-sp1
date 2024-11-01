@@ -1,12 +1,12 @@
-use crate::crypto::DigestBytesRaw;
+use crate::crypto::Digest;
 
 /// Digest over a chain's name.
 #[derive(Clone, Debug)]
-pub struct ChainNameDigest(DigestBytesRaw);
+pub struct ChainNameDigest(Digest);
 
 /// Constructors.
 impl ChainNameDigest {
-    pub fn new(digest: DigestBytesRaw) -> Self {
+    pub fn new(digest: Digest) -> Self {
         Self(digest)
     }
 
@@ -17,7 +17,7 @@ impl ChainNameDigest {
 
 /// Accessors.
 impl ChainNameDigest {
-    pub fn inner(&self) -> &DigestBytesRaw {
+    pub fn inner(&self) -> &Digest {
         &self.0
     }
 }
