@@ -1,19 +1,18 @@
-use crate::utils::bites::{Bytes, Bytes32, SIZE_32 as SIZE_BYTES_32};
+use crate::utils::bites::{Byte, Bytes32, SIZE_32 as SIZE_BYTES_32};
 
-// Raw bytes that represent a digest of some type.
-pub type DigestBytesRaw = Bytes32;
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
 
 // Fixed size byte array representation of a digest.
-#[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
-pub struct DigestBytes(Bytes32);
+pub type DigestBytes = Bytes32;
 
+// ------------------------------------------------------------------------
 // Constructors.
-impl DigestBytes {
-    pub fn new(inner: Bytes32) -> Self {
-        Self(inner)
-    }
+// ------------------------------------------------------------------------
 
-    pub fn new_blake2b(data: Bytes) -> Self {
+impl DigestBytes {
+    pub fn new_blake2b(data: Bytes32) -> Self {
         use blake2::{
             digest::{Update, VariableOutput},
             Blake2bVar,
@@ -24,42 +23,6 @@ impl DigestBytes {
         let mut buffer = [0u8; SIZE_BYTES_32];
         hasher.finalize_variable(&mut buffer).unwrap();
 
-        Self(buffer)
-    }
-}
-
-// Convertors.
-impl DigestBytes {
-    pub fn to_vec(&self) -> Bytes {
-        self.0.to_vec()
-    }
-}
-
-impl AsRef<DigestBytes> for DigestBytes {
-    fn as_ref(&self) -> &DigestBytes {
-        self
-    }
-}
-
-impl From<&str> for DigestBytes {
-    fn from(value: &str) -> Self {
-        DigestBytes(
-            hex::decode(value)
-                .expect("invalid value")
-                .try_into()
-                .unwrap(),
-        )
-    }
-}
-
-impl From<String> for DigestBytes {
-    fn from(value: String) -> Self {
-        Self::from(value.as_str())
-    }
-}
-
-impl From<&[u8]> for DigestBytes {
-    fn from(value: &[u8]) -> Self {
-        Self(value.try_into().expect("copy"))
+        Self::new(buffer)
     }
 }

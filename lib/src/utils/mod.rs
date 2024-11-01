@@ -1,1 +1,1 @@
-pub mod bites;
+pub(crate) mod bites;

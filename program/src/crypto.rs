@@ -24,7 +24,7 @@ pub fn verify_digest() {
 
     // Map raw digest -> typed digest.
     let digest = match digest_type_tag {
-        constants::DIGEST_TYPE_BLAKE2B => Digest::BLAKE2B(DigestBytes::new(digest_bytes)),
+        constants::DIGEST_TYPE_BLAKE2B => Digest::new_blake2b(digest_bytes),
         _ => {
             panic!("Unsupported digest type")
         }
