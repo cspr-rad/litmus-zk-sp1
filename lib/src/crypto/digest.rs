@@ -37,6 +37,19 @@ impl Digest {
 }
 
 // ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
+impl Digest {
+    // Returns underlying byte array.
+    pub fn as_slice(&self) -> &[Byte] {
+        match self {
+            Digest::BLAKE2B(inner) => inner.as_slice(),
+        }
+    }
+}
+
+// ------------------------------------------------------------------------
 // Methods.
 // ------------------------------------------------------------------------
 
@@ -52,19 +65,6 @@ impl Digest {
             Digest::BLAKE2B(_) => {
                 assert_eq!(self, &Digest::new_blake2b(data));
             }
-        }
-    }
-}
-
-// ------------------------------------------------------------------------
-// Traits.
-// ------------------------------------------------------------------------
-
-// From -> self to bytes.
-impl From<&Digest> for Bytes32 {
-    fn from(digest: &Digest) -> Self {
-        match digest {
-            Digest::BLAKE2B(inner) => inner.to_owned(),
         }
     }
 }
