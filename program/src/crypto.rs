@@ -1,9 +1,7 @@
 use std::panic;
 
 use crate::constants;
-use litmus_zk_lib::{
-    Byte, Bytes32, Bytes64, Digest, DigestBytes, SignatureBytesRaw, VerificationKeyBytes,
-};
+use litmus_zk_lib::{Byte, Bytes32, Bytes64, Digest, SignatureBytesRaw, VerificationKeyBytes};
 
 /// Verifies a digest over a byte vector.
 pub fn verify_digest() {
@@ -68,5 +66,5 @@ pub fn verify_signature() {
     };
 
     // Invoke verification function.
-    verification_key.verify_signature_over_digest(signature, DigestBytes::new(digest));
+    verification_key.verify_signature_over_digest(signature, Bytes32::new(digest));
 }

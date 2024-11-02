@@ -1,4 +1,3 @@
-use super::digest_bytes::DigestBytes;
 use crate::utils::bites::{Byte, Bytes32};
 
 // ------------------------------------------------------------------------
@@ -6,9 +5,9 @@ use crate::utils::bites::{Byte, Bytes32};
 // ------------------------------------------------------------------------
 
 /// Digest scoped by hashing algo type.
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum Digest {
-    BLAKE2B(DigestBytes),
+    BLAKE2B(Bytes32),
 }
 
 // ------------------------------------------------------------------------
@@ -16,8 +15,24 @@ pub enum Digest {
 // ------------------------------------------------------------------------
 
 impl Digest {
+    /// Constructor: returns a new blake2b digest over passed data.
+    ///
+    /// # Arguments
+    ///
+    /// * `data` - Data against which to generate a blake2b digest.
+    ///
     pub fn new_blake2b(data: Vec<Byte>) -> Self {
-        Self::BLAKE2B(DigestBytes::new_blake2b(data))
+        use blake2::{
+            digest::{Update, VariableOutput},
+            Blake2bVar,
+        };
+
+        let mut hasher = Blake2bVar::new(Bytes32::len()).unwrap();
+        hasher.update(&data);
+        let mut buffer = Bytes32::default().data;
+        hasher.finalize_variable(&mut buffer).unwrap();
+
+        Self::BLAKE2B(Bytes32::new(buffer))
     }
 }
 
@@ -26,16 +41,16 @@ impl Digest {
 // ------------------------------------------------------------------------
 
 impl Digest {
-    /// Verifies a digest over passed data.
+    /// Verifies digest against passed data.
     ///
     /// # Arguments
     ///
-    /// * `data` - Data over which to generate a digest.
+    /// * `data` - Data against which to verify digest.
     ///
     pub fn verify(&self, data: Vec<Byte>) {
         match self {
-            Digest::BLAKE2B(inner) => {
-                assert_eq!(inner, &DigestBytes::new_blake2b(data))
+            Digest::BLAKE2B(_) => {
+                assert_eq!(self, &Digest::new_blake2b(data));
             }
         }
     }
@@ -45,9 +60,10 @@ impl Digest {
 // Traits.
 // ------------------------------------------------------------------------
 
-impl From<&Digest> for DigestBytes {
-    fn from(x: &Digest) -> Self {
-        match x {
+// From -> self to bytes.
+impl From<&Digest> for Bytes32 {
+    fn from(digest: &Digest) -> Self {
+        match digest {
             Digest::BLAKE2B(inner) => inner.to_owned(),
         }
     }

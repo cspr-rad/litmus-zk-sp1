@@ -34,7 +34,9 @@ pub fn verify_block_signature(
 }
 
 pub fn compute_bytes_to_sign(block_hash: &BlockHash, era_id: EraId) -> Vec<u8> {
-    let mut bytes = block_hash.inner().to_vec();
-    bytes.extend_from_slice(&era_id.inner().to_le_bytes());
-    bytes
+    panic!("TODO: compute block hash");
+
+    // let mut bytes = block_hash.inner().to_vec();
+    // bytes.extend_from_slice(&era_id.inner().to_le_bytes());
+    // bytes
 }

@@ -1,19 +1,19 @@
-use crate::crypto::DigestBytes;
+use crate::crypto::Digest;
 
 /// Digest over a chain's block data structure.
 #[derive(Clone, Debug)]
-pub struct BlockHash(DigestBytes);
+pub struct BlockHash(Digest);
 
 /// Constructors.
 impl BlockHash {
-    pub fn new(digest: DigestBytes) -> Self {
+    pub fn new(digest: Digest) -> Self {
         Self(digest)
     }
 }
 
 /// Accessors.
 impl BlockHash {
-    pub fn inner(&self) -> &DigestBytes {
+    pub fn inner(&self) -> &Digest {
         &self.0
     }
 }

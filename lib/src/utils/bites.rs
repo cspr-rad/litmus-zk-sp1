@@ -56,7 +56,7 @@ impl<const N: usize> Bytes<N> {
     }
 
     // Returns length of underlying byte array.
-    pub fn len(&self) -> usize {
+    pub fn len() -> usize {
         N
     }
 }
