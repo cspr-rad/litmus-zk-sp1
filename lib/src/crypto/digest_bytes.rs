@@ -12,7 +12,7 @@ pub type DigestBytes = Bytes32;
 // ------------------------------------------------------------------------
 
 impl DigestBytes {
-    pub fn new_blake2b(data: Bytes32) -> Self {
+    pub fn new_blake2b(data: Vec<Byte>) -> Self {
         use blake2::{
             digest::{Update, VariableOutput},
             Blake2bVar,

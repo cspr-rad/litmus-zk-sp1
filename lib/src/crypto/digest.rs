@@ -16,7 +16,7 @@ pub enum Digest {
 // ------------------------------------------------------------------------
 
 impl Digest {
-    pub fn new_blake2b(data: Bytes32) -> Self {
+    pub fn new_blake2b(data: Vec<Byte>) -> Self {
         Self::BLAKE2B(DigestBytes::new_blake2b(data))
     }
 }
@@ -32,7 +32,7 @@ impl Digest {
     ///
     /// * `data` - Data over which to generate a digest.
     ///
-    pub fn verify(&self, data: Bytes32) {
+    pub fn verify(&self, data: Vec<Byte>) {
         match self {
             Digest::BLAKE2B(inner) => {
                 assert_eq!(inner, &DigestBytes::new_blake2b(data))
