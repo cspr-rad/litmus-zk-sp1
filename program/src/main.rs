@@ -24,7 +24,7 @@ pub fn main() {
     match verification_type_tag {
         constants::VERIFICATION_TYPE_BLOCK => chain::verify_block(),
         constants::VERIFICATION_TYPE_DIGEST => crypto::verify_digest(),
-        constants::VERIFICATION_TYPE_SIGNATURE => crypto::verify_signature(),
+        constants::VERIFICATION_TYPE_DIGEST_SIGNATURE => crypto::verify_digest_signature(),
         _ => {
             panic!("Unsupported verification type")
         }

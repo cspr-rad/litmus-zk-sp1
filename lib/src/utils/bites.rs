@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 // ------------------------------------------------------------------------
 // Constants.
 // ------------------------------------------------------------------------
@@ -15,18 +17,22 @@ pub const SIZE_64: usize = 64;
 pub type Byte = u8;
 
 // Generic byte array with constant size of N.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Bytes<const N: usize> {
     pub data: [Byte; N],
 }
 
 // Byte array of size 32 - typically a digest | public key.
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub type Bytes32 = Bytes<SIZE_32>;
 
 // Byte array of size 33 - typically a public key.
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub type Bytes33 = Bytes<SIZE_33>;
 
 // Byte array of size 64 - typically a signature.
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub type Bytes64 = Bytes<SIZE_64>;
 
 // ------------------------------------------------------------------------

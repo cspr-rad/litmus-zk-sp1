@@ -8,4 +8,5 @@ sp1-build = "2.0.0"
 
 [dependencies]
 litmus-zk-lib = { path = "../lib" }
+serde = { version = "1.0.214", features = ["derive"] }
 sp1-zkvm = "1.2.0"

@@ -1,7 +1,7 @@
 use std::panic;
 
 use crate::constants;
-use litmus_zk_lib::{Byte, Bytes32, Bytes64, Digest, SignatureBytesRaw, VerificationKeyBytes};
+use litmus_zk_lib::{Byte, Bytes32, Bytes64, Digest, Signature, VerificationKey};
 
 /// Verifies a digest over a byte vector.
 pub fn verify_digest() {
@@ -11,8 +11,9 @@ pub fn verify_digest() {
     // 34..N : data over which digest has been computed.
     fn parse_input_stream() -> (Byte, Bytes32, Vec<Byte>) {
         (
-            sp1_zkvm::io::read::<u8>(),
-            sp1_zkvm::io::read::<Bytes32>(),
+            sp1_zkvm::io::read::<Byte>(),
+            sp1_zkvm::io::read_vec().try_into().unwrap(),
+            // sp1_zkvm::io::read::<Bytes32>(),
             sp1_zkvm::io::read_vec(),
         )
     }
@@ -22,18 +23,18 @@ pub fn verify_digest() {
 
     // Map raw digest -> typed digest.
     let digest = match digest_type_tag {
-        constants::DIGEST_TYPE_BLAKE2B => Digest::new_blake2b(digest_bytes),
+        constants::DIGEST_TYPE_BLAKE2B => Digest::BLAKE2B(digest_bytes),
         _ => {
             panic!("Unsupported digest type")
         }
     };
 
-    // Invoke verification function.
+    // Verify.
     digest.verify(data);
 }
 
-/// Verifies a digest signature.
-pub fn verify_signature() {
+/// Verifies a signature over a digest.
+pub fn verify_digest_signature() {
     // Parse input byte stream.
     // 0      : signature type tag.
     // 1..64  : signature bytes.
@@ -44,27 +45,30 @@ pub fn verify_signature() {
             sp1_zkvm::io::read::<Byte>(),
             // sp1_zkvm::io::read::<Bytes64>(),
             sp1_zkvm::io::read_vec().try_into().unwrap(),
-            sp1_zkvm::io::read::<Bytes32>(),
+            sp1_zkvm::io::read_vec().try_into().unwrap(),
+            // sp1_zkvm::io::read::<Bytes32>(),
             sp1_zkvm::io::read_vec(),
         )
     }
 
     // Set inputs.
-    let (signature_type_tag, signature, digest, verification_key_raw) = parse_input_stream();
+    let (signature_type_tag, signature, digest, verification_key) = parse_input_stream();
 
-    // Map raw verification key -> typed verification key.
-    let verification_key = match signature_type_tag {
-        constants::SIGNATURE_TYPE_ED25519 => {
-            VerificationKeyBytes::ED25519(verification_key_raw.try_into().unwrap())
-        }
-        constants::SIGNATURE_TYPE_SECP256K1 => {
-            VerificationKeyBytes::SECP256K1(verification_key_raw.try_into().unwrap())
-        }
+    // Map raw keys -> typed keys.
+    let (signature, verification_key) = match signature_type_tag {
+        constants::SIGNATURE_TYPE_ED25519 => (
+            Signature::ED25519(signature),
+            VerificationKey::ED25519(verification_key.try_into().unwrap()),
+        ),
+        constants::SIGNATURE_TYPE_SECP256K1 => (
+            Signature::SECP256K1(signature),
+            VerificationKey::SECP256K1(verification_key.try_into().unwrap()),
+        ),
         _ => {
             panic!("Unsupported signature type")
         }
     };
 
-    // Invoke verification function.
-    verification_key.verify_signature_over_digest(signature, Bytes32::new(digest));
+    // Verify.
+    signature.verify(verification_key, digest.as_slice());
 }
