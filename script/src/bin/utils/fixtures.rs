@@ -1,6 +1,12 @@
 use serde::{Deserialize, Serialize};
 use sp1_sdk::SP1Stdin;
 
+const VERIFICATION_TYPE_DIGEST: u8 = 0;
+const VERIFICATION_TYPE_SIGNATURE: u8 = 1;
+const DIGEST_TYPE_BLAKE2B: u8 = 0;
+const ECC_TYPE_ED25519: u8 = 0;
+const ECC_TYPE_SECP256K1: u8 = 1;
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Digest {
     pub data: String,
@@ -61,15 +67,12 @@ impl From<Fixtures> for Vec<SP1Stdin> {
     }
 }
 
-const VERIFICATION_TYPE_DIGEST: u8 = 0;
-const VERIFICATION_TYPE_SIGNATURE: u8 = 1;
-
 fn get_stdin_for_verify_digest(fixture: Digest) -> SP1Stdin {
     let mut stdin = SP1Stdin::new();
     stdin.write(&VERIFICATION_TYPE_DIGEST);
     match fixture.algo.as_str() {
         "BLAKE2B" => {
-            stdin.write(&0u8);
+            stdin.write(&DIGEST_TYPE_BLAKE2B);
         }
         _ => {
             panic!("Unsupported hashing algo.")
@@ -86,10 +89,10 @@ fn get_stdin_for_verify_signature(fixture: Signature) -> SP1Stdin {
     stdin.write(&VERIFICATION_TYPE_SIGNATURE);
     match fixture.key.algo.as_str() {
         "ED25519" => {
-            stdin.write(&0u8);
+            stdin.write(&ECC_TYPE_ED25519);
         }
         "SECP256K1" => {
-            stdin.write(&1u8);
+            stdin.write(&ECC_TYPE_SECP256K1);
         }
         _ => {
             panic!("Unsupported signature algo.")

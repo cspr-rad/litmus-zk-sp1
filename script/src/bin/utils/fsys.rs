@@ -1,10 +1,10 @@
-#![allow(dead_code)]
+use super::fixtures::Fixtures;
 use serde_json;
 use std::fs;
-use super::fixtures::Fixtures;
 
 pub fn get_fixtures() -> Fixtures {
     let fpath = "fixtures/crypto.json";
+    let fcontents = fs::read_to_string(fpath).unwrap();
 
-    serde_json::from_str(&fs::read_to_string(fpath).unwrap()).unwrap()
+    serde_json::from_str(&fcontents).unwrap()
 }

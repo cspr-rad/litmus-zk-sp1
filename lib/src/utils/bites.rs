@@ -17,22 +17,19 @@ pub const SIZE_64: usize = 64;
 pub type Byte = u8;
 
 // Generic byte array with constant size of N.
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Deserialize, Serialize)]
 pub struct Bytes<const N: usize> {
-    pub data: [Byte; N],
+    #[serde(with = "serde_bytes")]
+    data: [Byte; N],
 }
 
 // Byte array of size 32 - typically a digest | public key.
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub type Bytes32 = Bytes<SIZE_32>;
 
 // Byte array of size 33 - typically a public key.
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub type Bytes33 = Bytes<SIZE_33>;
 
 // Byte array of size 64 - typically a signature.
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub type Bytes64 = Bytes<SIZE_64>;
 
 // ------------------------------------------------------------------------
@@ -51,14 +48,19 @@ impl<const N: usize> Bytes<N> {
 // ------------------------------------------------------------------------
 
 impl<const N: usize> Bytes<N> {
-    // Returns underlying byte array.
+    // Returns reference to underlying byte array.
     pub fn as_slice(&self) -> &[Byte] {
         &self.data
     }
 
-    // Returns underlying byte array mutably.
+    // Returns reference to underlying byte array mutably.
     pub fn as_mut_slice(&mut self) -> &mut [Byte] {
         &mut self.data
+    }
+
+    // Returns underlying byte array.
+    pub fn data(&self) -> [Byte; N] {
+        self.data
     }
 
     // Returns length of underlying byte array.

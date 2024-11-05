@@ -1,7 +1,7 @@
 use std::panic;
 
 use crate::constants;
-use litmus_zk_lib::{Byte, Bytes32, Bytes64, Digest, Signature, VerificationKey};
+use litmus_zk_lib::{Byte, Bytes, Bytes32, Bytes64, Digest, Signature, VerificationKey};
 
 /// Verifies a digest over a byte vector.
 pub fn verify_digest() {
@@ -11,9 +11,8 @@ pub fn verify_digest() {
     // 34..N : data over which digest has been computed.
     fn parse_input_stream() -> (Byte, Bytes32, Vec<Byte>) {
         (
-            sp1_zkvm::io::read::<Byte>(),
+            sp1_zkvm::io::read(),
             sp1_zkvm::io::read_vec().try_into().unwrap(),
-            // sp1_zkvm::io::read::<Bytes32>(),
             sp1_zkvm::io::read_vec(),
         )
     }
@@ -37,22 +36,20 @@ pub fn verify_digest() {
 pub fn verify_digest_signature() {
     // Parse input byte stream.
     // 0      : signature type tag.
-    // 1..64  : signature bytes.
-    // 65..96 : digest over which signature has been computed.
+    // 1..32 : digest over which signature has been computed.
+    // 33..96  : signature bytes.
     // 97..N  : verification key.
-    fn parse_input_stream() -> (Byte, Bytes64, Bytes32, Vec<Byte>) {
+    fn parse_input_stream() -> (Byte, Bytes32, Bytes64, Vec<Byte>) {
         (
-            sp1_zkvm::io::read::<Byte>(),
-            // sp1_zkvm::io::read::<Bytes64>(),
+            sp1_zkvm::io::read(),
             sp1_zkvm::io::read_vec().try_into().unwrap(),
             sp1_zkvm::io::read_vec().try_into().unwrap(),
-            // sp1_zkvm::io::read::<Bytes32>(),
             sp1_zkvm::io::read_vec(),
         )
     }
 
     // Set inputs.
-    let (signature_type_tag, signature, digest, verification_key) = parse_input_stream();
+    let (signature_type_tag, digest, signature, verification_key) = parse_input_stream();
 
     // Map raw keys -> typed keys.
     let (signature, verification_key) = match signature_type_tag {

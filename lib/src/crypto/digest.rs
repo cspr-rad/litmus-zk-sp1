@@ -29,7 +29,7 @@ impl Digest {
 
         let mut hasher = Blake2bVar::new(Bytes32::len()).unwrap();
         hasher.update(&data);
-        let mut buffer = Bytes32::default().data;
+        let mut buffer = Bytes32::default().data();
         hasher.finalize_variable(&mut buffer).unwrap();
 
         Self::BLAKE2B(Bytes32::new(buffer))
