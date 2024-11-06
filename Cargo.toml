@@ -1,5 +1,12 @@
 [workspace]
-members = ["lib", "program", "script"]
+members = [
+    "crates/lcrypto",
+    "crates/ltypes",
+    "crates/lutils",
+    "crates/lverifiers",
+    "program",
+    "script",
+]
 resolver = "2"
 
 [patch.crates-io]

@@ -2,10 +2,11 @@
 #![cfg(target_os = "zkvm")]
 sp1_zkvm::entrypoint!(main);
 
+use lutils::bites::Byte;
+
 mod chain;
 mod constants;
 mod crypto;
-use litmus_zk_lib::Byte;
 
 /// Program entry point - wrapped by sp1 for execution within zk-vm.
 ///

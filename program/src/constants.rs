@@ -1,4 +1,4 @@
-use litmus_zk_lib::Byte;
+use lutils::bites::Byte;
 
 // Input bytes stream constants.
 pub const DIGEST_TYPE_BLAKE2B: Byte = 0;

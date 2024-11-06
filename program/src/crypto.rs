@@ -1,7 +1,8 @@
 use std::panic;
 
 use crate::constants;
-use litmus_zk_lib::{Byte, Bytes, Bytes32, Bytes64, Digest, Signature, VerificationKey};
+use lcrypto::{Digest, Signature, VerificationKey};
+use lutils::bites::{Byte, Bytes, Bytes32, Bytes64};
 
 /// Verifies a digest over a byte vector.
 pub fn verify_digest() {
