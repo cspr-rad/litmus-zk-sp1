@@ -2,4 +2,4 @@ mod digest;
 mod signature;
 
 pub use digest::Digest;
-pub use signature::{Signature, VerificationKey};
+pub use signature::{Signature, VerificationKey, VerificationKey as PublicKey};

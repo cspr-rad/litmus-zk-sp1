@@ -1,5 +1,5 @@
-use super::block_hash::BlockHash;
-use super::block_height::BlockHeight;
+use super::BlockHash;
+use super::BlockHeight;
 
 // ------------------------------------------------------------------------
 // Declarations.
