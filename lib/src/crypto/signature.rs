@@ -1,11 +1,9 @@
 use super::digest::Digest;
 use crate::utils::bites::{Byte, Bytes32, Bytes33, Bytes64};
 
-// Length of fixed byte signature array.
-const LENGTH_OF_SIGNATURE: usize = 64;
-
-// Raw signature bytes.
-pub type SignatureBytesRaw = [u8; LENGTH_OF_SIGNATURE];
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum Signature {
@@ -18,6 +16,58 @@ pub enum VerificationKey {
     ED25519(Bytes32),
     SECP256K1(Bytes33),
 }
+
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
+impl Signature {
+    /// Constructor: returns a new ed25519 signature.
+    ///
+    /// # Arguments
+    ///
+    /// * `sig` - Signature issued by an ed25519 signing key.
+    ///
+    pub fn new_ed25519(sig: Bytes64) -> Self {
+        Signature::ED25519(sig)
+    }
+
+    /// Constructor: returns a new secp256k1 signature.
+    ///
+    /// # Arguments
+    ///
+    /// * `sig` - Signature issued by a secp256k1 signing key.
+    ///
+    pub fn new_secp256k1(sig: Bytes64) -> Self {
+        Signature::SECP256K1(sig)
+    }
+}
+
+impl VerificationKey {
+    /// Constructor: returns a new ed25519 verification key.
+    ///
+    /// # Arguments
+    ///
+    /// * `sig` - Verification key issued by an ed25519 algorithm.
+    ///
+    pub fn new_ed25519(vk: Bytes32) -> Self {
+        VerificationKey::ED25519(vk)
+    }
+
+    /// Constructor: returns a new secp256k1 verification key.
+    ///
+    /// # Arguments
+    ///
+    /// * `sig` - Verification key issued by an secp256k1 algorithm.
+    ///
+    pub fn new_secp256k1(vk: Bytes33) -> Self {
+        VerificationKey::SECP256K1(vk)
+    }
+}
+
+// ------------------------------------------------------------------------
+// Methods.
+// ------------------------------------------------------------------------
 
 impl Signature {
     /// Verifies signature against arbitrary data.

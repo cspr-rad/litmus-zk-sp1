@@ -1,9 +1,9 @@
-use crate::crypto::{SignatureBytesRaw, VerificationKey};
+use crate::crypto::{Signature, VerificationKey};
 
 /// A signature over a block within the context of some form of consensus process.
 pub struct BlockSignature {
     /// Signature over a block issued by an entity, e.g. validator.
-    signature: SignatureBytesRaw,
+    signature: Signature,
 
     /// Verification key associated with signing key used to issue block signature.
     verification_key: VerificationKey,
@@ -11,7 +11,7 @@ pub struct BlockSignature {
 
 /// Constructors.
 impl BlockSignature {
-    pub fn new(signature: SignatureBytesRaw, verification_key: VerificationKey) -> Self {
+    pub fn new(signature: Signature, verification_key: VerificationKey) -> Self {
         Self {
             signature,
             verification_key,
@@ -21,7 +21,7 @@ impl BlockSignature {
 
 /// Accessors.
 impl BlockSignature {
-    pub fn signature(&self) -> SignatureBytesRaw {
+    pub fn signature(&self) -> Signature {
         self.signature
     }
     pub fn verification_key(&self) -> &VerificationKey {
