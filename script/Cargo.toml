@@ -8,10 +8,6 @@ default-run = "litmus-zk"
 name = "litmus-zk"
 path = "src/bin/main.rs"
 
-[[bin]]
-name = "vkey"
-path = "src/bin/vkey.rs"
-
 [dependencies]
 clap = { version = "4.0", features = ["derive", "env"] }
 hex = "0.4.3"

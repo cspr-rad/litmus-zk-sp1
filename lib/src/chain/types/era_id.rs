@@ -1,8 +1,15 @@
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
+
 /// An era represents a set of consensus rounds.
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct EraId(u64);
 
-/// Constructors.
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
 impl EraId {
     /// Factory: new [`EraId`] instance.
     pub const fn new(value: u64) -> Self {
@@ -10,7 +17,10 @@ impl EraId {
     }
 }
 
-/// Accessors.
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
 impl EraId {
     pub fn inner(&self) -> u64 {
         self.0

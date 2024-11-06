@@ -1,7 +1,11 @@
 use core::ops::Add;
 
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
+
 /// Base unit of system economic security mechanism.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Motes(u64);
 
 /// Constants.
@@ -10,7 +14,10 @@ impl Motes {
     pub const MIN: Motes = Motes(u64::MIN);
 }
 
-/// Constructors.
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
 impl Motes {
     /// Factory: new [`Motes`] instance.
     pub const fn new(value: u64) -> Self {
@@ -18,14 +25,20 @@ impl Motes {
     }
 }
 
-/// Accessors.
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
 impl Motes {
     pub fn inner(&self) -> u64 {
         self.0
     }
 }
 
-/// Traits.
+// ------------------------------------------------------------------------
+// Traits.
+// ------------------------------------------------------------------------
+
 impl Add for Motes {
     type Output = Motes;
 

@@ -1,10 +1,17 @@
 use crate::crypto::Digest;
 
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
+
 /// Digest over a chain's name.
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct ChainNameDigest(Digest);
 
-/// Constructors.
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
 impl ChainNameDigest {
     pub fn new(digest: Digest) -> Self {
         Self(digest)
@@ -15,7 +22,10 @@ impl ChainNameDigest {
     }
 }
 
-/// Accessors.
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
 impl ChainNameDigest {
     pub fn inner(&self) -> &Digest {
         &self.0

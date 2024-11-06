@@ -1,3 +1,4 @@
+mod fixtures;
 mod utils;
 
 use clap::Parser;

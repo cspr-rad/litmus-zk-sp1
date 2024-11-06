@@ -1,6 +1,11 @@
 use crate::crypto::{Signature, VerificationKey};
 
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
+
 /// A signature over a block within the context of some form of consensus process.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct BlockSignature {
     /// Signature over a block issued by an entity, e.g. validator.
     signature: Signature,
@@ -9,7 +14,10 @@ pub struct BlockSignature {
     verification_key: VerificationKey,
 }
 
-/// Constructors.
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
 impl BlockSignature {
     pub fn new(signature: Signature, verification_key: VerificationKey) -> Self {
         Self {
@@ -19,7 +27,10 @@ impl BlockSignature {
     }
 }
 
-/// Accessors.
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
 impl BlockSignature {
     pub fn signature(&self) -> Signature {
         self.signature

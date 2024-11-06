@@ -1,1 +1,7 @@
-pub type ValidatorID = [u8; 32];
+use crate::crypto::VerificationKey;
+
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
+
+pub type ValidatorID = VerificationKey;

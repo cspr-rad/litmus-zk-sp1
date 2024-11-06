@@ -1,8 +1,15 @@
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
+
 /// Monotonically increasing chain height.
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct BlockHeight(u64);
 
-/// Constructors.
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
 impl BlockHeight {
     /// Factory: new [`EraId`] instance.
     pub const fn new(value: u64) -> Self {
@@ -10,7 +17,10 @@ impl BlockHeight {
     }
 }
 
-/// Accessors.
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
 impl BlockHeight {
     pub fn inner(&self) -> u64 {
         self.0

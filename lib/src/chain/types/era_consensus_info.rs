@@ -2,7 +2,12 @@ use super::EraId;
 use super::Motes;
 use super::ValidatorWeight;
 
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
+
 /// Information scoped by era pertinent to consensus.
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct EraConsensusInfo {
     /// Era identifier.
     era_id: EraId,
@@ -14,7 +19,10 @@ pub struct EraConsensusInfo {
     total_weight: Motes,
 }
 
-/// Constructors.
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
 impl EraConsensusInfo {
     pub fn new(era_id: EraId, validator_weights: Vec<ValidatorWeight>) -> Self {
         let total_weight: &Motes = &validator_weights
@@ -29,7 +37,10 @@ impl EraConsensusInfo {
     }
 }
 
-/// Accessors.
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
 impl EraConsensusInfo {
     pub fn era_id(&self) -> &EraId {
         &self.era_id
