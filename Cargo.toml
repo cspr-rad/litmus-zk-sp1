@@ -1,5 +1,5 @@
 [workspace]
-members = [
+members = [ "crates/lcodecs",
     "crates/lcrypto",
     "crates/ltypes",
     "crates/lutils",

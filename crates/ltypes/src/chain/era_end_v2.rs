@@ -3,7 +3,9 @@ extern crate alloc;
 use crate::crypto::PublicKey;
 use alloc::collections::BTreeMap;
 
-// TODO: U512
+// ------------------------------------------------------------------------
+// Declarations.
+// ------------------------------------------------------------------------
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct EraEndV2 {
