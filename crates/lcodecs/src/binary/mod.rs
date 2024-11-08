@@ -5,4 +5,4 @@ mod crypto;
 mod primitives_1;
 mod utils;
 
-pub use utils::ToBytes;
+pub use utils::Encode;

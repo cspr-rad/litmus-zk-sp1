@@ -1,8 +1,8 @@
-use super::utils::{Error as CodecError, ToBytes};
+use super::utils::{Encode, Error as CodecError};
 use ltypes::crypto::Digest;
 use lutils::bites::Byte;
 
-impl ToBytes for Digest {
+impl Encode for Digest {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         match self {
             Digest::BLAKE2B(inner) => Ok(inner.to_vec()),

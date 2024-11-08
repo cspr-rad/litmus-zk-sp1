@@ -1,9 +1,9 @@
 use super::constants;
-use super::utils::{Error as CodecError, ToBytes};
+use super::utils::{Encode, Error as CodecError};
 use lutils::bites::Byte;
 
 // Encoder: `bool`.
-impl ToBytes for bool {
+impl Encode for bool {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         u8::from(*self).to_bytes()
     }
@@ -19,7 +19,7 @@ impl ToBytes for bool {
 }
 
 // Encoder: `i32`.
-impl ToBytes for i32 {
+impl Encode for i32 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
@@ -35,7 +35,7 @@ impl ToBytes for i32 {
 }
 
 // Encoder: `i64`.
-impl ToBytes for i64 {
+impl Encode for i64 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
@@ -51,7 +51,7 @@ impl ToBytes for i64 {
 }
 
 // Encoder: `unit`.
-impl ToBytes for () {
+impl Encode for () {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(Vec::new())
     }
@@ -62,7 +62,7 @@ impl ToBytes for () {
 }
 
 // Encoder: `u8`.
-impl ToBytes for u8 {
+impl Encode for u8 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(vec![*self])
     }
@@ -78,7 +78,7 @@ impl ToBytes for u8 {
 }
 
 // Encoder: `u16`.
-impl ToBytes for u16 {
+impl Encode for u16 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
@@ -94,7 +94,7 @@ impl ToBytes for u16 {
 }
 
 // Encoder: `u32`.
-impl ToBytes for u32 {
+impl Encode for u32 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
@@ -110,7 +110,7 @@ impl ToBytes for u32 {
 }
 
 // Encoder: `u64`.
-impl ToBytes for u64 {
+impl Encode for u64 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }

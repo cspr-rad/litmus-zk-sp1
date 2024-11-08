@@ -24,13 +24,13 @@ pub enum Error {
     ExceededRecursionDepth,
 }
 
-/// A type which can be serialized to a `Vec<u8>`.
-pub trait ToBytes {
+/// Trait to be implemented by types which can be encoded to a `Vec<Byte>`.
+pub trait Encode {
     /// Serializes `&self` to a `Vec<Byte>`.
     fn to_bytes(&self) -> Result<Vec<Byte>, Error>;
 
     /// Consumes `self` and serializes to a `Vec<u8>`.
-    fn into_bytes(self) -> Result<Vec<u8>, Error>
+    fn into_bytes(self) -> Result<Vec<Byte>, Error>
     where
         Self: Sized,
     {

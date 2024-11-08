@@ -1,8 +1,8 @@
-use super::utils::ToBytes;
+use super::utils::Encode;
 use ltypes::chain::{Block, BlockHash, BlockV2, BlockV2Body, BlockV2Header};
 use lutils::bites::Byte;
 
-impl ToBytes for Block {
+impl Encode for Block {
     fn to_bytes(&self) -> Result<Vec<Byte>, super::utils::Error> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
@@ -23,7 +23,7 @@ impl ToBytes for Block {
     }
 }
 
-impl ToBytes for BlockHash {
+impl Encode for BlockHash {
     fn to_bytes(&self) -> Result<Vec<Byte>, super::utils::Error> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
@@ -44,7 +44,7 @@ impl ToBytes for BlockHash {
     }
 }
 
-impl ToBytes for BlockV2 {
+impl Encode for BlockV2 {
     fn to_bytes(&self) -> Result<Vec<Byte>, super::utils::Error> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
@@ -65,7 +65,7 @@ impl ToBytes for BlockV2 {
     }
 }
 
-impl ToBytes for BlockV2Body {
+impl Encode for BlockV2Body {
     fn to_bytes(&self) -> Result<Vec<Byte>, super::utils::Error> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
@@ -86,7 +86,7 @@ impl ToBytes for BlockV2Body {
     }
 }
 
-impl ToBytes for BlockV2Header {
+impl Encode for BlockV2Header {
     fn to_bytes(&self) -> Result<Vec<Byte>, super::utils::Error> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }

@@ -1,7 +1,7 @@
-use super::utils::ToBytes;
+use super::utils::Encode;
 use lutils::bites::Byte;
 
-impl<const N: usize> ToBytes for [Byte; N] {
+impl<const N: usize> Encode for [Byte; N] {
     fn to_bytes(&self) -> Result<Vec<Byte>, super::utils::Error> {
         Ok(self.to_vec())
     }
