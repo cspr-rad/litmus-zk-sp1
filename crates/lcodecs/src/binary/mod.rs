@@ -4,6 +4,7 @@ mod constants;
 mod crypto;
 mod primitives_1;
 mod primitives_2;
+mod primitives_3;
 mod utils;
 
 pub use utils::Encode;

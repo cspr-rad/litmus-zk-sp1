@@ -1,3 +1,4 @@
+use super::constants;
 use lutils::bites::Byte;
 use serde::{Deserialize, Serialize};
 
@@ -68,6 +69,17 @@ pub fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<Byte>, Cod
     Ok(Vec::with_capacity(serialized_length))
 }
 
+/// Returns serialized length of serialized slice of bytes.
+///
+/// This function adds a length prefix in the beginning.
+pub(crate) fn get_encoded_size_of_byte_slice(bytes: &[u8]) -> usize {
+    constants::ENCODED_SIZE_U32 + bytes.len()
+}
+
+pub(crate) fn get_encoded_size_of_u8_vec(vec: &Vec<u8>) -> usize {
+    get_encoded_size_of_byte_slice(vec.as_slice())
+}
+
 /// Safely splits slice at given point.
 pub(crate) fn safe_split_at(bytes: &[Byte], n: usize) -> Result<(&[Byte], &[Byte]), CodecError> {
     if n > bytes.len() {
@@ -79,7 +91,36 @@ pub(crate) fn safe_split_at(bytes: &[Byte], n: usize) -> Result<(&[Byte], &[Byte
 
 /// Returns a `Vec<u8>` initialized with sufficient capacity to hold `to_be_serialized` after
 /// serialization.
-pub fn unchecked_allocate_buffer<T: Encode>(to_be_serialized: &T) -> Vec<Byte> {
+pub(crate) fn unchecked_allocate_buffer<T: Encode>(to_be_serialized: &T) -> Vec<Byte> {
     let serialized_length = to_be_serialized.get_encoded_size();
     Vec::with_capacity(serialized_length)
+}
+
+/// Serializes a slice of bytes with a length prefix.
+///
+/// This function is serializing a slice of bytes with an addition of a 4 byte length prefix.
+///
+/// For safety you should prefer to use [`vec_u8_to_bytes`]. For efficiency reasons you should also
+/// avoid using serializing Vec<u8>.
+pub(crate) fn encode_byte_slice(bytes: &[Byte]) -> Result<Vec<Byte>, CodecError> {
+    let serialized_length = get_encoded_size_of_byte_slice(bytes);
+    let mut vec = Vec::with_capacity(serialized_length);
+    let length_prefix: u32 = bytes
+        .len()
+        .try_into()
+        .map_err(|_| CodecError::NotRepresentable)?;
+    let length_prefix_bytes = length_prefix.to_le_bytes();
+    vec.extend_from_slice(&length_prefix_bytes);
+    vec.extend_from_slice(bytes);
+    Ok(vec)
+}
+
+pub(crate) fn write_byte_slice(bytes: &[Byte], writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+    let length_32: u32 = bytes
+        .len()
+        .try_into()
+        .map_err(|_| CodecError::NotRepresentable)?;
+    writer.extend_from_slice(&length_32.to_le_bytes());
+    writer.extend_from_slice(bytes);
+    Ok(())
 }
