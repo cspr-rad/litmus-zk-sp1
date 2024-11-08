@@ -1,16 +1,31 @@
+use super::constants;
+use super::utils::{safe_split_at, CodecError, Decode, Encode};
+use lutils::bites::Byte;
 use std::usize;
 
-use super::constants;
-use super::utils::{CodecError, Encode};
-use lutils::bites::Byte;
+// ------------------------------------------------------------------------
+// Type: bool.
+// ------------------------------------------------------------------------
 
-// Encoder: `bool`.
+impl Decode for bool {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        match bytes.split_first() {
+            None => Err(CodecError::EarlyEndOfStream),
+            Some((byte, rem)) => match byte {
+                1 => Ok((true, rem)),
+                0 => Ok((false, rem)),
+                _ => Err(CodecError::Formatting),
+            },
+        }
+    }
+}
+
 impl Encode for bool {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         u8::from(*self).to_bytes()
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_BOOL
     }
 
@@ -20,13 +35,25 @@ impl Encode for bool {
     }
 }
 
-// Encoder: `i32`.
+// ------------------------------------------------------------------------
+// Type: i32.
+// ------------------------------------------------------------------------
+
+impl Decode for i32 {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        let mut result = [0u8; constants::ENCODED_SIZE_I32];
+        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_I32)?;
+        result.copy_from_slice(bytes);
+        Ok((<i32>::from_le_bytes(result), remainder))
+    }
+}
+
 impl Encode for i32 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_I32
     }
 
@@ -36,13 +63,25 @@ impl Encode for i32 {
     }
 }
 
-// Encoder: `i64`.
+// ------------------------------------------------------------------------
+// Type: i64.
+// ------------------------------------------------------------------------
+
+impl Decode for i64 {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        let mut result = [0u8; constants::ENCODED_SIZE_I64];
+        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_I64)?;
+        result.copy_from_slice(bytes);
+        Ok((<i64>::from_le_bytes(result), remainder))
+    }
+}
+
 impl Encode for i64 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_I64
     }
 
@@ -52,40 +91,25 @@ impl Encode for i64 {
     }
 }
 
-// Encoder: `i128`.
-impl Encode for i128 {
-    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
-        Ok(self.to_le_bytes().to_vec())
-    }
+// ------------------------------------------------------------------------
+// Type: u8.
+// ------------------------------------------------------------------------
 
-    fn serialized_length(&self) -> usize {
-        constants::ENCODED_SIZE_I128
-    }
-
-    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
-        writer.extend_from_slice(&self.to_le_bytes());
-        Ok(())
+impl Decode for u8 {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        match bytes.split_first() {
+            None => Err(CodecError::EarlyEndOfStream),
+            Some((byte, rem)) => Ok((*byte, rem)),
+        }
     }
 }
 
-// Encoder: `unit`.
-impl Encode for () {
-    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
-        Ok(Vec::new())
-    }
-
-    fn serialized_length(&self) -> usize {
-        constants::ENCODED_SIZE_UNIT
-    }
-}
-
-// Encoder: `u8`.
 impl Encode for u8 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(vec![*self])
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_U8
     }
 
@@ -95,13 +119,25 @@ impl Encode for u8 {
     }
 }
 
-// Encoder: `u16`.
+// ------------------------------------------------------------------------
+// Type: u16.
+// ------------------------------------------------------------------------
+
+impl Decode for u16 {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        let mut result = [0u8; constants::ENCODED_SIZE_U16];
+        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_U16)?;
+        result.copy_from_slice(bytes);
+        Ok((<u16>::from_le_bytes(result), remainder))
+    }
+}
+
 impl Encode for u16 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_U16
     }
 
@@ -111,13 +147,25 @@ impl Encode for u16 {
     }
 }
 
-// Encoder: `u32`.
+// ------------------------------------------------------------------------
+// Type: u32.
+// ------------------------------------------------------------------------
+
+impl Decode for u32 {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        let mut result = [0u8; constants::ENCODED_SIZE_U32];
+        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_U32)?;
+        result.copy_from_slice(bytes);
+        Ok((<u32>::from_le_bytes(result), remainder))
+    }
+}
+
 impl Encode for u32 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_U32
     }
 
@@ -127,18 +175,78 @@ impl Encode for u32 {
     }
 }
 
-// Encoder: `u64`.
+// ------------------------------------------------------------------------
+// Type: u64.
+// ------------------------------------------------------------------------
+
+impl Decode for u64 {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        let mut result = [0u8; constants::ENCODED_SIZE_U64];
+        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_U64)?;
+        result.copy_from_slice(bytes);
+        Ok((<u64>::from_le_bytes(result), remainder))
+    }
+}
+
 impl Encode for u64 {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_U64
     }
 
     fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.to_le_bytes());
         Ok(())
+    }
+}
+
+// ------------------------------------------------------------------------
+// Type: u128.
+// ------------------------------------------------------------------------
+
+impl Decode for u128 {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        let mut result = [0u8; constants::ENCODED_SIZE_U128];
+        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_U128)?;
+        result.copy_from_slice(bytes);
+        Ok((<u128>::from_le_bytes(result), remainder))
+    }
+}
+
+impl Encode for u128 {
+    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+        Ok(self.to_le_bytes().to_vec())
+    }
+
+    fn get_encoded_size(&self) -> usize {
+        constants::ENCODED_SIZE_U128
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.to_le_bytes());
+        Ok(())
+    }
+}
+
+// ------------------------------------------------------------------------
+// Type: unit.
+// ------------------------------------------------------------------------
+
+impl Decode for () {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        Ok(((), bytes))
+    }
+}
+
+impl Encode for () {
+    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+        Ok(Vec::new())
+    }
+
+    fn get_encoded_size(&self) -> usize {
+        constants::ENCODED_SIZE_UNIT
     }
 }

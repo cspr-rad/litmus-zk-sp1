@@ -13,7 +13,7 @@ impl<const N: usize> Encode for [Byte; N] {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         N
     }
 

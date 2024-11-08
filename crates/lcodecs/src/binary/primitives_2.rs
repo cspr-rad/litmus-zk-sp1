@@ -19,10 +19,10 @@ impl<T: Encode> Encode for Option<T> {
         }
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_U8
             + match self {
-                Some(v) => v.serialized_length(),
+                Some(v) => v.get_encoded_size(),
                 None => 0,
             }
     }
@@ -52,11 +52,11 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
         Ok(result)
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_U8
             + match self {
-                Ok(ok) => ok.serialized_length(),
-                Err(error) => error.serialized_length(),
+                Ok(ok) => ok.get_encoded_size(),
+                Err(error) => error.get_encoded_size(),
             }
     }
 

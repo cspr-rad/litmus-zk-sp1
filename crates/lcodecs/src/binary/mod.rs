@@ -7,3 +7,7 @@ mod primitives_2;
 mod utils;
 
 pub use utils::Encode;
+
+pub fn ddd<T: Encode>(entity: &T) -> Vec<u8> {
+    entity.to_bytes().unwrap()
+}

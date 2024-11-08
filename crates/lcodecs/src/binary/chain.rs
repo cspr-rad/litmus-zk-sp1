@@ -14,7 +14,7 @@ impl Encode for Block {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
@@ -35,7 +35,7 @@ impl Encode for BlockHash {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
@@ -56,7 +56,7 @@ impl Encode for BlockV2 {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
@@ -77,7 +77,7 @@ impl Encode for BlockV2Body {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
@@ -98,7 +98,7 @@ impl Encode for BlockV2Header {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn serialized_length(&self) -> usize {
+    fn get_encoded_size(&self) -> usize {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
