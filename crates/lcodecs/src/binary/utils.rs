@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Copy, Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
 #[repr(u8)]
 #[non_exhaustive]
-pub enum Error {
+pub enum CodecError {
     /// Early end of stream while deserializing.
     EarlyEndOfStream = 0,
     /// Formatting error while deserializing.
@@ -27,10 +27,10 @@ pub enum Error {
 /// Trait to be implemented by types which can be encoded to a `Vec<Byte>`.
 pub trait Encode {
     /// Serializes `&self` to a `Vec<Byte>`.
-    fn to_bytes(&self) -> Result<Vec<Byte>, Error>;
+    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError>;
 
     /// Consumes `self` and serializes to a `Vec<u8>`.
-    fn into_bytes(self) -> Result<Vec<Byte>, Error>
+    fn into_bytes(self) -> Result<Vec<Byte>, CodecError>
     where
         Self: Sized,
     {
@@ -43,8 +43,18 @@ pub trait Encode {
     fn serialized_length(&self) -> usize;
 
     /// Writes `&self` into a mutable `writer`.
-    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), Error> {
+    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
         writer.extend(self.to_bytes()?);
         Ok(())
     }
+}
+
+/// Returns a `Vec<Byte>` initialized with sufficient capacity to hold `to_be_serialized` after
+/// serialization, or an error if the capacity would exceed `u32::MAX`.
+pub fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<Byte>, CodecError> {
+    let serialized_length = to_be_serialized.serialized_length();
+    if serialized_length > u32::MAX as usize {
+        return Err(CodecError::OutOfMemory);
+    }
+    Ok(Vec::with_capacity(serialized_length))
 }

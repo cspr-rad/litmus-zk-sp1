@@ -1,5 +1,5 @@
 use super::constants;
-use super::utils::{Encode, Error as CodecError};
+use super::utils::{CodecError, Encode};
 use lutils::bites::Byte;
 
 // Encoder: `bool`.

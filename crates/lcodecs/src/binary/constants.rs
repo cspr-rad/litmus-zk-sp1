@@ -21,3 +21,15 @@ pub(super) const ENCODED_SIZE_U32: usize = core::mem::size_of::<u32>();
 
 /// Encoded size: `u64`.
 pub(super) const ENCODED_SIZE_U64: usize = core::mem::size_of::<u64>();
+
+/// The tag representing a `None` value.
+pub(super) const TAG_OPTION_NONE: u8 = 0;
+
+/// The tag representing a `Some` value.
+pub(super) const TAG_OPTION_SOME: u8 = 1;
+
+/// The tag representing an `Err` value.
+pub(super) const TAG_RESULT_ERR: u8 = 0;
+
+/// The tag representing an `Ok` value.
+pub(super) const TAG_RESULT_OK: u8 = 1;

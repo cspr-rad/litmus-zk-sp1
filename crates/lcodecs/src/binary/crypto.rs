@@ -1,4 +1,4 @@
-use super::utils::{Encode, Error as CodecError};
+use super::utils::{CodecError, Encode};
 use ltypes::crypto::Digest;
 use lutils::bites::Byte;
 
