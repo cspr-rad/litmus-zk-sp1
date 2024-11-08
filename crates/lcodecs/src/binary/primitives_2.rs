@@ -1,8 +1,25 @@
 use super::constants;
-use super::utils::{allocate_buffer, CodecError, Encode};
+use super::utils::{allocate_buffer, CodecError, Decode, Encode};
 use lutils::bites::Byte;
 
-// Encoder: `Option<T>` where T: Encode.
+// ------------------------------------------------------------------------
+// Type: Option<T>.
+// ------------------------------------------------------------------------
+
+impl<T: Decode> Decode for Option<T> {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        let (tag, rem) = u8::from_bytes(bytes)?;
+        match tag {
+            constants::TAG_OPTION_NONE => Ok((None, rem)),
+            constants::TAG_OPTION_SOME => {
+                let (t, rem) = T::from_bytes(rem)?;
+                Ok((Some(t), rem))
+            }
+            _ => Err(CodecError::Formatting),
+        }
+    }
+}
+
 impl<T: Encode> Encode for Option<T> {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         match self {
@@ -39,7 +56,10 @@ impl<T: Encode> Encode for Option<T> {
     }
 }
 
-// Encoder: `Result<T, E>` where T + E: Encode.
+// ------------------------------------------------------------------------
+// Type: Result<T, E>.
+// ------------------------------------------------------------------------
+
 impl<T: Encode, E: Encode> Encode for Result<T, E> {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         let mut result = allocate_buffer(self)?;
