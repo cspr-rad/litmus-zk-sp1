@@ -58,3 +58,10 @@ pub fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<Byte>, Cod
     }
     Ok(Vec::with_capacity(serialized_length))
 }
+
+/// Returns a `Vec<u8>` initialized with sufficient capacity to hold `to_be_serialized` after
+/// serialization.
+pub fn unchecked_allocate_buffer<T: Encode>(to_be_serialized: &T) -> Vec<Byte> {
+    let serialized_length = to_be_serialized.serialized_length();
+    Vec::with_capacity(serialized_length)
+}
