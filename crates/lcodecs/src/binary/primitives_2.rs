@@ -60,6 +60,23 @@ impl<T: Encode> Encode for Option<T> {
 // Type: Result<T, E>.
 // ------------------------------------------------------------------------
 
+impl<T: Decode, E: Decode> Decode for Result<T, E> {
+    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        let (variant, rem) = u8::from_bytes(bytes)?;
+        match variant {
+            constants::TAG_RESULT_ERR => {
+                let (value, rem) = E::from_bytes(rem)?;
+                Ok((Err(value), rem))
+            }
+            constants::TAG_RESULT_OK => {
+                let (value, rem) = T::from_bytes(rem)?;
+                Ok((Ok(value), rem))
+            }
+            _ => Err(CodecError::Formatting),
+        }
+    }
+}
+
 impl<T: Encode, E: Encode> Encode for Result<T, E> {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         let mut result = allocate_buffer(self)?;
