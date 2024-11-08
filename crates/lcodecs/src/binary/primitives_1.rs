@@ -15,7 +15,7 @@ impl ToBytes for () {
 
 // Encoder: `bool`.
 impl ToBytes for bool {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         u8::from(*self).to_bytes()
     }
 
@@ -23,7 +23,7 @@ impl ToBytes for bool {
         constants::ENCODED_SIZE_BOOL
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
         writer.push(*self as u8);
         Ok(())
     }
@@ -31,7 +31,7 @@ impl ToBytes for bool {
 
 // Encoder: `u8`.
 impl ToBytes for u8 {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
         Ok(vec![*self])
     }
 
@@ -39,7 +39,23 @@ impl ToBytes for u8 {
         constants::ENCODED_SIZE_U8
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+        writer.push(*self);
+        Ok(())
+    }
+}
+
+// Encoder: `u16`.
+impl ToBytes for u16 {
+    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+        Ok(vec![*self])
+    }
+
+    fn serialized_length(&self) -> usize {
+        constants::ENCODED_SIZE_U16
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
         writer.push(*self);
         Ok(())
     }
