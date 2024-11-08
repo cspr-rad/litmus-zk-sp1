@@ -1,3 +1,5 @@
+use std::usize;
+
 use super::constants;
 use super::utils::{CodecError, Encode};
 use lutils::bites::Byte;
@@ -42,6 +44,22 @@ impl Encode for i64 {
 
     fn serialized_length(&self) -> usize {
         constants::ENCODED_SIZE_I64
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.to_le_bytes());
+        Ok(())
+    }
+}
+
+// Encoder: `i128`.
+impl Encode for i128 {
+    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+        Ok(self.to_le_bytes().to_vec())
+    }
+
+    fn serialized_length(&self) -> usize {
+        constants::ENCODED_SIZE_I128
     }
 
     fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {

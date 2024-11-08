@@ -7,6 +7,9 @@ pub(super) const ENCODED_SIZE_I32: usize = core::mem::size_of::<i32>();
 /// The number of bytes in a serialized `i64`.
 pub(super) const ENCODED_SIZE_I64: usize = core::mem::size_of::<i64>();
 
+/// The number of bytes in a serialized `i128`.
+pub(super) const ENCODED_SIZE_I128: usize = core::mem::size_of::<i128>();
+
 /// Encoded size: `unit`.
 pub(super) const ENCODED_SIZE_UNIT: usize = 0;
 
