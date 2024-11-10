@@ -1,6 +1,18 @@
-use super::utils::{CodecError, Encode};
-use ltypes::crypto::Digest;
+use super::utils::{CodecError, Decode, Encode};
+use ltypes::crypto::{Digest, Signature};
 use lutils::bites::Byte;
+
+// ------------------------------------------------------------------------
+// Type: Digest.
+// ------------------------------------------------------------------------
+
+impl Decode for Digest {
+    #[inline(always)]
+    fn from_bytes(_: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        unimplemented!("Digest::decode");
+        // Decode::from_bytes(bytes).map(|(arr, rem)| (Digest::new(arr), rem))
+    }
+}
 
 impl Encode for Digest {
     fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
@@ -9,15 +21,10 @@ impl Encode for Digest {
         }
     }
 
-    fn into_bytes(self) -> Result<Vec<u8>, CodecError>
-    where
-        Self: Sized,
-    {
-        unimplemented!("conversion from vec of bytes to domain type BlockV2");
-    }
-
     fn get_encoded_size(&self) -> usize {
-        unimplemented!("conversion from vec of bytes to domain type BlockV2");
+        match self {
+            Digest::BLAKE2B(inner) => inner.as_slice().len(),
+        }
     }
 
     fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
@@ -26,18 +33,34 @@ impl Encode for Digest {
     }
 }
 
-// #[inline(always)]
-// fn to_bytes(&self) -> Result<Vec<u8>, bytesrepr::Error> {
-//     self.0.to_bytes()
-// }
+// ------------------------------------------------------------------------
+// Type: Signature.
+// ------------------------------------------------------------------------
 
-// #[inline(always)]
-// fn serialized_length(&self) -> usize {
-//     self.0.serialized_length()
-// }
+impl Decode for Signature {
+    #[inline(always)]
+    fn from_bytes(_: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+        unimplemented!("Digest::decode");
+    }
+}
 
-// #[inline(always)]
-// fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), bytesrepr::Error> {
-//     writer.extend_from_slice(&self.0);
-//     Ok(())
-// }
+impl Encode for Signature {
+    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+        match self {
+            Signature::ED25519(inner) => Ok(inner.to_vec()),
+            Signature::SECP256K1(inner) => Ok(inner.to_vec()),
+        }
+    }
+
+    fn get_encoded_size(&self) -> usize {
+        match self {
+            Signature::ED25519(inner) => inner.as_slice().len(),
+            Signature::SECP256K1(inner) => inner.as_slice().len(),
+        }
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.as_slice());
+        Ok(())
+    }
+}

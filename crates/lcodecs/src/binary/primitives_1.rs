@@ -250,3 +250,60 @@ impl Encode for () {
         constants::ENCODED_SIZE_UNIT
     }
 }
+
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+#[cfg(test)]
+mod proptests {
+    use crate::binary::utils::test_serialization_roundtrip;
+    use proptest::prelude::*;
+
+    proptest! {
+        #[test]
+        fn test_bool(u in any::<bool>()) {
+            test_serialization_roundtrip(&u);
+        }
+
+        #[test]
+        fn test_i32(u in any::<i32>()) {
+            test_serialization_roundtrip(&u);
+        }
+
+        #[test]
+        fn test_i64(u in any::<i64>()) {
+            test_serialization_roundtrip(&u);
+        }
+
+        #[test]
+        fn test_u8(u in any::<u8>()) {
+            test_serialization_roundtrip(&u);
+        }
+
+        #[test]
+        fn test_u16(u in any::<u16>()) {
+            test_serialization_roundtrip(&u);
+        }
+
+        #[test]
+        fn test_u32(u in any::<u32>()) {
+            test_serialization_roundtrip(&u);
+        }
+
+        #[test]
+        fn test_u64(u in any::<u64>()) {
+            test_serialization_roundtrip(&u);
+        }
+
+        #[test]
+        fn test_u128(u in any::<u128>()) {
+            test_serialization_roundtrip(&u);
+        }
+
+        // #[test]
+        // fn test_unit() {
+        //     unimplemented!("unit");
+        // }
+    }
+}

@@ -111,3 +111,25 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
         Ok(())
     }
 }
+
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+#[cfg(test)]
+mod proptests {
+    // use crate::binary::utils::test_serialization_roundtrip;
+    use proptest::prelude::*;
+
+    proptest! {
+        #[test]
+        fn test_option_t() {
+            asserteq!(1, 1);
+        }
+
+        #[test]
+        fn test_result_t_e() {
+            asserteq!(1, 1);
+        }
+    }
+}

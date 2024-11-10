@@ -21,6 +21,16 @@ impl Digest {
     ///
     /// * `data` - Data against which to generate a blake2b digest.
     ///
+    pub fn new(data: Vec<Byte>) -> Self {
+        Self::new_blake2b(data)
+    }
+
+    /// Constructor: returns a new blake2b digest over passed data.
+    ///
+    /// # Arguments
+    ///
+    /// * `data` - Data against which to generate a blake2b digest.
+    ///
     pub fn new_blake2b(data: Vec<Byte>) -> Self {
         use blake2::{
             digest::{Update, VariableOutput},

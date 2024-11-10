@@ -1,1 +1,1 @@
-pub use lcrypto::{Digest, VerificationKey, VerificationKey as PublicKey};
+pub use lcrypto::{Digest, Signature, VerificationKey, VerificationKey as PublicKey};
