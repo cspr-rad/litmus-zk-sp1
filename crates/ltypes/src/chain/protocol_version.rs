@@ -1,6 +1,19 @@
+use crate::misc::SemanticVersion;
+
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
-pub struct ProtocolVersion {}
+#[derive(Copy, Clone, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ProtocolVersion(SemanticVersion);
+
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
+impl ProtocolVersion {
+    fn new(semantic_version: SemanticVersion) -> Self {
+        // TODO: validate inputs
+        Self(semantic_version)
+    }
+}

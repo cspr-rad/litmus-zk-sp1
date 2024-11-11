@@ -40,7 +40,7 @@ impl Encode for Digest {
 impl Decode for Signature {
     #[inline(always)]
     fn from_bytes(_: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
-        unimplemented!("Digest::decode");
+        unimplemented!("Signature::decode");
     }
 }
 

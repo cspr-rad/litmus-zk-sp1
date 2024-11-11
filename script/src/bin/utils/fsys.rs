@@ -1,10 +1,18 @@
 use crate::fixtures::Fixtures;
-use serde_json;
+use serde_json::Value;
 use std::fs;
 
 pub fn get_fixtures() -> Fixtures {
-    pub fn get_content(typeof_fixture: String) -> String {
+    fn get_content(typeof_fixture: String) -> String {
         fs::read_to_string(get_path(typeof_fixture)).unwrap()
+    }
+
+    fn get_content_block() -> Value {
+        serde_json::from_str(&get_content(String::from("block-469"))).unwrap()
+    }
+
+    fn get_content_crypto() -> Value {
+        serde_json::from_str(&get_content(String::from("crypto"))).unwrap()
     }
 
     fn get_path(typeof_fixture: String) -> String {
@@ -12,6 +20,7 @@ pub fn get_fixtures() -> Fixtures {
     }
 
     Fixtures {
+        block: get_content_block(),
         crypto: serde_json::from_str(&get_content(String::from("crypto"))).unwrap(),
     }
 }
