@@ -1,9 +1,8 @@
 extern crate alloc;
 
-use super::{
-    BlockHash, BlockHeight, EraEndV2, EraId, ProtocolVersion, Timestamp, TransactionV2Hash,
-};
+use super::{BlockHash, BlockHeight, EraEndV2, EraId, ProtocolVersion, TransactionV2Hash};
 use crate::crypto::{Digest, PublicKey};
+use crate::misc::Timestamp;
 use alloc::collections::BTreeMap;
 use lutils::bites::Byte;
 
