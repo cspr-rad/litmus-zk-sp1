@@ -19,7 +19,7 @@ pub struct SemanticVersion {
 // ------------------------------------------------------------------------
 
 impl SemanticVersion {
-    fn new(major: u32, minor: u32, patch: u32) -> Self {
+    pub fn new(major: u32, minor: u32, patch: u32) -> Self {
         // TODO: validate inputs
         Self {
             major,

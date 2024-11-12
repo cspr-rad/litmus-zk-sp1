@@ -12,7 +12,7 @@ pub struct Timestamp(u128);
 // ------------------------------------------------------------------------
 
 impl Timestamp {
-    fn new(ms_since_epoch: u128) -> Self {
+    pub fn new(ms_since_epoch: u128) -> Self {
         Self(ms_since_epoch)
     }
 

@@ -4,26 +4,37 @@ use super::BlockHash;
 // Declarations.
 // ------------------------------------------------------------------------
 
-// Version 1 block.
+// Block (v1).
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Block {
+    /// Information pertaining to vm + consensus.
+    pub body: BlockBody,
+
     /// Digest over block body + header.
     pub hash: BlockHash,
 
-    /// Information pertaining to vm + consensus.
-    pub header: BlockBody,
-
     /// Block meta data.
-    pub body: BlockHeader,
+    pub header: BlockHeader,
 }
 
-// Version 1 block body.
+// Block (v1) body.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct BlockBody {}
 
-// Version 1 block header.
+// Block (v1) body header.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct BlockHeader {
     /// The parent block's hash.
     pub parent_hash: BlockHash,
+}
+
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
+impl Block {
+    pub fn new(body: BlockBody, hash: BlockHash, header: BlockHeader) -> Self {
+        // TODO: validate inputs.
+        Self { body, hash, header }
+    }
 }

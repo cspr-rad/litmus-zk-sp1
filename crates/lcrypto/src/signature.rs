@@ -1,4 +1,5 @@
 use super::digest::Digest;
+use hex;
 use lutils::bites::{Byte, Bytes32, Bytes33, Bytes64};
 
 // ------------------------------------------------------------------------
@@ -135,4 +136,20 @@ fn verify_sec256k1(sig: &Bytes64, vkey: Bytes33, data: &[Byte]) {
     let sig = Signature::from_compact(&sig.as_slice()).unwrap();
 
     assert_eq!(Secp256k1::new().verify_ecdsa(&msg, &sig, &pbk), Ok(()));
+}
+
+// ------------------------------------------------------------------------
+// Traits.
+// ------------------------------------------------------------------------
+
+// From -> borrowed string slice -> self.
+impl From<&str> for VerificationKey {
+    fn from(value: &str) -> Self {
+        let raw_bytes = hex::decode(value).unwrap();
+        match raw_bytes[0] {
+            1_u8 => VerificationKey::ED25519(Bytes32::from(raw_bytes[1..].to_vec())),
+            2_u8 => VerificationKey::SECP256K1(Bytes33::from(raw_bytes[1..].to_vec())),
+            _ => panic!("Unsupported verification key type prefix"),
+        }
+    }
 }

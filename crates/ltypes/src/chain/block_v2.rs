@@ -10,7 +10,7 @@ use lutils::bites::Byte;
 // Declarations.
 // ------------------------------------------------------------------------
 
-// Version 2 block.
+// Block (v2).
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct Block {
     /// Information pertaining to vm + consensus.
@@ -20,10 +20,10 @@ pub struct Block {
     pub(super) hash: BlockHash,
 
     /// Block meta data.
-    pub(super) body: BlockBody,
+    pub(super) body: Option<BlockBody>,
 }
 
-// Version 2 block body.
+// Block (v2) body.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct BlockBody {
     /// List of identifiers for finality signatures for a particular past block.
@@ -33,7 +33,7 @@ pub struct BlockBody {
     pub(super) transactions: BTreeMap<Byte, Vec<TransactionV2Hash>>,
 }
 
-// Version 2 block header.
+// Block (v2) header.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct BlockHeader {
     /// A seed needed for initializing a future era.
@@ -81,7 +81,7 @@ pub struct BlockHeader {
 // ------------------------------------------------------------------------
 
 impl Block {
-    pub fn new(body: BlockBody, hash: BlockHash, header: BlockHeader) -> Self {
+    pub fn new(body: Option<BlockBody>, hash: BlockHash, header: BlockHeader) -> Self {
         // TODO: validate inputs.
         Self { body, hash, header }
     }

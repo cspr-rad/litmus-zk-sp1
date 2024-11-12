@@ -12,7 +12,7 @@ pub struct ProtocolVersion(SemanticVersion);
 // ------------------------------------------------------------------------
 
 impl ProtocolVersion {
-    fn new(semantic_version: SemanticVersion) -> Self {
+    pub fn new(semantic_version: SemanticVersion) -> Self {
         // TODO: validate inputs
         Self(semantic_version)
     }
