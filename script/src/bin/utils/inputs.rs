@@ -19,7 +19,7 @@ const ECC_TYPE_SECP256K1: u8 = 1;
 /// Convertor: Signature -> SignatureForVerification.
 impl From<Fixtures> for Vec<SP1Stdin> {
     fn from(fixtures: Fixtures) -> Self {
-        let mut result = Vec::new();
+        // let mut result = Vec::new();
 
         // Fixture set: cryptography.
         // for fixture in fixtures.crypto.digests {
@@ -31,9 +31,10 @@ impl From<Fixtures> for Vec<SP1Stdin> {
 
         // Fixture set: chain.
         // TODO
-        result.push(get_stdin_for_chain_block(&fixtures.block));
+        println!("{:?}", fixtures.block_with_proofs);
+        // result.push(get_stdin_for_chain_block(&fixtures.block));
 
-        result
+        panic!("DDD");
     }
 }
 

@@ -29,8 +29,17 @@ fn main() {
         std::process::exit(1);
     }
 
+    use crate::fixtures::JsonBlock;
+    let fixtures = utils::get_fixtures();
+    match fixtures.block_with_proofs.block() {
+        JsonBlock::V2(ref block) => {
+            println!("{:?}", block.hash());
+        }
+        _ => panic!("Invalid block info"),
+    }
+
     // Iterate stdin set & invoke.
-    for stdin in Vec::<SP1Stdin>::from(utils::get_fixtures()) {
+    for stdin in Vec::<SP1Stdin>::from(fixtures) {
         if args.execute {
             do_pgm_execute(&args, &stdin);
         } else {

@@ -1,8 +1,15 @@
 use crate::fixtures::Fixtures;
+use crate::fixtures::JsonBlockWithProofs;
 use serde_json::Value;
 use std::fs;
 
 pub fn get_fixtures() -> Fixtures {
+    fn get_block_with_proofs() -> JsonBlockWithProofs {
+        let content = get_content(String::from("block-469"));
+
+        serde_json::from_str(&content).unwrap()
+    }
+
     fn get_content(typeof_fixture: String) -> String {
         fs::read_to_string(get_path(typeof_fixture)).unwrap()
     }
@@ -20,7 +27,7 @@ pub fn get_fixtures() -> Fixtures {
     }
 
     Fixtures {
-        block: get_content_block(),
+        block_with_proofs: get_block_with_proofs(),
         crypto: serde_json::from_str(&get_content(String::from("crypto"))).unwrap(),
     }
 }
