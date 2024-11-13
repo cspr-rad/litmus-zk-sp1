@@ -5,6 +5,37 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 // Declarations.
 // ------------------------------------------------------------------------
 
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
+pub struct Bytes32(#[serde(with = "hex::serde")] [u8; 32]);
+
+// Block.
+#[derive(Clone, Copy, Debug)]
+pub enum Digest {
+    BLAKE2B(Bytes32),
+}
+
+use std::hash::{Hash, Hasher};
+
+impl Hash for Digest {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        match self {
+            Digest::BLAKE2B(inner) => inner.hash(state),
+        }
+    }
+}
+
+impl Eq for Digest {}
+
+impl PartialEq for Digest {
+    fn eq(&self, other: &Self) -> bool {
+        match self {
+            Digest::BLAKE2B(inner) => match other {
+                Digest::BLAKE2B(inner_other) => inner == inner_other,
+            },
+        }
+    }
+}
+
 /// Monotonically increasing chain height.
 #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockHeight(u64);
@@ -48,12 +79,10 @@ pub struct BlockV2Body {
 #[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockV2Header {
     /// A seed needed for initializing a future era.
-    #[serde(with = "hex::serde")]
-    accumulated_seed: [u8; 32],
+    accumulated_seed: Digest,
 
     /// Digest over block body.
-    #[serde(with = "hex::serde")]
-    body_hash: [u8; 32],
+    body_hash: Digest,
 
     /// Gas price of era in scope at point of block creation.
     current_gas_price: u8,
@@ -68,12 +97,10 @@ pub struct BlockV2Header {
     height: BlockHeight,
 
     /// Digest over most recent switch block hash.
-    #[serde(with = "hex::serde")]
-    last_switch_block_hash: [u8; 32],
+    last_switch_block_hash: Digest,
 
     /// Digest over parent block.
-    #[serde(with = "hex::serde")]
-    parent_hash: [u8; 32],
+    parent_hash: Digest,
 
     /// Identifier of validator which proposed the block.
     #[serde(with = "hex::serde")]
@@ -84,10 +111,9 @@ pub struct BlockV2Header {
 
     /// A random bit needed for initializing a future era.
     random_bit: bool,
-    #[serde(with = "hex::serde")]
 
     /// Digest over global state once block transactions have been executed.
-    state_root_hash: [u8; 32],
+    state_root_hash: Digest,
 
     /// Timestamp at point of block creation.
     timestamp: String,
@@ -164,9 +190,39 @@ impl BlockWithProofs {
     }
 }
 
+impl Digest {
+    pub fn inner(&self) -> &Bytes32 {
+        match self {
+            Digest::BLAKE2B(inner) => inner,
+        }
+    }
+}
+
 // ------------------------------------------------------------------------
 // Traits -> serde.
 // ------------------------------------------------------------------------
+
+impl<'de> Deserialize<'de> for Digest {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // NOTE: problematic in the event that multiple hashing algos are supported.
+        let inner_bytes_32: Bytes32 = Deserialize::deserialize(deserializer).unwrap();
+        let result = Digest::BLAKE2B(inner_bytes_32);
+        Ok(result)
+    }
+}
+
+impl Serialize for Digest {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        // NOTE: problematic in the event that multiple hashing algos are supported.
+        Ok(serializer.serialize_bytes(&self.inner().0).unwrap())
+    }
+}
 
 impl<'de> Deserialize<'de> for SemanticVersion {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -188,10 +244,12 @@ impl<'de> Deserialize<'de> for SemanticVersion {
 }
 
 impl Serialize for SemanticVersion {
-    fn serialize<S>(&self, _: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        unimplemented!("Serialize for SemanticVersion");
+        let s = format!("{}.{}.{}", self.major, self.minor, self.patch);
+
+        Ok(serializer.serialize_str(&s).unwrap())
     }
 }
