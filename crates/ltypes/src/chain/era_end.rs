@@ -2,15 +2,16 @@ extern crate alloc;
 
 use crate::crypto::PublicKey;
 use alloc::collections::BTreeMap;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct EraEndV1 {}
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct EraEndV2 {
     /// The set of equivocators.
     pub(super) equivocators: Vec<PublicKey>,

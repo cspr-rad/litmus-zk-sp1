@@ -5,75 +5,76 @@ use crate::crypto::{Digest, PublicKey};
 use crate::misc::Timestamp;
 use alloc::collections::BTreeMap;
 use lutils::bites::Byte;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 // Block (v2).
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct Block {
     /// Information pertaining to vm + consensus.
-    pub(super) header: BlockHeader,
+    header: BlockHeader,
 
     /// Digest over block body + header.
-    pub(super) hash: BlockHash,
+    hash: BlockHash,
 
     /// Block meta data.
-    pub(super) body: Option<BlockBody>,
+    body: Option<BlockBody>,
 }
 
 // Block (v2) body.
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockBody {
     /// List of identifiers for finality signatures for a particular past block.
-    pub(super) rewarded_signatures: Vec<Byte>,
+    rewarded_signatures: Vec<Byte>,
 
     /// Map of transactions mapping categories to a list of transaction hashes.
-    pub(super) transactions: BTreeMap<Byte, Vec<TransactionV2Hash>>,
+    transactions: BTreeMap<Byte, Vec<TransactionV2Hash>>,
 }
 
 // Block (v2) header.
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockHeader {
     /// A seed needed for initializing a future era.
-    pub(super) accumulated_seed: Digest,
+    accumulated_seed: Digest,
 
     /// The hash of the block's body.
-    pub(super) body_hash: Digest,
+    body_hash: Digest,
 
     /// The gas price of the era
-    pub(super) current_gas_price: u8,
+    current_gas_price: u8,
 
     /// The `EraEnd` of a block if it is a switch block.
-    pub(super) era_end: Option<EraEndV2>,
+    era_end: Option<EraEndV2>,
 
     /// The era ID in which this block was created.
-    pub(super) era_id: EraId,
+    era_id: EraId,
 
     /// The height of this block, i.e. the number of ancestors.
-    pub(super) height: BlockHeight,
+    height: BlockHeight,
 
     /// The most recent switch block hash.
-    pub(super) last_switch_block_hash: Option<BlockHash>,
+    last_switch_block_hash: Option<BlockHash>,
 
     /// The parent block's hash.
-    pub(super) parent_hash: BlockHash,
+    parent_hash: BlockHash,
 
     /// The public key of the validator which proposed the block.
-    pub(super) proposer: PublicKey,
+    proposer: PublicKey,
 
     /// The protocol version of the network from when this block was created.
-    pub(super) protocol_version: ProtocolVersion,
+    protocol_version: ProtocolVersion,
 
     /// A random bit needed for initializing a future era.
-    pub(super) random_bit: bool,
+    random_bit: bool,
 
     /// The root hash of global state after the deploys in this block have been executed.
-    pub(super) state_root_hash: Digest,
+    state_root_hash: Digest,
 
     /// The timestamp from when the block was proposed.
-    pub(super) timestamp: Timestamp,
+    timestamp: Timestamp,
 }
 
 // ------------------------------------------------------------------------
@@ -132,5 +133,80 @@ impl BlockHeader {
             state_root_hash,
             timestamp,
         }
+    }
+}
+
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
+impl Block {
+    pub fn body(&self) -> &BlockBody {
+        unimplemented!()
+    }
+    pub fn hash(&self) -> &BlockHash {
+        &self.hash
+    }
+    pub fn header(&self) -> &BlockHeader {
+        &self.header
+    }
+}
+
+impl BlockBody {
+    pub fn rewarded_signatures(&self) -> &Vec<Byte> {
+        &self.rewarded_signatures
+    }
+    pub fn transactions(&self) -> &BTreeMap<Byte, Vec<TransactionV2Hash>> {
+        &self.transactions
+    }
+}
+
+impl BlockHeader {
+    pub fn accumulated_seed(&self) -> &Digest {
+        &self.accumulated_seed
+    }
+
+    pub fn body_hash(&self) -> &Digest {
+        &self.body_hash
+    }
+
+    pub fn current_gas_price(&self) -> &u8 {
+        &self.current_gas_price
+    }
+
+    pub fn era_end(&self) -> &Option<EraEndV2> {
+        &self.era_end
+    }
+
+    pub fn height(&self) -> &BlockHeight {
+        &self.height
+    }
+
+    pub fn last_switch_block_hash(&self) -> &Option<BlockHash> {
+        &self.last_switch_block_hash
+    }
+
+    pub fn parent_hash(&self) -> &BlockHash {
+        &self.parent_hash
+    }
+
+    pub fn proposer(&self) -> &PublicKey {
+        &self.proposer
+    }
+
+    pub fn protocol_version(&self) -> &ProtocolVersion {
+        &self.protocol_version
+    }
+
+    pub fn random_bit(&self) -> &bool {
+        &self.random_bit
+    }
+
+    pub fn state_root_hash(&self) -> &Digest {
+        &self.state_root_hash
+    }
+
+    pub fn timestamp(&self) -> &Timestamp {
+        &self.timestamp
     }
 }

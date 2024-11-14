@@ -3,6 +3,7 @@ mod block_id;
 mod block_signature;
 mod block_v1;
 mod block_v2;
+mod block_with_proofs;
 mod era_end;
 // mod chain_name_digest;
 mod era_consensus_info;

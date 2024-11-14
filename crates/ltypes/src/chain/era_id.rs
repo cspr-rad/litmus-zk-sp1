@@ -1,9 +1,11 @@
+use serde::{Deserialize, Serialize};
+
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 /// An era represents a set of consensus rounds.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct EraId(u64);
 
 // ------------------------------------------------------------------------

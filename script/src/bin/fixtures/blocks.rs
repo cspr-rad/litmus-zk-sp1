@@ -1,4 +1,3 @@
-// use alloc::collections::BTreeMap;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 // ------------------------------------------------------------------------
@@ -9,31 +8,9 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 pub struct Bytes32(#[serde(with = "hex::serde")] [u8; 32]);
 
 // Block.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq)]
 pub enum Digest {
     BLAKE2B(Bytes32),
-}
-
-use std::hash::{Hash, Hasher};
-
-impl Hash for Digest {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        match self {
-            Digest::BLAKE2B(inner) => inner.hash(state),
-        }
-    }
-}
-
-impl Eq for Digest {}
-
-impl PartialEq for Digest {
-    fn eq(&self, other: &Self) -> bool {
-        match self {
-            Digest::BLAKE2B(inner) => match other {
-                Digest::BLAKE2B(inner_other) => inner == inner_other,
-            },
-        }
-    }
 }
 
 /// Monotonically increasing chain height.

@@ -19,7 +19,7 @@ struct Args {
 }
 
 fn main() {
-    // Set logging.
+    // Set logger.
     sp1_sdk::utils::setup_logger();
 
     // Set args.

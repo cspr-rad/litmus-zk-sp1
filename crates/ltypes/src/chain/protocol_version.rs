@@ -1,10 +1,13 @@
 use crate::misc::SemanticVersion;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
-#[derive(Copy, Clone, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+    Copy, Clone, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize,
+)]
 pub struct ProtocolVersion(SemanticVersion);
 
 // ------------------------------------------------------------------------

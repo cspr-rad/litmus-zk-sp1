@@ -1,13 +1,14 @@
 use super::EraId;
 use super::Motes;
 use super::ValidatorWeight;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 /// Information scoped by era pertinent to consensus.
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct EraConsensusInfo {
     /// Era identifier.
     era_id: EraId,

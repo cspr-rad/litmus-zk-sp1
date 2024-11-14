@@ -1,10 +1,11 @@
+use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct Timestamp(u128);
 
 // ------------------------------------------------------------------------

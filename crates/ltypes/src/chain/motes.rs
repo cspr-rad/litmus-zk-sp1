@@ -1,11 +1,12 @@
 use core::ops::Add;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 /// Base unit of system economic security mechanism.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct Motes(u64);
 
 /// Constants.

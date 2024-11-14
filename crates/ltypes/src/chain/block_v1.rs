@@ -1,11 +1,12 @@
 use super::BlockHash;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 // Block (v1).
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct Block {
     /// Information pertaining to vm + consensus.
     pub body: BlockBody,
@@ -18,11 +19,11 @@ pub struct Block {
 }
 
 // Block (v1) body.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockBody {}
 
 // Block (v1) body header.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockHeader {
     /// The parent block's hash.
     pub parent_hash: BlockHash,

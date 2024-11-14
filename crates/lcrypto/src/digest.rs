@@ -1,11 +1,12 @@
 use lutils::bites::{Byte, Bytes32};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 /// Digest scoped by hashing algo type.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq)]
 pub enum Digest {
     BLAKE2B(Bytes32),
 }
@@ -76,5 +77,31 @@ impl Digest {
                 assert_eq!(self, &Digest::new_blake2b(data));
             }
         }
+    }
+}
+
+// ------------------------------------------------------------------------
+// Traits -> serde.
+// ------------------------------------------------------------------------
+
+impl<'de> Deserialize<'de> for Digest {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // NOTE: problematic in the event that multiple hashing algos are supported.
+        let inner_bytes_32: Bytes32 = Deserialize::deserialize(deserializer).unwrap();
+        let result = Digest::BLAKE2B(inner_bytes_32);
+        Ok(result)
+    }
+}
+
+impl Serialize for Digest {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        // NOTE: problematic in the event that multiple hashing algos are supported.
+        Ok(serializer.serialize_bytes(&self.as_slice()).unwrap())
     }
 }

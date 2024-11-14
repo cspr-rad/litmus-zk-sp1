@@ -1,11 +1,12 @@
 use lcrypto::Digest;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 /// Digest over a transaction's data structure.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub enum TransactionHash {
     /// A version 1 transaction hash.
     V1(TransactionV1Hash),
@@ -15,11 +16,11 @@ pub enum TransactionHash {
 }
 
 /// Digest over a transaction's data structure.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct TransactionV1Hash(Digest);
 
 /// Digest over a transaction's data structure.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct TransactionV2Hash(Digest);
 
 // ------------------------------------------------------------------------

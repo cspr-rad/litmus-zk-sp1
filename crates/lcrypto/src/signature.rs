@@ -1,18 +1,27 @@
 use super::digest::Digest;
 use hex;
 use lutils::bites::{Byte, Bytes32, Bytes33, Bytes64};
+use serde;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+// ------------------------------------------------------------------------
+// Constants.
+// ------------------------------------------------------------------------
+
+const TAG_ED25519: u8 = 1;
+const TAG_SECP256K1: u8 = 2;
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Signature {
     ED25519(Bytes64),
     SECP256K1(Bytes64),
 }
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum VerificationKey {
     ED25519(Bytes32),
     SECP256K1(Bytes33),
@@ -142,14 +151,74 @@ fn verify_sec256k1(sig: &Bytes64, vkey: Bytes33, data: &[Byte]) {
 // Traits.
 // ------------------------------------------------------------------------
 
-// From -> borrowed string slice -> self.
+impl From<&str> for Signature {
+    fn from(value: &str) -> Self {
+        let raw_bytes = hex::decode(value).unwrap();
+        match raw_bytes[0] {
+            TAG_ED25519 => Signature::ED25519(Bytes64::from(raw_bytes[1..].to_vec())),
+            TAG_SECP256K1 => Signature::SECP256K1(Bytes64::from(raw_bytes[1..].to_vec())),
+            _ => panic!("Unsupported signature key type prefix"),
+        }
+    }
+}
+
 impl From<&str> for VerificationKey {
     fn from(value: &str) -> Self {
         let raw_bytes = hex::decode(value).unwrap();
         match raw_bytes[0] {
-            1_u8 => VerificationKey::ED25519(Bytes32::from(raw_bytes[1..].to_vec())),
-            2_u8 => VerificationKey::SECP256K1(Bytes33::from(raw_bytes[1..].to_vec())),
+            TAG_ED25519 => VerificationKey::ED25519(Bytes32::from(raw_bytes[1..].to_vec())),
+            TAG_SECP256K1 => VerificationKey::SECP256K1(Bytes33::from(raw_bytes[1..].to_vec())),
             _ => panic!("Unsupported verification key type prefix"),
         }
+    }
+}
+
+// ------------------------------------------------------------------------
+// Traits -> serde.
+// ------------------------------------------------------------------------
+
+impl<'de> Deserialize<'de> for Signature {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let raw_bytes: &[u8] = Deserialize::deserialize(deserializer).unwrap();
+        Ok(match raw_bytes[0] {
+            TAG_ED25519 => Signature::new_ed25519(Bytes64::from(raw_bytes[1..].to_vec())),
+            TAG_SECP256K1 => Signature::new_secp256k1(Bytes64::from(raw_bytes[1..].to_vec())),
+            _ => panic!("Unsupported signature key type prefix"),
+        })
+    }
+}
+
+impl Serialize for Signature {
+    fn serialize<S>(&self, _: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        unimplemented!("Serialize for Signature");
+    }
+}
+
+impl<'de> Deserialize<'de> for VerificationKey {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let raw_bytes: &[u8] = Deserialize::deserialize(deserializer).unwrap();
+        Ok(match raw_bytes[0] {
+            TAG_ED25519 => VerificationKey::new_ed25519(Bytes32::from(raw_bytes[1..].to_vec())),
+            TAG_SECP256K1 => VerificationKey::new_secp256k1(Bytes33::from(raw_bytes[1..].to_vec())),
+            _ => panic!("Unsupported signature key type prefix"),
+        })
+    }
+}
+
+impl Serialize for VerificationKey {
+    fn serialize<S>(&self, _: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        unimplemented!("Serialize for VerificationKey");
     }
 }

@@ -1,12 +1,13 @@
 use super::Motes;
 use super::ValidatorID;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 /// Weight of an identity's vote within the context of some form of governance process.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct ValidatorWeight {
     /// Identity of a voting entity.
     validator_id: ValidatorID,

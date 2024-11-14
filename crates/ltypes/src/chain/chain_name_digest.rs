@@ -1,11 +1,12 @@
 use lcrypto::Digest;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
 /// Digest over a chain's name.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct ChainNameDigest(Digest);
 
 // ------------------------------------------------------------------------

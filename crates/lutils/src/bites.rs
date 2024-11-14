@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 pub const SIZE_32: usize = 32;
 pub const SIZE_33: usize = 33;
 pub const SIZE_64: usize = 64;
+pub const SIZE_65: usize = 65;
 
 // ------------------------------------------------------------------------
 // Declarations.
@@ -31,6 +32,9 @@ pub type Bytes33 = Bytes<SIZE_33>;
 
 // Byte array of size 64 - typically a signature.
 pub type Bytes64 = Bytes<SIZE_64>;
+
+// Byte array of size 65 - typically a signature prefixed by it's algo type.
+pub type Bytes65 = Bytes<SIZE_65>;
 
 // ------------------------------------------------------------------------
 // Constructors.

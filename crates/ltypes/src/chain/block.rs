@@ -1,13 +1,16 @@
 use super::BlockV1;
 use super::BlockV2;
+use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub enum Block {
+    #[serde(rename = "Version1")]
     V1(BlockV1),
+    #[serde(rename = "Version2")]
     V2(BlockV2),
 }
 
