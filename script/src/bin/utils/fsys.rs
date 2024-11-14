@@ -1,11 +1,12 @@
 use crate::fixtures::Fixtures;
-use crate::fixtures::JsonBlockWithProofs;
+use ltypes::chain::BlockWithProofs;
 use serde_json::Value;
 use std::fs;
 
 pub fn get_fixtures() -> Fixtures {
-    fn get_block_with_proofs() -> JsonBlockWithProofs {
+    fn get_block_with_proofs() -> BlockWithProofs {
         let content = get_content(String::from("block-469"));
+        println!("{:?}", content);
 
         serde_json::from_str(&content).unwrap()
     }

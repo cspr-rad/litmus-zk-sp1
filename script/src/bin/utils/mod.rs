@@ -1,4 +1,3 @@
-mod codec;
 mod fsys;
 mod inputs;
 

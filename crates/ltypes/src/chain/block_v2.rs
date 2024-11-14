@@ -21,14 +21,14 @@ pub struct Block {
     hash: BlockHash,
 
     /// Block meta data.
-    body: Option<BlockBody>,
+    body: BlockBody,
 }
 
 // Block (v2) body.
 #[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockBody {
     /// List of identifiers for finality signatures for a particular past block.
-    rewarded_signatures: Vec<Byte>,
+    rewarded_signatures: Vec<Vec<Byte>>,
 
     /// Map of transactions mapping categories to a list of transaction hashes.
     transactions: BTreeMap<Byte, Vec<TransactionV2Hash>>,
@@ -72,17 +72,17 @@ pub struct BlockHeader {
 
     /// The root hash of global state after the deploys in this block have been executed.
     state_root_hash: Digest,
-
-    /// The timestamp from when the block was proposed.
-    timestamp: Timestamp,
 }
+
+// The timestamp from when the block was proposed.
+// timestamp: Timestamp,
 
 // ------------------------------------------------------------------------
 // Constructors.
 // ------------------------------------------------------------------------
 
 impl Block {
-    pub fn new(body: Option<BlockBody>, hash: BlockHash, header: BlockHeader) -> Self {
+    pub fn new(body: BlockBody, hash: BlockHash, header: BlockHeader) -> Self {
         // TODO: validate inputs.
         Self { body, hash, header }
     }
@@ -90,7 +90,7 @@ impl Block {
 
 impl BlockBody {
     pub fn new(
-        rewarded_signatures: Vec<Byte>,
+        rewarded_signatures: Vec<Vec<Byte>>,
         transactions: BTreeMap<Byte, Vec<TransactionV2Hash>>,
     ) -> Self {
         // TODO: validate inputs.
@@ -115,7 +115,7 @@ impl BlockHeader {
         protocol_version: ProtocolVersion,
         random_bit: bool,
         state_root_hash: Digest,
-        timestamp: Timestamp,
+        // timestamp: Timestamp,
     ) -> Self {
         // TODO: validate inputs.
         Self {
@@ -131,7 +131,7 @@ impl BlockHeader {
             protocol_version,
             random_bit,
             state_root_hash,
-            timestamp,
+            // timestamp,
         }
     }
 }
@@ -153,7 +153,7 @@ impl Block {
 }
 
 impl BlockBody {
-    pub fn rewarded_signatures(&self) -> &Vec<Byte> {
+    pub fn rewarded_signatures(&self) -> &Vec<Vec<Byte>> {
         &self.rewarded_signatures
     }
     pub fn transactions(&self) -> &BTreeMap<Byte, Vec<TransactionV2Hash>> {
@@ -206,7 +206,7 @@ impl BlockHeader {
         &self.state_root_hash
     }
 
-    pub fn timestamp(&self) -> &Timestamp {
-        &self.timestamp
-    }
+    // pub fn timestamp(&self) -> &Timestamp {
+    //     &self.timestamp
+    // }
 }

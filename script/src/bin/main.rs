@@ -29,11 +29,12 @@ fn main() {
         std::process::exit(1);
     }
 
-    use crate::fixtures::JsonBlock;
+    use ltypes::chain::Block;
+
     let fixtures = utils::get_fixtures();
     match fixtures.block_with_proofs.block() {
-        JsonBlock::V2(ref block) => {
-            println!("{:?}", block.hash());
+        Block::V2(ref blk) => {
+            println!("{:?}", blk.hash());
         }
         _ => panic!("Invalid block info"),
     }

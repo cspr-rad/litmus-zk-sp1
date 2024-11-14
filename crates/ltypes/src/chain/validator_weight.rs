@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct ValidatorWeight {
     /// Identity of a voting entity.
+    #[serde(rename = "validator")]
     validator_id: ValidatorID,
 
     /// Relative weight of vote.

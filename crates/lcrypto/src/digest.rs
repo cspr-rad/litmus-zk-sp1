@@ -90,9 +90,8 @@ impl<'de> Deserialize<'de> for Digest {
         D: Deserializer<'de>,
     {
         // NOTE: problematic in the event that multiple hashing algos are supported.
-        let inner_bytes_32: Bytes32 = Deserialize::deserialize(deserializer).unwrap();
-        let result = Digest::BLAKE2B(inner_bytes_32);
-        Ok(result)
+        let raw: &str = Deserialize::deserialize(deserializer).unwrap();
+        Ok(Digest::BLAKE2B(Bytes32::from(hex::decode(raw).unwrap())))
     }
 }
 

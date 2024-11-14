@@ -1,5 +1,6 @@
 extern crate alloc;
 
+use super::{Motes, ValidatorWeight};
 use crate::crypto::PublicKey;
 use alloc::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
@@ -20,10 +21,10 @@ pub struct EraEndV2 {
     pub(super) inactive_validators: Vec<PublicKey>,
 
     /// The validators for the upcoming era and their respective weights.
-    pub(super) next_era_validator_weights: BTreeMap<PublicKey, u64>,
+    pub(super) next_era_validator_weights: Vec<ValidatorWeight>,
 
     /// The rewards distributed to the validators.
-    pub(super) rewards: BTreeMap<PublicKey, Vec<u64>>,
+    pub(super) rewards: BTreeMap<PublicKey, Vec<Motes>>,
 
     pub(super) next_era_gas_price: u8,
 }

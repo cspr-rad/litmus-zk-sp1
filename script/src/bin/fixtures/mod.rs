@@ -3,11 +3,10 @@ use serde::{Deserialize, Serialize};
 pub mod blocks;
 pub mod crypto;
 
-pub use blocks::Block as JsonBlock;
-pub use blocks::BlockWithProofs as JsonBlockWithProofs;
+use ltypes::chain::BlockWithProofs;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Fixtures {
-    pub block_with_proofs: JsonBlockWithProofs,
+    pub block_with_proofs: BlockWithProofs,
     pub crypto: crypto::Fixtures,
 }

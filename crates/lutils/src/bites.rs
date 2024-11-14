@@ -17,6 +17,24 @@ pub const SIZE_65: usize = 65;
 // Raw byte.
 pub type Byte = u8;
 
+// // Byte arrays of various lengths used within scope of application space.
+// pub enum Bytes1 {
+//     // Fixed 32 byte array.
+//     Fixed32([Byte; SIZE_32]),
+
+//     // Fixed 32 byte array.
+//     Fixed33([Byte; SIZE_33]),
+
+//     // Fixed 64 byte array.
+//     Fixed64([Byte; SIZE_64]),
+
+//     // Fixed 65 byte array.
+//     Fixed65([Byte; SIZE_65]),
+
+//     // Unbounded.
+//     Unbounded(Vec<Byte>),
+// }
+
 // Generic byte array with constant size of N.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Deserialize, Serialize)]
 pub struct Bytes<const N: usize> {

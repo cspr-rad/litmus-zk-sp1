@@ -182,7 +182,11 @@ impl<'de> Deserialize<'de> for Signature {
     where
         D: Deserializer<'de>,
     {
-        let raw_bytes: &[u8] = Deserialize::deserialize(deserializer).unwrap();
+        let raw: &str = Deserialize::deserialize(deserializer).unwrap();
+        println!("{:?}", raw);
+        let raw_bytes = hex::decode(raw).unwrap();
+
+        // let raw_bytes: &[u8] = Deserialize::deserialize(deserializer).unwrap();
         Ok(match raw_bytes[0] {
             TAG_ED25519 => Signature::new_ed25519(Bytes64::from(raw_bytes[1..].to_vec())),
             TAG_SECP256K1 => Signature::new_secp256k1(Bytes64::from(raw_bytes[1..].to_vec())),
@@ -205,7 +209,9 @@ impl<'de> Deserialize<'de> for VerificationKey {
     where
         D: Deserializer<'de>,
     {
-        let raw_bytes: &[u8] = Deserialize::deserialize(deserializer).unwrap();
+        let raw: &str = Deserialize::deserialize(deserializer).unwrap();
+        let raw_bytes = hex::decode(raw).unwrap();
+
         Ok(match raw_bytes[0] {
             TAG_ED25519 => VerificationKey::new_ed25519(Bytes32::from(raw_bytes[1..].to_vec())),
             TAG_SECP256K1 => VerificationKey::new_secp256k1(Bytes33::from(raw_bytes[1..].to_vec())),

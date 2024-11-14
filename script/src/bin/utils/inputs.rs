@@ -1,8 +1,7 @@
-use crate::fixtures::blocks::BlockWithProofs;
 use crate::fixtures::crypto::{Digest as DigestFixture, Signature as SignatureFixture};
 use crate::fixtures::Fixtures;
 use ltypes::{
-    chain::{BlockHeight, EraId, ProtocolVersion},
+    chain::{BlockHeight, BlockWithProofs, EraId, ProtocolVersion},
     crypto::{Digest, PublicKey},
     misc::{SemanticVersion, Timestamp},
 };

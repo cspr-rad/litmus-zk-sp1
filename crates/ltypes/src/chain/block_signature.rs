@@ -12,6 +12,7 @@ pub struct BlockSignature {
     signature: Signature,
 
     /// Verification key associated with signing key used to issue block signature.
+    #[serde(rename = "public_key")]
     verification_key: VerificationKey,
 }
 

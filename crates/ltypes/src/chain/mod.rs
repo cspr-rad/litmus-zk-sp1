@@ -21,6 +21,7 @@ pub use block_id::BlockID;
 pub use block_signature::BlockSignature;
 pub use block_v1::{Block as BlockV1, BlockBody as BlockV1Body, BlockHeader as BlockV1Header};
 pub use block_v2::{Block as BlockV2, BlockBody as BlockV2Body, BlockHeader as BlockV2Header};
+pub use block_with_proofs::BlockWithProofs;
 pub use era_end::EraEndV1;
 pub use era_end::EraEndV2;
 pub use protocol_version::ProtocolVersion;
