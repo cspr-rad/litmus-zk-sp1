@@ -103,6 +103,12 @@ impl From<Vec<Byte>> for Digest {
     }
 }
 
+impl From<&Vec<Byte>> for Digest {
+    fn from(value: &Vec<Byte>) -> Self {
+        Self::from(value.as_slice())
+    }
+}
+
 // ------------------------------------------------------------------------
 // Traits -> serde.
 // ------------------------------------------------------------------------
@@ -148,6 +154,8 @@ impl Serialize for Digest {
         S: Serializer,
     {
         // Problematic if another hashing algo is introduced.
-        Ok(serializer.serialize_bytes(&self.as_slice()).unwrap())
+        let as_hex = hex::encode(&self.as_slice());
+
+        Ok(serializer.serialize_str(&as_hex).unwrap())
     }
 }

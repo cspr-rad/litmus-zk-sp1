@@ -140,6 +140,22 @@ impl Signature {
         }
     }
 
+    // Returns underlying byte array prefixed with algorithm type tag.
+    pub fn as_slice_with_tag(&self) -> Vec<u8> {
+        let mut f = Vec::from(self.as_slice());
+        f.insert(0, self.get_tag());
+
+        f
+    }
+
+    // Returns algorithm type tag.
+    pub fn get_tag(&self) -> Byte {
+        match self {
+            Signature::ED25519(_) => TAG_ED25519,
+            Signature::SECP256K1(_) => TAG_SECP256K1,
+        }
+    }
+
     /// Verifies signature against arbitrary data.
     ///
     /// # Arguments
@@ -193,6 +209,22 @@ impl VerificationKey {
             VerificationKey::SECP256K1(inner) => inner.as_slice(),
         }
     }
+
+    // Returns underlying byte array prefixed with algorithm type tag.
+    pub fn as_slice_with_tag(&self) -> Vec<u8> {
+        let mut f = Vec::from(self.as_slice());
+        f.insert(0, self.get_tag());
+
+        f
+    }
+
+    // Returns algorithm type tag.
+    pub fn get_tag(&self) -> Byte {
+        match self {
+            VerificationKey::ED25519(_) => TAG_ED25519,
+            VerificationKey::SECP256K1(_) => TAG_SECP256K1,
+        }
+    }
 }
 
 // ------------------------------------------------------------------------
@@ -217,6 +249,12 @@ impl From<Vec<Byte>> for Signature {
     }
 }
 
+impl From<&Vec<Byte>> for Signature {
+    fn from(value: &Vec<Byte>) -> Self {
+        Self::from(value.as_slice())
+    }
+}
+
 impl From<&str> for VerificationKey {
     fn from(value: &str) -> Self {
         Self::from(hex::decode(value).unwrap())
@@ -231,6 +269,12 @@ impl From<&[Byte]> for VerificationKey {
 
 impl From<Vec<Byte>> for VerificationKey {
     fn from(value: Vec<Byte>) -> Self {
+        Self::from(value.as_slice())
+    }
+}
+
+impl From<&Vec<Byte>> for VerificationKey {
+    fn from(value: &Vec<Byte>) -> Self {
         Self::from(value.as_slice())
     }
 }
@@ -277,7 +321,9 @@ impl Serialize for Signature {
     where
         S: Serializer,
     {
-        Ok(serializer.serialize_bytes(&self.as_slice()).unwrap())
+        let as_hex = hex::encode(self.as_slice_with_tag());
+
+        Ok(serializer.serialize_str(&as_hex).unwrap())
     }
 }
 
@@ -319,6 +365,8 @@ impl Serialize for VerificationKey {
     where
         S: Serializer,
     {
-        Ok(serializer.serialize_bytes(&self.as_slice()).unwrap())
+        let as_hex = hex::encode(self.as_slice_with_tag());
+
+        Ok(serializer.serialize_str(&as_hex).unwrap())
     }
 }

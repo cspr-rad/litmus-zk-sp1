@@ -11,6 +11,7 @@ path = "src/bin/main.rs"
 [dependencies]
 clap = { version = "4.0", features = ["derive", "env"] }
 hex = { version = "0.4.3", features = ["serde"] }
+lcrypto = { path = "../crates/lcrypto" }
 ltypes = { path = "../crates/ltypes" }
 lutils = { path = "../crates/lutils" }
 serde = { version = "1.0.214", features = ["derive"] }

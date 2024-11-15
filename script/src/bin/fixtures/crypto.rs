@@ -14,11 +14,15 @@ pub struct Digest {
     pub digest: Vec<u8>,
 }
 
-// ECC key pair information.
+// Signature information.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct KeyPair {
+pub struct Signature {
     // ECC algorithm used to compute digest.
     pub algo: String,
+
+    // Hex representation of data over which signature was computed.
+    #[serde(with = "hex::serde")]
+    pub data: Vec<u8>,
 
     // Binary representation of ECC verification key.
     #[serde(with = "hex::serde")]
@@ -27,37 +31,14 @@ pub struct KeyPair {
     // Binary representation of ECC signing key.
     #[serde(with = "hex::serde")]
     pub pvk: Vec<u8>,
-}
-
-// Signature information.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Signature {
-    // Hex representation of data over which signature was computed.
-    #[serde(with = "hex::serde")]
-    pub data: Vec<u8>,
-
-    // ECC key pair used to compute / verify signature.
-    pub key: KeyPair,
 
     // Binary representation of computed signature.
     #[serde(with = "hex::serde")]
     pub sig: Vec<u8>,
-}
 
-// Mapped signature information required for verification.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SignatureForVerification {
-    // Binary representation of data over which signature was computed.
+    // Binary representation of computed signature with algo type prefix.
     #[serde(with = "hex::serde")]
-    pub msg: Vec<u8>,
-
-    // Binary representation of ECC verification key.
-    #[serde(with = "hex::serde")]
-    pub pbk: Vec<u8>,
-
-    // Binary representation of computed signature.
-    #[serde(with = "hex::serde")]
-    pub sig: Vec<u8>,
+    pub tagged_sig: Vec<u8>,
 }
 
 // Set of fixtures to be verified within a zk-vm.
@@ -68,15 +49,4 @@ pub struct Fixtures {
 
     // Set of signatures for verification.
     pub signatures: Vec<Signature>,
-}
-
-/// Convertor: Signature -> SignatureForVerification.
-impl From<Signature> for SignatureForVerification {
-    fn from(value: Signature) -> Self {
-        Self {
-            msg: value.data,
-            pbk: value.key.pbk,
-            sig: value.sig,
-        }
-    }
 }

@@ -34,11 +34,13 @@ fn main() {
 
     // Invoke stdin set.
     for stdin in Vec::<SP1Stdin>::from(stdin_set) {
-        if args.execute {
-            do_pgm_execute(&args, &stdin);
-        } else {
-            do_pgm_prove(&args, &stdin);
-        }
+        println!("{:?}", stdin);
+
+        // if args.execute {
+        //     do_pgm_execute(&args, &stdin);
+        // } else {
+        //     do_pgm_prove(&args, &stdin);
+        // }
     }
 }
 

@@ -1,7 +1,7 @@
 use super::constants;
 use crate::fixtures::{
-    chain::WrappedBlockWithProofs,
     crypto::{Digest, Signature},
+    wrapped::{WrappedBlockWithProofs, WrappedDigest, WrappedSignature},
     Fixtures,
 };
 use sp1_sdk::SP1Stdin;
@@ -11,18 +11,15 @@ impl From<Fixtures> for Vec<SP1Stdin> {
     fn from(fixtures: Fixtures) -> Self {
         let mut result: Vec<SP1Stdin> = Vec::new();
 
-        // Fixture set: cryptography.
-        for f in fixtures.crypto.digests {
+        for f in fixtures.set_of_digests {
             result.push(SP1Stdin::try_from(&f).unwrap());
         }
-        for f in fixtures.crypto.signatures {
-            result.push(SP1Stdin::try_from(&f).unwrap());
-        }
-
-        // Fixture set: chain.
-        for f in fixtures.set_of_blocks_with_proofs {
-            result.push(SP1Stdin::try_from(&f).unwrap());
-        }
+        // for f in fixtures.set_of_signatures {
+        //     result.push(SP1Stdin::try_from(&f).unwrap());
+        // }
+        // for f in fixtures.set_of_blocks_with_proofs {
+        //     result.push(SP1Stdin::try_from(&f).unwrap());
+        // }
 
         result
     }
@@ -47,11 +44,30 @@ impl From<&Digest> for SP1Stdin {
     }
 }
 
+fn from_digest(digest: &WrappedDigest, data: &Vec<u8>) -> SP1Stdin {
+    let mut zk_stdin = SP1Stdin::new();
+    zk_stdin.write(&constants::VERIFICATION_TYPE_DIGEST);
+    zk_stdin.write_vec(serde_cbor::to_vec(&digest.inner()).unwrap());
+    zk_stdin.write_vec(data.to_owned());
+
+    zk_stdin
+}
+
+impl From<&WrappedDigest> for SP1Stdin {
+    fn from(value: &WrappedDigest) -> Self {
+        let mut zk_stdin = Self::new();
+        zk_stdin.write(&constants::VERIFICATION_TYPE_DIGEST);
+        zk_stdin.write_vec(serde_cbor::to_vec(&value.inner()).unwrap());
+
+        zk_stdin
+    }
+}
+
 impl From<&Signature> for SP1Stdin {
     fn from(value: &Signature) -> Self {
         let mut zk_stdin = Self::new();
         zk_stdin.write(&constants::VERIFICATION_TYPE_SIGNATURE);
-        match value.key.algo.as_str() {
+        match value.algo.as_str() {
             "ED25519" => {
                 zk_stdin.write(&constants::ECC_TYPE_ED25519);
             }
@@ -64,7 +80,17 @@ impl From<&Signature> for SP1Stdin {
         }
         zk_stdin.write_vec(value.data.to_owned());
         zk_stdin.write_vec(value.sig.to_owned());
-        zk_stdin.write_vec(value.key.pbk.to_owned());
+        zk_stdin.write_vec(value.pbk.to_owned());
+
+        zk_stdin
+    }
+}
+
+impl From<&WrappedSignature> for SP1Stdin {
+    fn from(value: &WrappedSignature) -> Self {
+        let mut zk_stdin = Self::new();
+        zk_stdin.write(&constants::VERIFICATION_TYPE_SIGNATURE);
+        zk_stdin.write_vec(serde_cbor::to_vec(&value.inner()).unwrap());
 
         zk_stdin
     }
