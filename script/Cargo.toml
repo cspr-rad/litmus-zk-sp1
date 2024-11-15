@@ -10,7 +10,7 @@ path = "src/bin/main.rs"
 
 [dependencies]
 clap = { version = "4.0", features = ["derive", "env"] }
-hex = "0.4.3"
+hex = { version = "0.4.3", features = ["serde"] }
 ltypes = { path = "../crates/ltypes" }
 lutils = { path = "../crates/lutils" }
 serde = { version = "1.0.214", features = ["derive"] }

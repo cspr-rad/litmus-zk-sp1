@@ -33,13 +33,13 @@ fn main() {
     let stdin_set = Vec::<SP1Stdin>::from(utils::get_fixtures());
 
     // Invoke stdin set.
-    // for stdin in Vec::<SP1Stdin>::from(stdin_set) {
-    //     if args.execute {
-    //         do_pgm_execute(&args, &stdin);
-    //     } else {
-    //         do_pgm_prove(&args, &stdin);
-    //     }
-    // }
+    for stdin in Vec::<SP1Stdin>::from(stdin_set) {
+        if args.execute {
+            do_pgm_execute(&args, &stdin);
+        } else {
+            do_pgm_prove(&args, &stdin);
+        }
+    }
 }
 
 fn do_pgm_execute(args: &Args, stdin: &SP1Stdin) {

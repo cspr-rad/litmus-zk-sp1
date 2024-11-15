@@ -1,10 +1,9 @@
+use crate::fixtures::chain::WrappedBlockWithProofs;
 use crate::fixtures::Fixtures;
-use ltypes::chain::BlockWithProofs;
-use serde_json::Value;
 use std::fs;
 
 pub fn get_fixtures() -> Fixtures {
-    fn get_block_with_proofs() -> BlockWithProofs {
+    fn get_block_with_proofs() -> WrappedBlockWithProofs {
         let content = get_content(String::from("block-469"));
         println!("{:?}", content);
 
@@ -20,7 +19,7 @@ pub fn get_fixtures() -> Fixtures {
     }
 
     Fixtures {
-        block_with_proofs: get_block_with_proofs(),
+        set_of_blocks_with_proofs: [get_block_with_proofs()].to_vec(),
         crypto: serde_json::from_str(&get_content(String::from("crypto"))).unwrap(),
     }
 }

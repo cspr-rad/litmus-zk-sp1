@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 
+pub mod chain;
 pub mod crypto;
 
-use ltypes::chain::BlockWithProofs;
+use chain::WrappedBlockWithProofs;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Fixtures {
-    pub block_with_proofs: BlockWithProofs,
+    pub set_of_blocks_with_proofs: Vec<WrappedBlockWithProofs>,
     pub crypto: crypto::Fixtures,
 }
