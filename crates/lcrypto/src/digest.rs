@@ -23,28 +23,23 @@ impl Digest {
     ///
     /// * `data` - Data against which to generate a blake2b digest.
     ///
-    pub fn new(data: Vec<Byte>) -> Self {
-        Self::new_blake2b(data)
-    }
+    // pub fn new(data: Vec<Byte>) -> Self {
+    //     Self::new_blake2b(data)
+    // }
 
-    /// Constructor: returns a new blake2b digest over passed data.
+    /// Constructor: returns an instance hydrated from a sequence of bytes.
     ///
     /// # Arguments
     ///
-    /// * `data` - Data against which to generate a blake2b digest.
+    /// * `raw_bytes` - A sequence of bytes.
     ///
-    pub fn new_blake2b(data: Vec<Byte>) -> Self {
-        use blake2::{
-            digest::{Update, VariableOutput},
-            Blake2bVar,
-        };
+    pub fn new(raw_bytes: &[Byte]) -> Self {
+        assert!(
+            raw_bytes.len() == Bytes32::len(),
+            "Invalid digest byte array length"
+        );
 
-        let mut hasher = Blake2bVar::new(Bytes32::len()).unwrap();
-        hasher.update(&data);
-        let mut buffer = Bytes32::default().data();
-        hasher.finalize_variable(&mut buffer).unwrap();
-
-        Self::BLAKE2B(Bytes32::new(buffer))
+        Self::BLAKE2B(Bytes32::from(raw_bytes))
     }
 }
 
@@ -66,6 +61,26 @@ impl Digest {
 // ------------------------------------------------------------------------
 
 impl Digest {
+    /// Returns a blake2b digest over passed data.
+    ///
+    /// # Arguments
+    ///
+    /// * `data` - Data against which to generate a blake2b digest.
+    ///
+    pub fn get_blake2b(data: Vec<Byte>) -> Self {
+        use blake2::{
+            digest::{Update, VariableOutput},
+            Blake2bVar,
+        };
+
+        let mut hasher = Blake2bVar::new(Bytes32::len()).unwrap();
+        hasher.update(&data);
+        let mut buffer = Bytes32::default().data();
+        hasher.finalize_variable(&mut buffer).unwrap();
+
+        Self::BLAKE2B(Bytes32::new(buffer))
+    }
+
     /// Verifies digest against passed data.
     ///
     /// # Arguments
@@ -75,9 +90,31 @@ impl Digest {
     pub fn verify(&self, data: Vec<Byte>) {
         match self {
             Digest::BLAKE2B(_) => {
-                assert_eq!(self, &Digest::new_blake2b(data));
+                assert_eq!(self, &Digest::get_blake2b(data));
             }
         }
+    }
+}
+
+// ------------------------------------------------------------------------
+// Traits.
+// ------------------------------------------------------------------------
+
+impl From<&str> for Digest {
+    fn from(value: &str) -> Self {
+        Self::from(hex::decode(value).unwrap())
+    }
+}
+
+impl From<&[Byte]> for Digest {
+    fn from(value: &[Byte]) -> Self {
+        Self::new(&value)
+    }
+}
+
+impl From<Vec<Byte>> for Digest {
+    fn from(value: Vec<Byte>) -> Self {
+        Self::from(value.as_slice())
     }
 }
 
@@ -96,7 +133,7 @@ impl<'de> Deserialize<'de> for Digest {
             type Value = Digest;
 
             fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("either a 64 char hex encoded string or a 32 byte array")
+                formatter.write_str("supported formats: 64 char hex encoded string | 32 byte array")
             }
 
             fn visit_bytes<E>(self, v: &[u8]) -> Result<Self::Value, E>
@@ -104,14 +141,15 @@ impl<'de> Deserialize<'de> for Digest {
                 E: serde::de::Error,
             {
                 // Problematic if another hashing algo is introduced.
-                Ok(Digest::BLAKE2B(Bytes32::from(v)))
+                Ok(Digest::from(v))
             }
 
             fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
             {
-                self.visit_bytes(&hex::decode(v).unwrap())
+                // Problematic if another hashing algo is introduced.
+                Ok(Digest::from(v))
             }
         }
 
@@ -124,7 +162,7 @@ impl Serialize for Digest {
     where
         S: Serializer,
     {
-        // NOTE: problematic in the event that multiple hashing algos are supported.
+        // Problematic if another hashing algo is introduced.
         Ok(serializer.serialize_bytes(&self.as_slice()).unwrap())
     }
 }

@@ -48,8 +48,8 @@ impl Signature {
             "Invalid signature byte array length"
         );
         match raw_bytes[0] {
-            TAG_ED25519 => Self::ED25519(Bytes64::from(raw_bytes[1..].to_vec())),
-            TAG_SECP256K1 => Self::SECP256K1(Bytes64::from(raw_bytes[1..].to_vec())),
+            TAG_ED25519 => Self::ED25519(Bytes64::from(&raw_bytes[1..])),
+            TAG_SECP256K1 => Self::SECP256K1(Bytes64::from(&raw_bytes[1..])),
             _ => panic!("Unsupported signature key type prefix"),
         }
     }
@@ -250,7 +250,7 @@ impl<'de> Deserialize<'de> for Signature {
             type Value = Signature;
 
             fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("either a 64 char hex encoded string or a 32 byte array")
+                formatter.write_str("supported formats: 64 char hex encoded string | 32 byte array")
             }
 
             fn visit_bytes<E>(self, v: &[Byte]) -> Result<Self::Value, E>
