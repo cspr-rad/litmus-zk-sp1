@@ -273,11 +273,11 @@ impl<'de> Deserialize<'de> for Signature {
 }
 
 impl Serialize for Signature {
-    fn serialize<S>(&self, _: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        unimplemented!("Serialize for Signature");
+        Ok(serializer.serialize_bytes(&self.as_slice()).unwrap())
     }
 }
 
@@ -315,10 +315,10 @@ impl<'de> Deserialize<'de> for VerificationKey {
 }
 
 impl Serialize for VerificationKey {
-    fn serialize<S>(&self, _: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        unimplemented!("Serialize for VerificationKey");
+        Ok(serializer.serialize_bytes(&self.as_slice()).unwrap())
     }
 }
