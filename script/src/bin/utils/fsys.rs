@@ -3,8 +3,16 @@ use crate::fixtures::Fixtures;
 use std::fs;
 
 pub fn get_fixtures() -> Fixtures {
-    fn get_block_with_proofs() -> WrappedBlockWithProofs {
-        let content = get_content(String::from("block-469"));
+    fn get_set_of_blocks_with_proofs() -> Vec<WrappedBlockWithProofs> {
+        [
+            get_wrapped_block_with_proofs(469),
+            get_wrapped_block_with_proofs(470),
+        ]
+        .to_vec()
+    }
+
+    fn get_wrapped_block_with_proofs(block_id: u32) -> WrappedBlockWithProofs {
+        let content = get_content(format!("block-{block_id}"));
         println!("{:?}", content);
 
         serde_json::from_str(&content).unwrap()
@@ -19,7 +27,7 @@ pub fn get_fixtures() -> Fixtures {
     }
 
     Fixtures {
-        set_of_blocks_with_proofs: [get_block_with_proofs()].to_vec(),
+        set_of_blocks_with_proofs: get_set_of_blocks_with_proofs(),
         crypto: serde_json::from_str(&get_content(String::from("crypto"))).unwrap(),
     }
 }
