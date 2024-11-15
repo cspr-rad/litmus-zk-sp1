@@ -15,14 +15,6 @@ pub fn get_fixtures() -> Fixtures {
         fs::read_to_string(get_path(typeof_fixture)).unwrap()
     }
 
-    fn get_content_block() -> Value {
-        serde_json::from_str(&get_content(String::from("block-469"))).unwrap()
-    }
-
-    fn get_content_crypto() -> Value {
-        serde_json::from_str(&get_content(String::from("crypto"))).unwrap()
-    }
-
     fn get_path(typeof_fixture: String) -> String {
         format!("fixtures/{typeof_fixture}.json")
     }

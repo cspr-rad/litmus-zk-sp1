@@ -24,6 +24,7 @@ pub fn main() {
     // Invoke verification function.
     match verification_type_tag {
         constants::VERIFICATION_TYPE_BLOCK => chain::verify_block(),
+        constants::VERIFICATION_TYPE_BLOCK_WITH_PROOFS => chain::verify_block_with_proofs(),
         constants::VERIFICATION_TYPE_DIGEST => crypto::verify_digest(),
         constants::VERIFICATION_TYPE_DIGEST_SIGNATURE => crypto::verify_digest_signature(),
         _ => {

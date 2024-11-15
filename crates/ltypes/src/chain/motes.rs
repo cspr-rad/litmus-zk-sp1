@@ -64,10 +64,10 @@ impl<'de> Deserialize<'de> for Motes {
 }
 
 impl Serialize for Motes {
-    fn serialize<S>(&self, _: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        unimplemented!()
+        Ok(serializer.serialize_u64(self.inner()).unwrap())
     }
 }

@@ -7,7 +7,7 @@ use std::fmt;
 // ------------------------------------------------------------------------
 
 /// Digest scoped by hashing algo type.
-#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Digest {
     BLAKE2B(Bytes32),
 }
@@ -17,16 +17,6 @@ pub enum Digest {
 // ------------------------------------------------------------------------
 
 impl Digest {
-    /// Constructor: returns a new blake2b digest over passed data.
-    ///
-    /// # Arguments
-    ///
-    /// * `data` - Data against which to generate a blake2b digest.
-    ///
-    // pub fn new(data: Vec<Byte>) -> Self {
-    //     Self::new_blake2b(data)
-    // }
-
     /// Constructor: returns an instance hydrated from a sequence of bytes.
     ///
     /// # Arguments
@@ -39,12 +29,13 @@ impl Digest {
             "Invalid digest byte array length"
         );
 
+        // Problematic if another hashing algo is introduced.
         Self::BLAKE2B(Bytes32::from(raw_bytes))
     }
 }
 
 // ------------------------------------------------------------------------
-// Accessors.
+// Methods.
 // ------------------------------------------------------------------------
 
 impl Digest {
@@ -54,13 +45,7 @@ impl Digest {
             Digest::BLAKE2B(inner) => inner.as_slice(),
         }
     }
-}
 
-// ------------------------------------------------------------------------
-// Methods.
-// ------------------------------------------------------------------------
-
-impl Digest {
     /// Returns a blake2b digest over passed data.
     ///
     /// # Arguments

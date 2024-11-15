@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-pub mod blocks;
 pub mod crypto;
 
 use ltypes::chain::BlockWithProofs;
