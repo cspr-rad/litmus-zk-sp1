@@ -1,5 +1,6 @@
 use lutils::bites::{Byte, Bytes32};
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
+use std::fmt;
 
 // ------------------------------------------------------------------------
 // Declarations.
@@ -89,9 +90,32 @@ impl<'de> Deserialize<'de> for Digest {
     where
         D: Deserializer<'de>,
     {
-        // NOTE: problematic in the event that multiple hashing algos are supported.
-        let raw: &str = Deserialize::deserialize(deserializer).unwrap();
-        Ok(Digest::BLAKE2B(Bytes32::from(hex::decode(raw).unwrap())))
+        struct DigestVistor;
+
+        impl<'de> Visitor<'de> for DigestVistor {
+            type Value = Digest;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("either a 64 char hex encoded string or a 32 byte array")
+            }
+
+            fn visit_bytes<E>(self, v: &[u8]) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                // Problematic if another hashing algo is introduced.
+                Ok(Digest::BLAKE2B(Bytes32::from(v)))
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                self.visit_bytes(&hex::decode(v).unwrap())
+            }
+        }
+
+        deserializer.deserialize_any(DigestVistor)
     }
 }
 

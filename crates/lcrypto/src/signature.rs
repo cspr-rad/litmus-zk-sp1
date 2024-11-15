@@ -1,15 +1,19 @@
 use super::digest::Digest;
 use hex;
 use lutils::bites::{Byte, Bytes32, Bytes33, Bytes64};
-use serde;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
+use std::fmt;
 
 // ------------------------------------------------------------------------
 // Constants.
 // ------------------------------------------------------------------------
 
-const TAG_ED25519: u8 = 1;
-const TAG_SECP256K1: u8 = 2;
+const TAG_ED25519: Byte = 1;
+const TAG_SECP256K1: Byte = 2;
+const SIG_SIZE: usize = 64;
+const VKEY_SIZE_ED25519: usize = 32;
+const VKEY_SIZE_RANGE: std::ops::Range<usize> = 33..34;
+const VKEY_SIZE_SECP256K1: usize = 33;
 
 // ------------------------------------------------------------------------
 // Declarations.
@@ -32,6 +36,24 @@ pub enum VerificationKey {
 // ------------------------------------------------------------------------
 
 impl Signature {
+    /// Constructor: returns an instance hydrated from a sequence of bytes.
+    ///
+    /// # Arguments
+    ///
+    /// * `raw_bytes` - A sequence of bytes.
+    ///
+    pub fn new(raw_bytes: &[Byte]) -> Self {
+        assert!(
+            raw_bytes.len() == SIG_SIZE + 1,
+            "Invalid signature byte array length"
+        );
+        match raw_bytes[0] {
+            TAG_ED25519 => Self::ED25519(Bytes64::from(raw_bytes[1..].to_vec())),
+            TAG_SECP256K1 => Self::SECP256K1(Bytes64::from(raw_bytes[1..].to_vec())),
+            _ => panic!("Unsupported signature key type prefix"),
+        }
+    }
+
     /// Constructor: returns a new ed25519 signature.
     ///
     /// # Arguments
@@ -54,6 +76,36 @@ impl Signature {
 }
 
 impl VerificationKey {
+    /// Constructor: returns an instance hydrated from a sequence of bytes.
+    ///
+    /// # Arguments
+    ///
+    /// * `raw_bytes` - A sequence of bytes.
+    ///
+    pub fn new(raw_bytes: &[Byte]) -> Self {
+        assert!(
+            VKEY_SIZE_RANGE.contains(&raw_bytes.len()),
+            "Invalid verification key length"
+        );
+        match raw_bytes[0] {
+            TAG_ED25519 => {
+                assert!(
+                    raw_bytes.len() == VKEY_SIZE_ED25519 + 1,
+                    "Invalid verification key length"
+                );
+                VerificationKey::ED25519(Bytes32::from(raw_bytes[1..33].to_vec()))
+            }
+            TAG_SECP256K1 => {
+                assert!(
+                    raw_bytes.len() == VKEY_SIZE_SECP256K1 + 1,
+                    "Invalid verification key length"
+                );
+                VerificationKey::SECP256K1(Bytes33::from(raw_bytes[1..34].to_vec()))
+            }
+            _ => panic!("Unsupported signature key type prefix"),
+        }
+    }
+
     /// Constructor: returns a new ed25519 verification key.
     ///
     /// # Arguments
@@ -76,7 +128,7 @@ impl VerificationKey {
 }
 
 // ------------------------------------------------------------------------
-// Accessors.
+// Methods.
 // ------------------------------------------------------------------------
 
 impl Signature {
@@ -87,13 +139,7 @@ impl Signature {
             Signature::SECP256K1(inner) => inner.as_slice(),
         }
     }
-}
 
-// ------------------------------------------------------------------------
-// Methods.
-// ------------------------------------------------------------------------
-
-impl Signature {
     /// Verifies signature against arbitrary data.
     ///
     /// # Arguments
@@ -104,11 +150,24 @@ impl Signature {
     pub fn verify(&self, vkey: VerificationKey, data: &[Byte]) {
         match self {
             Signature::ED25519(sig) => match vkey {
-                VerificationKey::ED25519(vk) => verify_ed25519(sig, vk, data),
+                VerificationKey::ED25519(vk) => {
+                    use ed25519_consensus::{Signature, VerificationKey};
+
+                    let sig = Signature::try_from(sig.as_slice()).unwrap();
+                    let vkey = VerificationKey::try_from(vk.as_slice()).unwrap();
+                    assert_eq!(vkey.verify(&sig, &data), Ok(()));
+                }
                 _ => panic!("Invalid verification key type"),
             },
             Signature::SECP256K1(sig) => match vkey {
-                VerificationKey::SECP256K1(vk) => verify_sec256k1(sig, vk, data),
+                VerificationKey::SECP256K1(vk) => {
+                    use secp256k1::{ecdsa::Signature, Message, PublicKey, Secp256k1};
+
+                    let msg = Message::from_digest_slice(data).unwrap();
+                    let pbk = PublicKey::from_slice(vk.as_slice()).unwrap();
+                    let sig = Signature::from_compact(&sig.as_slice()).unwrap();
+                    assert_eq!(Secp256k1::new().verify_ecdsa(&msg, &sig, &pbk), Ok(()));
+                }
                 _ => panic!("Invalid verification key type"),
             },
         }
@@ -126,25 +185,14 @@ impl Signature {
     }
 }
 
-/// Verifies ED25519 ECC signature.
-fn verify_ed25519(sig: &Bytes64, vkey: Bytes32, data: &[Byte]) {
-    use ed25519_consensus::{Signature, VerificationKey};
-
-    let sig = Signature::try_from(sig.as_slice()).unwrap();
-    let vkey = VerificationKey::try_from(vkey.as_slice()).unwrap();
-
-    assert_eq!(vkey.verify(&sig, &data), Ok(()));
-}
-
-/// Verifies SECP256K1 ECC signature.
-fn verify_sec256k1(sig: &Bytes64, vkey: Bytes33, data: &[Byte]) {
-    use secp256k1::{ecdsa::Signature, Message, PublicKey, Secp256k1};
-
-    let msg = Message::from_digest_slice(data).unwrap();
-    let pbk = PublicKey::from_slice(vkey.as_slice()).unwrap();
-    let sig = Signature::from_compact(&sig.as_slice()).unwrap();
-
-    assert_eq!(Secp256k1::new().verify_ecdsa(&msg, &sig, &pbk), Ok(()));
+impl VerificationKey {
+    // Returns underlying byte array.
+    pub fn as_slice(&self) -> &[Byte] {
+        match self {
+            VerificationKey::ED25519(inner) => inner.as_slice(),
+            VerificationKey::SECP256K1(inner) => inner.as_slice(),
+        }
+    }
 }
 
 // ------------------------------------------------------------------------
@@ -153,23 +201,37 @@ fn verify_sec256k1(sig: &Bytes64, vkey: Bytes33, data: &[Byte]) {
 
 impl From<&str> for Signature {
     fn from(value: &str) -> Self {
-        let raw_bytes = hex::decode(value).unwrap();
-        match raw_bytes[0] {
-            TAG_ED25519 => Signature::ED25519(Bytes64::from(raw_bytes[1..].to_vec())),
-            TAG_SECP256K1 => Signature::SECP256K1(Bytes64::from(raw_bytes[1..].to_vec())),
-            _ => panic!("Unsupported signature key type prefix"),
-        }
+        Self::from(hex::decode(value).unwrap())
+    }
+}
+
+impl From<&[Byte]> for Signature {
+    fn from(value: &[Byte]) -> Self {
+        Self::new(&value)
+    }
+}
+
+impl From<Vec<Byte>> for Signature {
+    fn from(value: Vec<Byte>) -> Self {
+        Self::from(value.as_slice())
     }
 }
 
 impl From<&str> for VerificationKey {
     fn from(value: &str) -> Self {
-        let raw_bytes = hex::decode(value).unwrap();
-        match raw_bytes[0] {
-            TAG_ED25519 => VerificationKey::ED25519(Bytes32::from(raw_bytes[1..].to_vec())),
-            TAG_SECP256K1 => VerificationKey::SECP256K1(Bytes33::from(raw_bytes[1..].to_vec())),
-            _ => panic!("Unsupported verification key type prefix"),
-        }
+        Self::from(hex::decode(value).unwrap())
+    }
+}
+
+impl From<&[Byte]> for VerificationKey {
+    fn from(value: &[Byte]) -> Self {
+        Self::new(&value)
+    }
+}
+
+impl From<Vec<Byte>> for VerificationKey {
+    fn from(value: Vec<Byte>) -> Self {
+        Self::from(value.as_slice())
     }
 }
 
@@ -182,16 +244,31 @@ impl<'de> Deserialize<'de> for Signature {
     where
         D: Deserializer<'de>,
     {
-        let raw: &str = Deserialize::deserialize(deserializer).unwrap();
-        println!("{:?}", raw);
-        let raw_bytes = hex::decode(raw).unwrap();
+        struct SignatureVistor;
 
-        // let raw_bytes: &[u8] = Deserialize::deserialize(deserializer).unwrap();
-        Ok(match raw_bytes[0] {
-            TAG_ED25519 => Signature::new_ed25519(Bytes64::from(raw_bytes[1..].to_vec())),
-            TAG_SECP256K1 => Signature::new_secp256k1(Bytes64::from(raw_bytes[1..].to_vec())),
-            _ => panic!("Unsupported signature key type prefix"),
-        })
+        impl<'de> Visitor<'de> for SignatureVistor {
+            type Value = Signature;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("either a 64 char hex encoded string or a 32 byte array")
+            }
+
+            fn visit_bytes<E>(self, v: &[Byte]) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Signature::from(v))
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Signature::from(v))
+            }
+        }
+
+        deserializer.deserialize_any(SignatureVistor)
     }
 }
 
@@ -209,14 +286,31 @@ impl<'de> Deserialize<'de> for VerificationKey {
     where
         D: Deserializer<'de>,
     {
-        let raw: &str = Deserialize::deserialize(deserializer).unwrap();
-        let raw_bytes = hex::decode(raw).unwrap();
+        struct VerificationKeyVistor;
 
-        Ok(match raw_bytes[0] {
-            TAG_ED25519 => VerificationKey::new_ed25519(Bytes32::from(raw_bytes[1..].to_vec())),
-            TAG_SECP256K1 => VerificationKey::new_secp256k1(Bytes33::from(raw_bytes[1..].to_vec())),
-            _ => panic!("Unsupported signature key type prefix"),
-        })
+        impl<'de> Visitor<'de> for VerificationKeyVistor {
+            type Value = VerificationKey;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("either a 64 char hex encoded string or a 32 byte array")
+            }
+
+            fn visit_bytes<E>(self, v: &[Byte]) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(VerificationKey::from(v))
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(VerificationKey::from(v))
+            }
+        }
+
+        deserializer.deserialize_any(VerificationKeyVistor)
     }
 }
 
