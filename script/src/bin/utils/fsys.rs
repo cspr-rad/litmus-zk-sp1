@@ -4,7 +4,7 @@ use crate::fixtures::{
     Fixtures,
 };
 use lcrypto::{Digest, Signature};
-use std::{collections::btree_map::Range, fs};
+use std::fs;
 
 // TODO: scan folder and derive.
 const BLOCK_RANGE_MIN: u32 = 469;
@@ -21,20 +21,27 @@ pub fn get_fixtures() -> Fixtures {
         (BLOCK_RANGE_MIN..BLOCK_RANGE_MAX).map(get_one).collect()
     }
 
-    fn get_set_of_digests(fixtures: &Vec<DigestFixture>) -> Vec<WrappedDigest> {
+    fn get_set_of_digests(f_set: &Vec<DigestFixture>) -> Vec<WrappedDigest> {
         fn get_one(f: &DigestFixture) -> WrappedDigest {
-            WrappedDigest(Digest::from(&f.digest))
+            WrappedDigest(
+                Digest::from(&f.digest),
+                f.data.as_bytes().to_vec().to_owned(),
+            )
         }
 
-        fixtures.iter().map(get_one).collect()
+        f_set.iter().map(get_one).collect()
     }
 
-    fn get_set_of_signatures(fixtures: &Vec<SignatureFixture>) -> Vec<WrappedSignature> {
+    fn get_set_of_signatures(f_set: &Vec<SignatureFixture>) -> Vec<WrappedSignature> {
         fn get_one(f: &SignatureFixture) -> WrappedSignature {
-            WrappedSignature(Signature::from(&f.tagged_sig))
+            WrappedSignature(
+                Signature::from(&f.tagged_sig),
+                f.data.to_owned(),
+                f.pbk.to_owned(),
+            )
         }
 
-        fixtures.iter().map(get_one).collect()
+        f_set.iter().map(get_one).collect()
     }
 
     fn get_crypto_fixtures() -> CryptoFixtures {

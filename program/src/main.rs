@@ -24,8 +24,20 @@ pub fn main() {
     // Invoke verification function.
     match verification_type_tag {
         constants::VERIFICATION_TYPE_BLOCK_WITH_PROOFS => chain::verify_block_with_proofs(),
-        constants::VERIFICATION_TYPE_DIGEST => crypto::verify_digest(),
-        constants::VERIFICATION_TYPE_DIGEST_SIGNATURE => crypto::verify_digest_signature(),
+        constants::VERIFICATION_TYPE_DIGEST => {
+            let (encoded_digest, msg) = (sp1_zkvm::io::read_vec(), sp1_zkvm::io::read_vec());
+
+            crypto::verify_digest(encoded_digest, msg)
+        }
+        constants::VERIFICATION_TYPE_DIGEST_SIGNATURE => {
+            let (encoded_digest, encoded_sig, encoded_vkey) = (
+                sp1_zkvm::io::read_vec(),
+                sp1_zkvm::io::read_vec(),
+                sp1_zkvm::io::read_vec(),
+            );
+
+            crypto::verify_digest_signature(encoded_digest, encoded_sig, encoded_vkey)
+        }
         _ => {
             panic!("Unsupported verification type")
         }

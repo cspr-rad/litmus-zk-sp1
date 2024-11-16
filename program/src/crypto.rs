@@ -1,72 +1,37 @@
-use std::panic;
-
 use crate::constants;
 use lcrypto::{Digest, Signature, VerificationKey};
-use lutils::bites::{Byte, Bytes, Bytes32, Bytes64};
+use lutils::bites::{Byte, Bytes, Bytes32, Bytes33, Bytes64};
+use std::panic;
 
 /// Verifies a digest over a byte vector.
-pub fn verify_digest() {
-    // Parse input byte stream.
-    // 0     : digest type tag.
-    // 1..33 : digest bytes.
-    // 34..N : data over which digest has been computed.
-    fn parse_input_stream() -> (Byte, Bytes32, Vec<Byte>) {
-        (
-            sp1_zkvm::io::read(),
-            sp1_zkvm::io::read_vec().try_into().unwrap(),
-            sp1_zkvm::io::read_vec(),
-        )
-    }
+///
+/// # Arguments
+///
+/// * `encoded` - A cbor encoded digest.
+/// * `msg` - Message over which digest was claimed to have been computed.
+///
+pub fn verify_digest(encoded: Vec<u8>, msg: Vec<u8>) {
+    let digest: Digest = serde_cbor::from_slice(&encoded).unwrap();
 
-    // Set inputs.
-    let (digest_type_tag, digest_bytes, data) = parse_input_stream();
-
-    // Map raw digest -> typed digest.
-    let digest = match digest_type_tag {
-        constants::DIGEST_TYPE_BLAKE2B => Digest::BLAKE2B(digest_bytes),
-        _ => {
-            panic!("Unsupported digest type")
-        }
-    };
-
-    // Verify.
-    digest.verify(data);
+    digest.verify(msg);
 }
 
 /// Verifies a signature over a digest.
-pub fn verify_digest_signature() {
-    // Parse input byte stream.
-    // 0      : signature type tag.
-    // 1..32 : digest over which signature has been computed.
-    // 33..96  : signature bytes.
-    // 97..N  : verification key.
-    fn parse_input_stream() -> (Byte, Bytes32, Bytes64, Vec<Byte>) {
-        (
-            sp1_zkvm::io::read(),
-            sp1_zkvm::io::read_vec().try_into().unwrap(),
-            sp1_zkvm::io::read_vec().try_into().unwrap(),
-            sp1_zkvm::io::read_vec(),
-        )
-    }
+///
+/// # Arguments
+///
+/// * `encoded_digest` - A cbor encoded digest.
+/// * `encoded_sig` - A cbor encoded signature.
+/// * `encoded_vkey` - A cbor encoded verification key.
+///
+pub fn verify_digest_signature(
+    encoded_digest: Vec<u8>,
+    encoded_sig: Vec<u8>,
+    encoded_vkey: Vec<u8>,
+) {
+    let digest: Digest = serde_cbor::from_slice(&encoded_digest).unwrap();
+    let sig: Signature = serde_cbor::from_slice(&encoded_sig).unwrap();
+    let vkey: VerificationKey = serde_cbor::from_slice(&encoded_vkey).unwrap();
 
-    // Set inputs.
-    let (signature_type_tag, digest, signature, verification_key) = parse_input_stream();
-
-    // Map raw keys -> typed keys.
-    let (signature, verification_key) = match signature_type_tag {
-        constants::SIGNATURE_TYPE_ED25519 => (
-            Signature::new_ed25519(signature),
-            VerificationKey::new_ed25519(verification_key.try_into().unwrap()),
-        ),
-        constants::SIGNATURE_TYPE_SECP256K1 => (
-            Signature::new_secp256k1(signature),
-            VerificationKey::new_secp256k1(verification_key.try_into().unwrap()),
-        ),
-        _ => {
-            panic!("Unsupported signature type")
-        }
-    };
-
-    // Verify.
-    signature.verify(verification_key, digest.as_slice());
+    signature.verify_digest(vkey, digest);
 }
