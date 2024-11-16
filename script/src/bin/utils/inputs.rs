@@ -12,13 +12,12 @@ impl From<Fixtures> for Vec<SP1Stdin> {
     fn from(fixtures: Fixtures) -> Self {
         let mut result: Vec<SP1Stdin> = Vec::new();
 
-        for f in fixtures.set_of_digests {
-            result.push(SP1Stdin::try_from(&f).unwrap());
-        }
+        // for f in fixtures.set_of_digests {
+        //     result.push(SP1Stdin::try_from(&f).unwrap());
+        // }
         for f in fixtures.set_of_signatures {
             result.push(SP1Stdin::try_from(&f).unwrap());
         }
-
         // for f in fixtures.set_of_blocks_with_proofs {
         //     result.push(SP1Stdin::try_from(&f).unwrap());
         //     break;
@@ -45,7 +44,7 @@ impl From<&WrappedSignature> for SP1Stdin {
         vm_stdin.write(&VERIFICATION_TYPE_SIGNATURE);
         vm_stdin.write_vec(serde_cbor::to_vec(value.sig()).unwrap());
         vm_stdin.write_vec(serde_cbor::to_vec(value.vkey()).unwrap());
-        vm_stdin.write_vec(value.msg());
+        vm_stdin.write_vec(serde_cbor::to_vec(value.msg()).unwrap());
 
         vm_stdin
     }

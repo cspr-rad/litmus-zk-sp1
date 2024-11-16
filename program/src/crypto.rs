@@ -8,10 +8,9 @@ use lcrypto::{Digest, Signature, VerificationKey};
 /// * `msg` - Message over which digest was claimed to have been computed.
 ///
 pub fn verify_digest(encoded_vkey: Vec<u8>, msg: Vec<u8>) {
-    println!("{:?}", encoded_vkey);
-    // let digest: Digest = serde_cbor::from_slice(&encoded_vkey).unwrap();
+    let digest: Digest = serde_cbor::from_slice(&encoded_vkey).unwrap();
 
-    // digest.verify(msg);
+    digest.verify(msg);
 }
 
 /// Verifies a signature over a digest.
@@ -27,10 +26,9 @@ pub fn verify_digest_signature(
     encoded_vkey: Vec<u8>,
     encoded_digest: Vec<u8>,
 ) {
-    println!("{:?}", encoded_sig);
-    // let digest: Digest = serde_cbor::from_slice(&encoded_digest).unwrap();
+    let digest: Digest = serde_cbor::from_slice(&encoded_digest).unwrap();
     let sig: Signature = serde_cbor::from_slice(&encoded_sig).unwrap();
     let vkey: VerificationKey = serde_cbor::from_slice(&encoded_vkey).unwrap();
 
-    // sig.verify_digest(&vkey, &digest);
+    sig.verify_digest(&vkey, &digest);
 }

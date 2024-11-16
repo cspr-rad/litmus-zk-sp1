@@ -77,7 +77,7 @@ fn get_set_of_signatures(f_set: &Vec<SignatureFixture>) -> Vec<WrappedSignature>
         WrappedSignature(
             Signature::from(&f.tagged_sig),
             VerificationKey::from(&f.tagged_pbk),
-            f.msg.to_owned(),
+            Digest::from(&f.msg),
         )
     }
 

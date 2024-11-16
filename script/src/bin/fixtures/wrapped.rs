@@ -1,4 +1,4 @@
-use lcrypto::{Signature, VerificationKey};
+use lcrypto::{Digest, Signature, VerificationKey};
 use ltypes::chain::{BlockWithProofs, ChainNameDigest};
 use serde::{Deserialize, Serialize};
 
@@ -34,12 +34,12 @@ impl WrappedDigest {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct WrappedSignature(pub Signature, pub VerificationKey, pub Vec<u8>);
+pub struct WrappedSignature(pub Signature, pub VerificationKey, pub Digest);
 
 impl WrappedSignature {
     // Data over which signature was computed.
-    pub(crate) fn msg(&self) -> Vec<u8> {
-        self.2.to_owned()
+    pub(crate) fn msg(&self) -> &Digest {
+        &self.2
     }
 
     // Computed signature.
