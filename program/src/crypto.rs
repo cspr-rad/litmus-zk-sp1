@@ -1,7 +1,4 @@
-use crate::constants;
 use lcrypto::{Digest, Signature, VerificationKey};
-use lutils::bites::{Byte, Bytes, Bytes32, Bytes33, Bytes64};
-use std::panic;
 
 /// Verifies a digest over a byte vector.
 ///

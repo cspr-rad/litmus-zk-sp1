@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-hex = "0.4.3"
-serde = { version = "1.0.214", features = ["derive"] }
+hex.workspace = true
+serde.workspace = true
 serde_bytes = "0.11.15"

@@ -2,25 +2,27 @@
 #![cfg(target_os = "zkvm")]
 sp1_zkvm::entrypoint!(main);
 
-use lutils::bites::Byte;
-
 mod chain;
-mod constants;
 mod crypto;
+
+// Supported verification types.
+const VERIFICATION_TYPE_DIGEST: u8 = 0;
+const VERIFICATION_TYPE_SIGNATURE: u8 = 1;
+const VERIFICATION_TYPE_BLOCK_WITH_PROOFS: u8 = 10;
 
 /// Program entry point - wrapped by sp1 for execution within zk-vm.
 ///
 /// N.B. Arguments are parsed from SP1 ZK-VM i/o buffer:
 pub fn main() {
-    let verification_type_tag = sp1_zkvm::io::read::<Byte>();
+    let verification_type_tag = sp1_zkvm::io::read::<u8>();
     match verification_type_tag {
-        constants::VERIFICATION_TYPE_BLOCK_WITH_PROOFS => {
+        VERIFICATION_TYPE_BLOCK_WITH_PROOFS => {
             chain::verify_block_with_proofs(sp1_zkvm::io::read_vec())
         }
-        constants::VERIFICATION_TYPE_DIGEST => {
+        VERIFICATION_TYPE_DIGEST => {
             crypto::verify_digest(sp1_zkvm::io::read_vec(), sp1_zkvm::io::read_vec())
         }
-        constants::VERIFICATION_TYPE_DIGEST_SIGNATURE => {
+        VERIFICATION_TYPE_DIGEST_SIGNATURE => {
             crypto::verify_digest_signature(
                 sp1_zkvm::io::read_vec(),
                 sp1_zkvm::io::read_vec(),
