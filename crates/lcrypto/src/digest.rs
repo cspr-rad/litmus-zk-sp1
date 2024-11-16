@@ -191,11 +191,11 @@ mod tests {
     use super::*;
 
     const MSG: &[u8] = "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎".as_bytes();
+    const MSG_DIGEST: &str = "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
 
     #[test]
     fn msg_digest_is_valid() {
-        let digest =
-            Digest::from("44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4");
+        let digest = Digest::from(MSG_DIGEST);
 
         assert_eq!(digest.verify(MSG.to_vec()), ());
     }
@@ -203,6 +203,8 @@ mod tests {
     #[test]
     #[should_panic]
     fn msg_digest_is_invalid() {
-        Digest::random().verify(MSG.to_vec());
+        let digest = Digest::random();
+
+        digest.verify(MSG.to_vec());
     }
 }
