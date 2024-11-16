@@ -1,13 +1,15 @@
 use ltypes::chain::BlockWithProofs;
 
 pub fn verify_block_with_proofs(entity: BlockWithProofs) {
+    // 1. Validate signatures.
+    // TODO: optimise ... validate sigs in weight order
+    let msg = entity.block().get_bytes_for_finality_signature();
+    println!("bytes_for_finality_signature :: {:?}", msg);
+
     for proof in entity.proofs() {
-        println!(
-            "TODO verify block signature {} :: {} :: {}",
-            entity.block().hash(),
-            proof.signature(),
-            proof.verification_key()
-        )
+        proof
+            .signature()
+            .verify(proof.verification_key(), msg.as_slice());
     }
 
     // 1. Recompute block hash & assert equivalence.

@@ -1,4 +1,5 @@
 use super::{BlockHash, BlockV1, BlockV2};
+use lcrypto::Digest;
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
@@ -24,6 +25,20 @@ impl Block {
 
     pub fn new_v2(inner: BlockV2) -> Self {
         Self::V2(inner)
+    }
+}
+
+// ------------------------------------------------------------------------
+// Methods.
+// ------------------------------------------------------------------------
+
+impl Block {
+    /// Returns a digest to be signed over when commiting to finality.
+    pub fn get_bytes_for_finality_signature(&self) -> Vec<u8> {
+        match self {
+            Block::V1(inner) => inner.get_bytes_for_finality_signature(),
+            Block::V2(inner) => inner.get_bytes_for_finality_signature(),
+        }
     }
 }
 

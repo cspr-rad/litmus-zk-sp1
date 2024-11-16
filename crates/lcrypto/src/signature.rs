@@ -1,5 +1,5 @@
 use super::digest::Digest;
-use hex;
+use hex::{self, ToHex};
 use lutils::bites::{Byte, Bytes32, Bytes33, Bytes64};
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
@@ -12,7 +12,7 @@ const TAG_ED25519: Byte = 1;
 const TAG_SECP256K1: Byte = 2;
 const SIG_SIZE: usize = 64;
 const VKEY_SIZE_ED25519: usize = 32;
-const VKEY_SIZE_RANGE: std::ops::Range<usize> = 33..34;
+const VKEY_SIZE_RANGE: std::ops::Range<usize> = 33..35;
 const VKEY_SIZE_SECP256K1: usize = 33;
 
 // ------------------------------------------------------------------------
@@ -161,9 +161,9 @@ impl Signature {
     /// # Arguments
     ///
     /// * `vkey` - Verification key counterpart to signing key.
-    /// * `data` - Data over which signature was issued.
+    /// * `msg` - Data over which signature was issued.
     ///
-    pub fn verify(&self, vkey: VerificationKey, data: &[Byte]) {
+    pub fn verify(&self, vkey: &VerificationKey, msg: &[Byte]) {
         match self {
             Signature::ED25519(sig) => match vkey {
                 VerificationKey::ED25519(vk) => {
@@ -171,7 +171,10 @@ impl Signature {
 
                     let sig = Signature::try_from(sig.as_slice()).unwrap();
                     let vkey = VerificationKey::try_from(vk.as_slice()).unwrap();
-                    assert_eq!(vkey.verify(&sig, &data), Ok(()));
+                    match vkey.verify(&sig, &msg) {
+                        Result::Ok(_) => {}
+                        Result::Err(_) => panic!("ED25519 signature verification failure"),
+                    }
                 }
                 _ => panic!("Invalid verification key type"),
             },
@@ -179,10 +182,13 @@ impl Signature {
                 VerificationKey::SECP256K1(vk) => {
                     use secp256k1::{ecdsa::Signature, Message, PublicKey, Secp256k1};
 
-                    let msg = Message::from_digest_slice(data).unwrap();
+                    let msg = Message::from_digest_slice(msg).unwrap();
                     let pbk = PublicKey::from_slice(vk.as_slice()).unwrap();
                     let sig = Signature::from_compact(&sig.as_slice()).unwrap();
-                    assert_eq!(Secp256k1::new().verify_ecdsa(&msg, &sig, &pbk), Ok(()));
+                    match Secp256k1::new().verify_ecdsa(&msg, &sig, &pbk) {
+                        Result::Ok(_) => {}
+                        Result::Err(_) => panic!("SECP256K1 signature verification failure"),
+                    }
                 }
                 _ => panic!("Invalid verification key type"),
             },
@@ -196,8 +202,8 @@ impl Signature {
     /// * `vkey` - Verification key counterpart to signing key.
     /// * `digest` - Digest over which signature was issued.
     ///
-    pub fn verify_digest(&self, vkey: VerificationKey, digest: Digest) {
-        self.verify(vkey, digest.as_slice());
+    pub fn verify_digest(&self, vkey: &VerificationKey, digest: &Digest) {
+        self.verify(&vkey, &digest.as_slice());
     }
 }
 

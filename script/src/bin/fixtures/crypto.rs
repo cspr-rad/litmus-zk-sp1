@@ -7,7 +7,7 @@ pub struct Digest {
     pub algo: String,
 
     // Hex representation of data over which digest was computed.
-    pub data: String,
+    pub msg: String,
 
     // Computed digest.
     #[serde(with = "hex::serde")]
@@ -22,7 +22,7 @@ pub struct Signature {
 
     // Hex representation of data over which signature was computed.
     #[serde(with = "hex::serde")]
-    pub data: Vec<u8>,
+    pub msg: Vec<u8>,
 
     // Binary representation of ECC verification key.
     #[serde(with = "hex::serde")]
@@ -35,6 +35,10 @@ pub struct Signature {
     // Binary representation of computed signature.
     #[serde(with = "hex::serde")]
     pub sig: Vec<u8>,
+
+    // Binary representation of verification key with algo type prefix.
+    #[serde(with = "hex::serde")]
+    pub tagged_pbk: Vec<u8>,
 
     // Binary representation of computed signature with algo type prefix.
     #[serde(with = "hex::serde")]
