@@ -33,5 +33,5 @@ pub fn verify_digest_signature(
     let sig: Signature = serde_cbor::from_slice(&encoded_sig).unwrap();
     let vkey: VerificationKey = serde_cbor::from_slice(&encoded_vkey).unwrap();
 
-    signature.verify_digest(vkey, digest);
+    sig.verify_digest(vkey, digest);
 }
