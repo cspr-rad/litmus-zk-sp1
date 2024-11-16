@@ -167,3 +167,42 @@ impl Serialize for Digest {
         Ok(serializer.serialize_str(&as_hex).unwrap())
     }
 }
+
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+#[cfg(test)]
+use rand::Rng;
+
+#[cfg(test)]
+impl Digest {
+    /// Returns a random `Digest`.
+    #[cfg(any(feature = "testing", test))]
+    pub fn random() -> Self {
+        let g: [u8; 32] = rand::thread_rng().gen();
+
+        Self::new(g.as_slice())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const MSG: &[u8] = "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎".as_bytes();
+
+    #[test]
+    fn msg_digest_is_valid() {
+        let digest =
+            Digest::from("44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4");
+
+        assert_eq!(digest.verify(MSG.to_vec()), ());
+    }
+
+    #[test]
+    #[should_panic]
+    fn msg_digest_is_invalid() {
+        Digest::random().verify(MSG.to_vec());
+    }
+}
