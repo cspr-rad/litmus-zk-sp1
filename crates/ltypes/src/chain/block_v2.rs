@@ -144,9 +144,11 @@ impl Block {
     pub fn body(&self) -> &BlockBody {
         unimplemented!()
     }
+
     pub fn hash(&self) -> &BlockHash {
         &self.hash
     }
+
     pub fn header(&self) -> &BlockHeader {
         &self.header
     }
@@ -156,6 +158,7 @@ impl BlockBody {
     pub fn rewarded_signatures(&self) -> &Vec<Vec<Byte>> {
         &self.rewarded_signatures
     }
+
     pub fn transactions(&self) -> &BTreeMap<Byte, Vec<TransactionV2Hash>> {
         &self.transactions
     }

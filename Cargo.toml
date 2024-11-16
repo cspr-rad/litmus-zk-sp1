@@ -1,12 +1,13 @@
 [workspace]
 resolver = "2"
-exclude = ["hack"]
+# exclude = ["hack"]
 members = [
     "crates/lcodecs",
     "crates/lcrypto",
     "crates/ltypes",
     "crates/lutils",
     "crates/lverifiers",
+    "hack",
     "program",
     "script",
 ]

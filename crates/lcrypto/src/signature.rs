@@ -231,6 +231,15 @@ impl VerificationKey {
 // Traits.
 // ------------------------------------------------------------------------
 
+impl fmt::Display for Signature {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Signature::ED25519(inner) => write!(f, "SIG:ED25519:{}", inner),
+            Signature::SECP256K1(inner) => write!(f, "SIG:SECP256K1:{}", inner),
+        }
+    }
+}
+
 impl From<&str> for Signature {
     fn from(value: &str) -> Self {
         Self::from(hex::decode(value).unwrap())
@@ -252,6 +261,15 @@ impl From<Vec<Byte>> for Signature {
 impl From<&Vec<Byte>> for Signature {
     fn from(value: &Vec<Byte>) -> Self {
         Self::from(value.as_slice())
+    }
+}
+
+impl fmt::Display for VerificationKey {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            VerificationKey::ED25519(inner) => write!(f, "VKEY:ED25519:{}", inner),
+            VerificationKey::SECP256K1(inner) => write!(f, "VKEY:SECP256K1:{}", inner),
+        }
     }
 }
 

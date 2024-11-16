@@ -10,6 +10,7 @@ sp1-build = "2.0.0"
 lcrypto = { path = "../crates/lcrypto" }
 ltypes = { path = "../crates/ltypes" }
 lutils = { path = "../crates/lutils" }
+lverifiers = { path = "../crates/lverifiers" }
 serde.workspace = true
 serde_cbor.workspace = true
 sp1-zkvm = "1.2.0"

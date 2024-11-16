@@ -85,6 +85,14 @@ impl Digest {
 // Traits.
 // ------------------------------------------------------------------------
 
+impl fmt::Display for Digest {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Digest::BLAKE2B(inner) => write!(f, "BLAKE2B:{}", inner),
+        }
+    }
+}
+
 impl From<&str> for Digest {
     fn from(value: &str) -> Self {
         Self::from(hex::decode(value).unwrap())

@@ -1,5 +1,6 @@
 use core::ops::Add;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
+use std::fmt;
 
 // ------------------------------------------------------------------------
 // Declarations.
@@ -52,14 +53,49 @@ impl Add for Motes {
 // Traits -> serde.
 // ------------------------------------------------------------------------
 
+// impl<'de> Deserialize<'de> for Motes {
+//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+//     where
+//         D: Deserializer<'de>,
+//     {
+//         let raw: &str = Deserialize::deserialize(deserializer).unwrap();
+//         println!("123 {:?}", raw);
+
+//         let parsed: u64 = raw.parse().unwrap();
+//         Ok(Motes::new(parsed))
+//     }
+// }
+
 impl<'de> Deserialize<'de> for Motes {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        let raw: &str = Deserialize::deserialize(deserializer).unwrap();
-        let parsed: u64 = raw.parse().unwrap();
-        Ok(Motes::new(parsed))
+        struct MotesVistor;
+
+        impl<'de> Visitor<'de> for MotesVistor {
+            type Value = Motes;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("supported formats: 64 char hex encoded string | 32 byte array")
+            }
+
+            fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Motes(v))
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                self.visit_u64(v.parse().unwrap())
+            }
+        }
+
+        deserializer.deserialize_any(MotesVistor)
     }
 }
 

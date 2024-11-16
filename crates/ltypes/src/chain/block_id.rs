@@ -1,5 +1,7 @@
 use lcrypto::Digest;
 use serde::{Deserialize, Serialize};
+use std::fmt;
+use std::fmt::Debug;
 
 // ------------------------------------------------------------------------
 // Declarations.
@@ -54,5 +56,21 @@ impl BlockHash {
 impl BlockHeight {
     pub fn inner(&self) -> u64 {
         self.0
+    }
+}
+
+// ------------------------------------------------------------------------
+// Traits.
+// ------------------------------------------------------------------------
+
+impl fmt::Display for BlockHash {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "BLOCK-HASH:{}", self.inner())
+    }
+}
+
+impl fmt::Display for BlockHeight {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.inner())
     }
 }

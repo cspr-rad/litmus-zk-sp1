@@ -1,5 +1,4 @@
-use super::BlockV1;
-use super::BlockV2;
+use super::{BlockHash, BlockV1, BlockV2};
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
@@ -25,5 +24,18 @@ impl Block {
 
     pub fn new_v2(inner: BlockV2) -> Self {
         Self::V2(inner)
+    }
+}
+
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
+impl Block {
+    pub fn hash(&self) -> &BlockHash {
+        match self {
+            Block::V1(inner) => inner.hash(),
+            Block::V2(inner) => inner.hash(),
+        }
     }
 }

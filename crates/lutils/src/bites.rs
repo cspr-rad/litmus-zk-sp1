@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 // ------------------------------------------------------------------------
 // Constants.
@@ -106,56 +107,59 @@ impl<const N: usize> Bytes<N> {
 // Traits.
 // ------------------------------------------------------------------------
 
-// Default -> returns default value.
 impl<const N: usize> Default for Bytes<N> {
     fn default() -> Self {
         Self::new([0; N])
     }
 }
 
-// AsRef -> borrowed self to self.
+impl<const N: usize> fmt::Display for Bytes<N> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "({}..{})",
+            hex::encode(&self.data[0..2]),
+            hex::encode(&self.data[&self.data.len() - 2..])
+        )
+    }
+}
+
 impl<const N: usize> AsRef<Bytes<N>> for Bytes<N> {
     fn as_ref(&self) -> &Self {
         self
     }
 }
 
-// From -> borrowed slice to self.
 impl<const N: usize> From<&[Byte]> for Bytes<N> {
     fn from(value: &[Byte]) -> Self {
         Self::new(value[0..N].try_into().unwrap())
     }
 }
 
-// From -> owned byte vec to self.
 impl<const N: usize> From<Vec<Byte>> for Bytes<N> {
     fn from(value: Vec<Byte>) -> Self {
         Bytes::from(&value)
     }
 }
 
-// From -> borrowed vec of bytes -> self.
 impl<const N: usize> From<&Vec<Byte>> for Bytes<N> {
     fn from(value: &Vec<Byte>) -> Self {
         Bytes::from(value.as_slice())
     }
 }
 
-// From -> borrowed string slice -> self.
 impl<const N: usize> From<&str> for Bytes<N> {
     fn from(value: &str) -> Self {
         Self::from(hex::decode(value).unwrap())
     }
 }
 
-// From -> owned string -> self.
 impl<const N: usize> From<String> for Bytes<N> {
     fn from(value: String) -> Self {
         Self::from(value.as_str())
     }
 }
 
-// From -> borrowed string -> self.
 impl<const N: usize> From<&String> for Bytes<N> {
     fn from(value: &String) -> Self {
         Self::from(value.to_owned())

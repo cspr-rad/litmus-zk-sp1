@@ -8,7 +8,8 @@ use std::fs;
 
 // TODO: scan folder and derive.
 const BLOCK_RANGE_MIN: u32 = 469;
-const BLOCK_RANGE_MAX: u32 = 474;
+const BLOCK_RANGE_MAX: u32 = 470;
+// const BLOCK_RANGE_MAX: u32 = 474;
 
 pub fn get_fixtures() -> Fixtures {
     fn get_set_of_blocks_with_proofs() -> Vec<WrappedBlockWithProofs> {
@@ -54,7 +55,6 @@ pub fn get_fixtures() -> Fixtures {
         set_of_blocks_with_proofs: get_set_of_blocks_with_proofs(),
         set_of_digests: get_set_of_digests(&crypto_fixtures.digests),
         set_of_signatures: get_set_of_signatures(&crypto_fixtures.signatures),
-        crypto: crypto_fixtures,
     }
 }
 

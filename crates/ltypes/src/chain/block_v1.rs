@@ -9,13 +9,13 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct Block {
     /// Information pertaining to vm + consensus.
-    pub body: BlockBody,
+    body: BlockBody,
 
     /// Digest over block body + header.
-    pub hash: BlockHash,
+    hash: BlockHash,
 
     /// Block meta data.
-    pub header: BlockHeader,
+    header: BlockHeader,
 }
 
 // Block (v1) body.
@@ -26,7 +26,7 @@ pub struct BlockBody {}
 #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockHeader {
     /// The parent block's hash.
-    pub parent_hash: BlockHash,
+    parent_hash: BlockHash,
 }
 
 // ------------------------------------------------------------------------
@@ -37,5 +37,21 @@ impl Block {
     pub fn new(body: BlockBody, hash: BlockHash, header: BlockHeader) -> Self {
         // TODO: validate inputs.
         Self { body, hash, header }
+    }
+}
+
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
+impl Block {
+    pub fn body(&self) -> &BlockBody {
+        unimplemented!()
+    }
+    pub fn hash(&self) -> &BlockHash {
+        &self.hash
+    }
+    pub fn header(&self) -> &BlockHeader {
+        unimplemented!()
     }
 }
