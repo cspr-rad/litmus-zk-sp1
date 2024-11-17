@@ -11,7 +11,7 @@ pub(super) const ENCODED_SIZE_I64: usize = core::mem::size_of::<i64>();
 pub(super) const ENCODED_SIZE_UNIT: usize = 0;
 
 /// Encoded size: `u8`.
-pub(super) const ENCODED_SIZE_U8: usize = core::mem::size_of::<u8>();
+pub(super) const ENCODED_SIZE_u8: usize = core::mem::size_of::<u8>();
 
 /// Encoded size: `u16`.
 pub(super) const ENCODED_SIZE_U16: usize = core::mem::size_of::<u16>();

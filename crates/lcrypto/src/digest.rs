@@ -1,4 +1,4 @@
-use lutils::bites::{Byte, Bytes32};
+use lutils::bites::Bytes32;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 
@@ -23,7 +23,7 @@ impl Digest {
     ///
     /// * `raw_bytes` - A sequence of bytes.
     ///
-    pub fn new(raw_bytes: &[Byte]) -> Self {
+    pub fn new(raw_bytes: &[u8]) -> Self {
         assert!(
             raw_bytes.len() == Bytes32::len(),
             "Invalid digest byte array length"
@@ -40,7 +40,7 @@ impl Digest {
 
 impl Digest {
     // Returns underlying byte array.
-    pub fn as_slice(&self) -> &[Byte] {
+    pub fn as_slice(&self) -> &[u8] {
         match self {
             Digest::BLAKE2B(inner) => inner.as_slice(),
         }
@@ -52,7 +52,7 @@ impl Digest {
     ///
     /// * `data` - Data against which to generate a blake2b digest.
     ///
-    pub fn get_blake2b(data: Vec<Byte>) -> Self {
+    pub fn get_blake2b(data: Vec<u8>) -> Self {
         use blake2::{
             digest::{Update, VariableOutput},
             Blake2bVar,
@@ -72,7 +72,7 @@ impl Digest {
     ///
     /// * `data` - Data against which to verify digest.
     ///
-    pub fn verify(&self, data: Vec<Byte>) {
+    pub fn verify(&self, data: Vec<u8>) {
         match self {
             Digest::BLAKE2B(_) => {
                 assert_eq!(self, &Digest::get_blake2b(data));
@@ -99,20 +99,20 @@ impl From<&str> for Digest {
     }
 }
 
-impl From<&[Byte]> for Digest {
-    fn from(value: &[Byte]) -> Self {
+impl From<&[u8]> for Digest {
+    fn from(value: &[u8]) -> Self {
         Self::new(&value)
     }
 }
 
-impl From<Vec<Byte>> for Digest {
-    fn from(value: Vec<Byte>) -> Self {
+impl From<Vec<u8>> for Digest {
+    fn from(value: Vec<u8>) -> Self {
         Self::from(value.as_slice())
     }
 }
 
-impl From<&Vec<Byte>> for Digest {
-    fn from(value: &Vec<Byte>) -> Self {
+impl From<&Vec<u8>> for Digest {
+    fn from(value: &Vec<u8>) -> Self {
         Self::from(value.as_slice())
     }
 }
@@ -189,13 +189,23 @@ impl Digest {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use hex;
 
     const MSG: &[u8] = "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎".as_bytes();
-    const MSG_DIGEST: &str = "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
+    const MSG_DIGEST_BLAKE2B: &str =
+        "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
 
     #[test]
-    fn msg_digest_is_valid() {
-        let digest = Digest::from(MSG_DIGEST);
+    fn from_msg_as_bytes() {
+        let digest = Digest::from(MSG_DIGEST_BLAKE2B);
+
+        assert_eq!(digest.verify(MSG.to_vec()), ());
+    }
+
+    #[test]
+    fn from_msg_as_vec() {
+        let as_vec = hex::decode(MSG_DIGEST_BLAKE2B).unwrap();
+        let digest = Digest::from(as_vec);
 
         assert_eq!(digest.verify(MSG.to_vec()), ());
     }

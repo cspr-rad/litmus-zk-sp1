@@ -1,13 +1,12 @@
 use super::constants;
 use super::utils::{allocate_buffer, CodecError, Decode, Encode};
-use lutils::bites::Byte;
 
 // ------------------------------------------------------------------------
 // Type: Option<T>.
 // ------------------------------------------------------------------------
 
 impl<T: Decode> Decode for Option<T> {
-    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (tag, rem) = u8::from_bytes(bytes)?;
         match tag {
             constants::TAG_OPTION_NONE => Ok((None, rem)),
@@ -21,7 +20,7 @@ impl<T: Decode> Decode for Option<T> {
 }
 
 impl<T: Encode> Encode for Option<T> {
-    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         match self {
             None => Ok(vec![constants::TAG_OPTION_NONE]),
             Some(v) => {
@@ -37,14 +36,14 @@ impl<T: Encode> Encode for Option<T> {
     }
 
     fn get_encoded_size(&self) -> usize {
-        constants::ENCODED_SIZE_U8
+        constants::ENCODED_SIZE_u8
             + match self {
                 Some(v) => v.get_encoded_size(),
                 None => 0,
             }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             None => writer.push(constants::TAG_OPTION_NONE),
             Some(v) => {
@@ -61,7 +60,7 @@ impl<T: Encode> Encode for Option<T> {
 // ------------------------------------------------------------------------
 
 impl<T: Decode, E: Decode> Decode for Result<T, E> {
-    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (variant, rem) = u8::from_bytes(bytes)?;
         match variant {
             constants::TAG_RESULT_ERR => {
@@ -78,7 +77,7 @@ impl<T: Decode, E: Decode> Decode for Result<T, E> {
 }
 
 impl<T: Encode, E: Encode> Encode for Result<T, E> {
-    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         let mut result = allocate_buffer(self)?;
         let (variant, mut value) = match self {
             Err(error) => (constants::TAG_RESULT_ERR, error.to_bytes()?),
@@ -90,14 +89,14 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
     }
 
     fn get_encoded_size(&self) -> usize {
-        constants::ENCODED_SIZE_U8
+        constants::ENCODED_SIZE_u8
             + match self {
                 Ok(ok) => ok.get_encoded_size(),
                 Err(error) => error.get_encoded_size(),
             }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             Err(error) => {
                 writer.push(constants::TAG_RESULT_ERR);

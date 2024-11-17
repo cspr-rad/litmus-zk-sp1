@@ -1,6 +1,6 @@
 use super::digest::Digest;
 use super::verification_key::VerificationKey;
-use lutils::bites::{Byte, Bytes64};
+use lutils::bites::Bytes64;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 
@@ -8,8 +8,8 @@ use std::fmt;
 // Constants.
 // ------------------------------------------------------------------------
 
-const TAG_ED25519: Byte = 1;
-const TAG_SECP256K1: Byte = 2;
+const TAG_ED25519: u8 = 1;
+const TAG_SECP256K1: u8 = 2;
 const SIG_SIZE: usize = 64;
 
 // ------------------------------------------------------------------------
@@ -33,7 +33,7 @@ impl Signature {
     ///
     /// * `raw_bytes` - A sequence of bytes.
     ///
-    pub fn new(raw_bytes: &[Byte]) -> Self {
+    pub fn new(raw_bytes: &[u8]) -> Self {
         assert!(
             raw_bytes.len() == SIG_SIZE + 1,
             "Invalid signature byte array length"
@@ -72,7 +72,7 @@ impl Signature {
 
 impl Signature {
     // Returns underlying byte array.
-    pub fn as_slice(&self) -> &[Byte] {
+    pub fn as_slice(&self) -> &[u8] {
         match self {
             Signature::ED25519(inner) => inner.as_slice(),
             Signature::SECP256K1(inner) => inner.as_slice(),
@@ -88,7 +88,7 @@ impl Signature {
     }
 
     // Returns algorithm type tag.
-    pub fn get_tag(&self) -> Byte {
+    pub fn get_tag(&self) -> u8 {
         match self {
             Signature::ED25519(_) => TAG_ED25519,
             Signature::SECP256K1(_) => TAG_SECP256K1,
@@ -102,7 +102,7 @@ impl Signature {
     /// * `vkey` - Verification key counterpart to signing key.
     /// * `msg` - Data over which signature was issued.
     ///
-    pub fn verify(&self, vkey: &VerificationKey, msg: &[Byte]) {
+    pub fn verify(&self, vkey: &VerificationKey, msg: &[u8]) {
         match self {
             Signature::ED25519(sig) => match vkey {
                 VerificationKey::ED25519(vk) => {
@@ -165,20 +165,20 @@ impl From<&str> for Signature {
     }
 }
 
-impl From<&[Byte]> for Signature {
-    fn from(value: &[Byte]) -> Self {
+impl From<&[u8]> for Signature {
+    fn from(value: &[u8]) -> Self {
         Self::new(&value)
     }
 }
 
-impl From<Vec<Byte>> for Signature {
-    fn from(value: Vec<Byte>) -> Self {
+impl From<Vec<u8>> for Signature {
+    fn from(value: Vec<u8>) -> Self {
         Self::from(value.as_slice())
     }
 }
 
-impl From<&Vec<Byte>> for Signature {
-    fn from(value: &Vec<Byte>) -> Self {
+impl From<&Vec<u8>> for Signature {
+    fn from(value: &Vec<u8>) -> Self {
         Self::from(value.as_slice())
     }
 }
@@ -201,7 +201,7 @@ impl<'de> Deserialize<'de> for Signature {
                 formatter.write_str("supported formats: 64 char hex encoded string | 32 byte array")
             }
 
-            fn visit_bytes<E>(self, v: &[Byte]) -> Result<Self::Value, E>
+            fn visit_bytes<E>(self, v: &[u8]) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
             {

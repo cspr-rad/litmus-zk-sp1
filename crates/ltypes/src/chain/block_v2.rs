@@ -4,7 +4,6 @@ use super::{BlockHash, BlockHeight, EraEndV2, EraId, ProtocolVersion, Transactio
 use crate::crypto::{Digest, PublicKey};
 use crate::misc::Timestamp;
 use alloc::collections::BTreeMap;
-use lutils::bites::Byte;
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
@@ -28,10 +27,10 @@ pub struct Block {
 #[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct BlockBody {
     /// List of identifiers for finality signatures for a particular past block.
-    rewarded_signatures: Vec<Vec<Byte>>,
+    rewarded_signatures: Vec<Vec<u8>>,
 
     /// Map of transactions mapping categories to a list of transaction hashes.
-    transactions: BTreeMap<Byte, Vec<TransactionV2Hash>>,
+    transactions: BTreeMap<u8, Vec<TransactionV2Hash>>,
 }
 
 // Block (v2) header.
@@ -90,8 +89,8 @@ impl Block {
 
 impl BlockBody {
     pub fn new(
-        rewarded_signatures: Vec<Vec<Byte>>,
-        transactions: BTreeMap<Byte, Vec<TransactionV2Hash>>,
+        rewarded_signatures: Vec<Vec<u8>>,
+        transactions: BTreeMap<u8, Vec<TransactionV2Hash>>,
     ) -> Self {
         // TODO: validate inputs.
         Self {
@@ -155,11 +154,11 @@ impl Block {
 }
 
 impl BlockBody {
-    pub fn rewarded_signatures(&self) -> &Vec<Vec<Byte>> {
+    pub fn rewarded_signatures(&self) -> &Vec<Vec<u8>> {
         &self.rewarded_signatures
     }
 
-    pub fn transactions(&self) -> &BTreeMap<Byte, Vec<TransactionV2Hash>> {
+    pub fn transactions(&self) -> &BTreeMap<u8, Vec<TransactionV2Hash>> {
         &self.transactions
     }
 }

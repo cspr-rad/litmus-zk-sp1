@@ -2,7 +2,6 @@ use super::utils::{
     encode_byte_slice, get_encoded_size_of_byte_slice, safe_split_at, write_byte_slice, CodecError,
     Decode, Encode,
 };
-use lutils::bites::Byte;
 
 // ------------------------------------------------------------------------
 // Type: str.
@@ -53,7 +52,7 @@ impl Encode for &str {
 // ------------------------------------------------------------------------
 
 impl Decode for String {
-    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (size, remainder) = u32::from_bytes(bytes)?;
         let (str_bytes, remainder) = safe_split_at(remainder, size as usize)?;
         let result = String::from_utf8(str_bytes.to_vec()).map_err(|_| CodecError::Formatting)?;
@@ -62,7 +61,7 @@ impl Decode for String {
 }
 
 impl Encode for String {
-    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         let bytes = self.as_bytes();
         encode_byte_slice(bytes)
     }
@@ -71,7 +70,7 @@ impl Encode for String {
         get_encoded_size_of_byte_slice(self.as_bytes())
     }
 
-    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         write_byte_slice(self.as_bytes(), writer)?;
         Ok(())
     }

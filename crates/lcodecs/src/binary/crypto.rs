@@ -1,6 +1,5 @@
 use super::utils::{CodecError, Decode, Encode};
 use ltypes::crypto::{Digest, Signature};
-use lutils::bites::Byte;
 
 // ------------------------------------------------------------------------
 // Type: Digest.
@@ -8,14 +7,14 @@ use lutils::bites::Byte;
 
 impl Decode for Digest {
     #[inline(always)]
-    fn from_bytes(_: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!("Digest::decode");
         // Decode::from_bytes(bytes).map(|(arr, rem)| (Digest::new(arr), rem))
     }
 }
 
 impl Encode for Digest {
-    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         match self {
             Digest::BLAKE2B(inner) => Ok(inner.to_vec()),
         }
@@ -27,7 +26,7 @@ impl Encode for Digest {
         }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.as_slice());
         Ok(())
     }
@@ -39,13 +38,13 @@ impl Encode for Digest {
 
 impl Decode for Signature {
     #[inline(always)]
-    fn from_bytes(_: &[Byte]) -> Result<(Self, &[Byte]), CodecError> {
+    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!("Signature::decode");
     }
 }
 
 impl Encode for Signature {
-    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError> {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         match self {
             Signature::ED25519(inner) => Ok(inner.to_vec()),
             Signature::SECP256K1(inner) => Ok(inner.to_vec()),
@@ -59,7 +58,7 @@ impl Encode for Signature {
         }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.as_slice());
         Ok(())
     }

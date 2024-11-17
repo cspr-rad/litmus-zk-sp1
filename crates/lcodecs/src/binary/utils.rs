@@ -1,5 +1,4 @@
 use super::constants;
-use lutils::bites::Byte;
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
@@ -28,10 +27,10 @@ pub enum CodecError {
 /// Trait implemented by types decodeable from a `Vec<Byte>`.
 pub trait Decode: Sized {
     /// Decodes slice into instance of `Self`.
-    fn from_bytes(bytes: &[Byte]) -> Result<(Self, &[Byte]), CodecError>;
+    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError>;
 
     /// Decodes `Vec<u8>` into instance of `Self`.
-    fn from_vec(bytes: Vec<Byte>) -> Result<(Self, Vec<Byte>), CodecError> {
+    fn from_vec(bytes: Vec<u8>) -> Result<(Self, Vec<u8>), CodecError> {
         Self::from_bytes(bytes.as_slice()).map(|(x, remainder)| (x, Vec::from(remainder)))
     }
 }
@@ -39,10 +38,10 @@ pub trait Decode: Sized {
 /// Trait implemented by types encodeable as a `Vec<Byte>`.
 pub trait Encode {
     /// Encodes `&self` as a `Vec<Byte>`.
-    fn to_bytes(&self) -> Result<Vec<Byte>, CodecError>;
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError>;
 
     /// Consumes `self` and encodes accordingly.
-    fn into_bytes(self) -> Result<Vec<Byte>, CodecError>
+    fn into_bytes(self) -> Result<Vec<u8>, CodecError>
     where
         Self: Sized,
     {
@@ -53,7 +52,7 @@ pub trait Encode {
     fn get_encoded_size(&self) -> usize;
 
     /// Writes `&self` into a mutable `writer`.
-    fn write_bytes(&self, writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend(self.to_bytes()?);
         Ok(())
     }
@@ -61,7 +60,7 @@ pub trait Encode {
 
 /// Returns a `Vec<Byte>` initialized with sufficient capacity to hold `to_be_serialized` after
 /// serialization, or an error if the capacity would exceed `u32::MAX`.
-pub(crate) fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<Byte>, CodecError> {
+pub(crate) fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<u8>, CodecError> {
     let serialized_length = to_be_serialized.get_encoded_size();
     if serialized_length > u32::MAX as usize {
         return Err(CodecError::OutOfMemory);
@@ -75,7 +74,7 @@ pub(crate) fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<Byt
 ///
 /// For safety you should prefer to use [`vec_u8_to_bytes`]. For efficiency reasons you should also
 /// avoid using serializing Vec<u8>.
-pub(crate) fn encode_byte_slice(bytes: &[Byte]) -> Result<Vec<Byte>, CodecError> {
+pub(crate) fn encode_byte_slice(bytes: &[u8]) -> Result<Vec<u8>, CodecError> {
     let serialized_length = get_encoded_size_of_byte_slice(bytes);
     let mut vec = Vec::with_capacity(serialized_length);
     let length_prefix: u32 = bytes
@@ -100,7 +99,7 @@ pub(crate) fn get_encoded_size_of_byte_vec(vec: &Vec<u8>) -> usize {
 }
 
 /// Safely splits slice at given point.
-pub(crate) fn safe_split_at(bytes: &[Byte], n: usize) -> Result<(&[Byte], &[Byte]), CodecError> {
+pub(crate) fn safe_split_at(bytes: &[u8], n: usize) -> Result<(&[u8], &[u8]), CodecError> {
     if n > bytes.len() {
         Err(CodecError::EarlyEndOfStream)
     } else {
@@ -142,12 +141,12 @@ where
 
 /// Returns a `Vec<u8>` initialized with sufficient capacity to hold `to_be_serialized` after
 /// serialization.
-pub(crate) fn unchecked_allocate_buffer<T: Encode>(to_be_serialized: &T) -> Vec<Byte> {
+pub(crate) fn unchecked_allocate_buffer<T: Encode>(to_be_serialized: &T) -> Vec<u8> {
     let serialized_length = to_be_serialized.get_encoded_size();
     Vec::with_capacity(serialized_length)
 }
 
-pub(crate) fn write_byte_slice(bytes: &[Byte], writer: &mut Vec<Byte>) -> Result<(), CodecError> {
+pub(crate) fn write_byte_slice(bytes: &[u8], writer: &mut Vec<u8>) -> Result<(), CodecError> {
     let length_32: u32 = bytes
         .len()
         .try_into()
