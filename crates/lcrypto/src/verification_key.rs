@@ -201,11 +201,11 @@ impl Serialize for VerificationKey {
 mod tests {
     use super::*;
 
-    const VKEY_ED25519_TAGGED: &str =
+    const VKEY_ED25519_TAGGED_HEX: &str =
         "01764f83295812c03354e0cd64718a7e50b452696799dc9d6e446338d668f3b2d9";
-    const VKEY_SECP256K1_TAGGED: &str =
+    const VKEY_SECP256K1_TAGGED_HEX: &str =
         "0203eed4eb0b40b3131679c365e3a23780eabfeaeb01776b0f908223ad1d4bd06f0d";
-    const VKEY_SET: [&str; 2] = [VKEY_ED25519_TAGGED, VKEY_SECP256K1_TAGGED];
+    const VKEY_SET: [&str; 2] = [VKEY_ED25519_TAGGED_HEX, VKEY_SECP256K1_TAGGED_HEX];
 
     #[test]
     fn test_new_from_str() {
@@ -223,13 +223,22 @@ mod tests {
     }
 
     #[test]
-    fn test_destructure_of_tag() {
+    fn test_accessor_get_tag() {
         for vkey in VKEY_SET {
             match vkey.as_bytes()[0] {
                 TAG_ED25519 => assert_eq!(VerificationKey::from(vkey).get_tag(), TAG_ED25519),
                 TAG_SECP256K1 => assert_eq!(VerificationKey::from(vkey).get_tag(), TAG_SECP256K1),
                 _ => {}
             }
+        }
+    }
+
+    #[test]
+    fn test_accessor_as_slice() {
+        for vkey in VKEY_SET {
+            let vkey1 = VerificationKey::from(vkey).as_slice().to_owned();
+            let vkey2 = VerificationKey::from(vkey).as_slice_with_tag();
+            assert_eq!(vkey1.len() + 1, vkey2.len());
         }
     }
 
@@ -244,7 +253,7 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_panic_if_invalid_length_1() {
+    fn test_panic_if_length_is_invalid_1() {
         for vkey in VKEY_SET {
             let vkey = &vkey[..vkey.len() - 1];
             let _ = VerificationKey::from(vkey);
@@ -253,7 +262,7 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_panic_if_invalid_length_2() {
+    fn test_panic_if_length_is_invalid_2() {
         for vkey in VKEY_SET {
             let vkey = format!("{}d9", vkey);
             let _ = VerificationKey::from(vkey.as_str());

@@ -39,6 +39,13 @@ impl Digest {
 // ------------------------------------------------------------------------
 
 impl Digest {
+    // Returns underlying byte array.
+    pub fn as_slice(&self) -> &[u8] {
+        match self {
+            Digest::BLAKE2B(inner) => inner.as_slice(),
+        }
+    }
+
     // Returns length of underlying byte array.
     pub fn len(&self) -> usize {
         match self {
@@ -52,13 +59,6 @@ impl Digest {
 // ------------------------------------------------------------------------
 
 impl Digest {
-    // Returns underlying byte array.
-    pub fn as_slice(&self) -> &[u8] {
-        match self {
-            Digest::BLAKE2B(inner) => inner.as_slice(),
-        }
-    }
-
     /// Returns a blake2b digest over passed data.
     ///
     /// # Arguments
@@ -217,6 +217,11 @@ mod tests {
     fn test_new_from_vec() {
         let as_vec = hex::decode(MSG_DIGEST_BLAKE2B_HEX).unwrap();
         let _ = Digest::from(as_vec);
+    }
+
+    #[test]
+    fn test_accessor_as_slice() {
+        let _ = Digest::from(MSG_DIGEST_BLAKE2B_HEX).as_slice();
     }
 
     #[test]
