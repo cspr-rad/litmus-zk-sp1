@@ -296,32 +296,40 @@ mod tests {
 
     #[test]
     fn test_destructure_of_tag() {
-        let sig = Signature::from(ED25519_SIG_TAGGED);
-        assert_eq!(sig.get_tag(), TAG_ED25519);
-
-        let sig = Signature::from(SECP256K1_SIG_TAGGED);
-        assert_eq!(sig.get_tag(), TAG_SECP256K1);
+        for sig in SIG_SET {
+            let sig = Signature::from(sig);
+            assert_eq!(
+                sig.get_tag(),
+                sig.as_slice_with_tag().first().unwrap().to_owned()
+            );
+        }
     }
 
     #[test]
     #[should_panic]
     fn test_panic_if_tag_is_invalid() {
-        let vkey = format!("99{}", &ED25519_SIG_TAGGED[..ED25519_SIG_TAGGED.len() - 1]);
-        let _ = Signature::from(vkey.as_str());
+        for sig in SIG_SET {
+            let sig = format!("99{}", &sig[..sig.len() - 1]);
+            let _ = Signature::from(sig.as_str());
+        }
     }
 
     #[test]
     #[should_panic]
-    fn test_panic_if_invalid_length_1() {
-        let vkey = &ED25519_SIG_TAGGED[..ED25519_SIG_TAGGED.len() - 1];
-        let _ = Signature::from(vkey);
+    fn test_panic_if_length_is_invalid_1() {
+        for sig in SIG_SET {
+            let sig = &sig[..sig.len() - 1];
+            let _ = Signature::from(sig);
+        }
     }
 
     #[test]
     #[should_panic]
-    fn test_panic_if_invalid_length_2() {
-        let vkey = format!("{}d9", ED25519_SIG_TAGGED);
-        let _ = Signature::from(vkey.as_str());
+    fn test_panic_if_length_is_invalid_2() {
+        for sig in SIG_SET {
+            let sig = format!("{}d9", sig);
+            let _ = Signature::from(sig.as_str());
+        }
     }
 
     // #[test]
