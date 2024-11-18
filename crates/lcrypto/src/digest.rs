@@ -35,6 +35,19 @@ impl Digest {
 }
 
 // ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
+impl Digest {
+    // Returns length of underlying byte array.
+    pub fn len(&self) -> usize {
+        match self {
+            Digest::BLAKE2B(_) => Bytes32::len(),
+        }
+    }
+}
+
+// ------------------------------------------------------------------------
 // Methods.
 // ------------------------------------------------------------------------
 
@@ -192,27 +205,30 @@ mod tests {
     use hex;
 
     const MSG: &[u8] = "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎".as_bytes();
-    const MSG_DIGEST_BLAKE2B: &str =
+    const MSG_DIGEST_BLAKE2B_HEX: &str =
         "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
 
     #[test]
-    fn from_msg_as_bytes() {
-        let digest = Digest::from(MSG_DIGEST_BLAKE2B);
-
-        assert_eq!(digest.verify(MSG.to_vec()), ());
+    fn test_new_from_str() {
+        let _ = Digest::from(MSG_DIGEST_BLAKE2B_HEX);
     }
 
     #[test]
-    fn from_msg_as_vec() {
-        let as_vec = hex::decode(MSG_DIGEST_BLAKE2B).unwrap();
-        let digest = Digest::from(as_vec);
+    fn test_new_from_vec() {
+        let as_vec = hex::decode(MSG_DIGEST_BLAKE2B_HEX).unwrap();
+        let _ = Digest::from(as_vec);
+    }
+
+    #[test]
+    fn test_verify() {
+        let digest = Digest::from(MSG_DIGEST_BLAKE2B_HEX);
 
         assert_eq!(digest.verify(MSG.to_vec()), ());
     }
 
     #[test]
     #[should_panic]
-    fn msg_digest_is_invalid() {
+    fn test_panic_on_verification_failure() {
         let digest = Digest::random();
 
         digest.verify(MSG.to_vec());

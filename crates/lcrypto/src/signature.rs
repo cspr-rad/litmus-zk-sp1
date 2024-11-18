@@ -34,6 +34,7 @@ impl Signature {
     /// * `raw_bytes` - A sequence of bytes.
     ///
     pub fn new(raw_bytes: &[u8]) -> Self {
+        println!("dd {}", raw_bytes.len());
         assert!(
             raw_bytes.len() == SIG_SIZE + 1,
             "Invalid signature byte array length"
@@ -67,7 +68,7 @@ impl Signature {
 }
 
 // ------------------------------------------------------------------------
-// Methods.
+// Accessors.
 // ------------------------------------------------------------------------
 
 impl Signature {
@@ -94,7 +95,13 @@ impl Signature {
             Signature::SECP256K1(_) => TAG_SECP256K1,
         }
     }
+}
 
+// ------------------------------------------------------------------------
+// Methods.
+// ------------------------------------------------------------------------
+
+impl Signature {
     /// Verifies signature against arbitrary data.
     ///
     /// # Arguments
@@ -229,4 +236,86 @@ impl Serialize for Signature {
 
         Ok(serializer.serialize_str(&as_hex).unwrap())
     }
+}
+
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+#[cfg(test)]
+use rand::{rngs::OsRng, RngCore};
+
+#[cfg(test)]
+impl Signature {
+    /// Returns a random `Signature`.
+    #[cfg(any(feature = "testing", test))]
+    pub fn random() -> Self {
+        let mut random_bytes = [0u8; 64];
+        OsRng.fill_bytes(&mut random_bytes);
+
+        Self::new(random_bytes.as_slice())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use hex;
+
+    const ED25519_SIG_TAGGED: &str = "012fa8e929a7514496545d098e86841463ef66358ff0930073fde3b138f66a2cef5304d884baa693a971d002d7e071f658fb16de8c1e5c80ba5ecea8b3866f8106";
+    const ED25519_VKEY_TAGGED: &str =
+        "01764f83295812c03354e0cd64718a7e50b452696799dc9d6e446338d668f3b2d9";
+    const MSG: &str = "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
+    const SECP256K1_VKEY_TAGGED: &str =
+        "0203eed4eb0b40b3131679c365e3a23780eabfeaeb01776b0f908223ad1d4bd06f0d";
+    const SECP256K1_SIG_TAGGED: &str = "025ed6e5b71fa8f87dfb197a3d85c926d075f0b15651b59224a9a41a9fa1deb8cc2b2de5a8312a310af9b5321f67b744e1b3814994b13ec6db2769e9e6a9cc9364";
+
+    #[test]
+    fn test_new_from_str() {
+        let _ = Signature::from(ED25519_SIG_TAGGED);
+    }
+
+    #[test]
+    fn test_new_from_vec() {
+        let as_vec = hex::decode(ED25519_SIG_TAGGED).unwrap();
+        let _ = Signature::from(as_vec);
+    }
+
+    #[test]
+    fn test_destructure_of_tag() {
+        let sig = Signature::from(ED25519_SIG_TAGGED);
+        assert_eq!(sig.get_tag(), TAG_ED25519);
+
+        let sig = Signature::from(SECP256K1_SIG_TAGGED);
+        assert_eq!(sig.get_tag(), TAG_SECP256K1);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_if_tag_is_invalid() {
+        let vkey = format!("99{}", &ED25519_SIG_TAGGED[..ED25519_SIG_TAGGED.len() - 1]);
+        let _ = Signature::from(vkey.as_str());
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_if_invalid_length_1() {
+        let vkey = &ED25519_SIG_TAGGED[..ED25519_SIG_TAGGED.len() - 1];
+        let _ = Signature::from(vkey);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_if_invalid_length_2() {
+        let vkey = format!("{}d9", ED25519_SIG_TAGGED);
+        let _ = Signature::from(vkey.as_str());
+    }
+
+    // #[test]
+    // #[should_panic]
+    // fn test_panic_if_invalid() {
+    //     let digest = Digest::random();
+
+    //     digest.verify(MSG.to_vec());
+    // }
 }
