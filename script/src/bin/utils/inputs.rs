@@ -13,10 +13,15 @@ impl From<Fixtures> for Vec<SP1Stdin> {
         let mut result: Vec<SP1Stdin> = Vec::new();
 
         // for f in fixtures.set_of_digests {
-        //     result.push(SP1Stdin::try_from(&f).unwrap());
+        //     println!("{}", f.inner());
+        //     // result.push(SP1Stdin::try_from(&f).unwrap());
         // }
         for f in fixtures.set_of_signatures {
+            println!("{}", f.msg());
+            println!("{}", f.sig());
+            println!("{}", f.vkey());
             result.push(SP1Stdin::try_from(&f).unwrap());
+            break;
         }
         // for f in fixtures.set_of_blocks_with_proofs {
         //     result.push(SP1Stdin::try_from(&f).unwrap());

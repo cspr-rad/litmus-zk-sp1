@@ -262,7 +262,10 @@ mod tests {
     use super::*;
     use hex;
 
-    const MSG: &str = "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
+    const MSG1: &[u8] = "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎".as_bytes();
+    const MSG_DIGEST_BLAKE2B_HEX: &str =
+        "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
+
     const SIG_ED25519_TAGGED_HEX: &str = "012fa8e929a7514496545d098e86841463ef66358ff0930073fde3b138f66a2cef5304d884baa693a971d002d7e071f658fb16de8c1e5c80ba5ecea8b3866f8106";
     const SIG_SECP256K1_TAGGED_HEX: &str = "025ed6e5b71fa8f87dfb197a3d85c926d075f0b15651b59224a9a41a9fa1deb8cc2b2de5a8312a310af9b5321f67b744e1b3814994b13ec6db2769e9e6a9cc9364";
     const SIG_SET: [&str; 2] = [SIG_ED25519_TAGGED_HEX, SIG_SECP256K1_TAGGED_HEX];
@@ -271,13 +274,6 @@ mod tests {
     const VKEY_SECP256K1_TAGGED_HEX: &str =
         "0203eed4eb0b40b3131679c365e3a23780eabfeaeb01776b0f908223ad1d4bd06f0d";
     const VKEY_SET: [&str; 2] = [VKEY_ED25519_TAGGED_HEX, VKEY_SECP256K1_TAGGED_HEX];
-
-    const ED25519_SIG_TAGGED: &str = "012fa8e929a7514496545d098e86841463ef66358ff0930073fde3b138f66a2cef5304d884baa693a971d002d7e071f658fb16de8c1e5c80ba5ecea8b3866f8106";
-    const ED25519_VKEY_TAGGED: &str =
-        "01764f83295812c03354e0cd64718a7e50b452696799dc9d6e446338d668f3b2d9";
-    const SECP256K1_VKEY_TAGGED: &str =
-        "0203eed4eb0b40b3131679c365e3a23780eabfeaeb01776b0f908223ad1d4bd06f0d";
-    const SECP256K1_SIG_TAGGED: &str = "025ed6e5b71fa8f87dfb197a3d85c926d075f0b15651b59224a9a41a9fa1deb8cc2b2de5a8312a310af9b5321f67b744e1b3814994b13ec6db2769e9e6a9cc9364";
 
     #[test]
     fn test_new_from_str() {
@@ -302,6 +298,17 @@ mod tests {
                 sig.get_tag(),
                 sig.as_slice_with_tag().first().unwrap().to_owned()
             );
+        }
+    }
+
+    #[test]
+    fn test_verification() {
+        let digest = Digest::from(MSG_DIGEST_BLAKE2B_HEX);
+        println!("{}", digest);
+        for (sig, vkey) in SIG_SET.iter().zip(VKEY_SET.iter()) {
+            let sig = Signature::from(*sig);
+            let vkey = VerificationKey::from(*vkey);
+            sig.verify_digest(&vkey, &digest);
         }
     }
 
