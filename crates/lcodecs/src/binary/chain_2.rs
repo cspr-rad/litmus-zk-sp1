@@ -1,6 +1,10 @@
 use super::utils::Encode;
 use ltypes::chain::{Block, BlockHash, BlockV2, BlockV2Body, BlockV2Header};
 
+// ------------------------------------------------------------------------
+// Implementations.
+// ------------------------------------------------------------------------
+
 impl Encode for Block {
     fn to_bytes(&self) -> Result<Vec<u8>, super::utils::CodecError> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");

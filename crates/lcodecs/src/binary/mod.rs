@@ -1,5 +1,6 @@
 mod bites;
-mod chain;
+mod chain_1;
+mod chain_2;
 mod constants;
 mod crypto;
 mod primitives_1;
@@ -9,6 +10,9 @@ mod utils;
 
 pub use utils::Encode;
 
-pub fn ddd<T: Encode>(entity: &T) -> Vec<u8> {
+pub fn encode<T>(entity: &T) -> Vec<u8>
+where
+    T: Encode,
+{
     entity.to_bytes().unwrap()
 }

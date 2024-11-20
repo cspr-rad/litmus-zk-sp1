@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+lcodecs = { path = "../lcodecs" }
 lcrypto = { path = "../lcrypto" }
 ltypes = { path = "../ltypes" }
 lutils = { path = "../lutils" }

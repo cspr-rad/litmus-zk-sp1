@@ -256,6 +256,7 @@ impl Encode for () {
 
 #[cfg(test)]
 mod proptests {
+    use super::*;
     use crate::binary::utils::test_serialization_roundtrip;
     use proptest::prelude::*;
 
