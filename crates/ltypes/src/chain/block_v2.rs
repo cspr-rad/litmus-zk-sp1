@@ -1,5 +1,7 @@
 extern crate alloc;
 
+use std::hash::Hash;
+
 use super::{
     BlockHash, BlockHeight, ChainNameDigest, EraEndV2, EraId, ProtocolVersion, TransactionV2Hash,
 };
@@ -224,13 +226,52 @@ impl BlockHeader {
 // ------------------------------------------------------------------------
 
 impl Block {
-    /// Returns a digest to be signed over when commiting to finality.
+    /// Returns a sequence of bytes for mapping to a block digest.
+    pub fn get_bytes_for_hash(&self) -> Vec<u8> {
+        let mut result: Vec<u8> = Vec::new();
+        result.extend_from_slice(self.hash().inner().as_slice());
+        result.extend_from_slice(self.header().height().inner().to_le_bytes().as_slice());
+        result.extend_from_slice(self.header().era_id().inner().to_le_bytes().as_slice());
+
+        result
+    }
+
+    /// Returns a sequence of bytes to be signed over when commiting to block finality.
     pub fn get_bytes_for_finality_signature(&self, chain_name_digest: &ChainNameDigest) -> Vec<u8> {
         let mut result: Vec<u8> = Vec::new();
         result.extend_from_slice(self.hash().inner().as_slice());
         result.extend_from_slice(self.header().height().inner().to_le_bytes().as_slice());
         result.extend_from_slice(self.header().era_id().inner().to_le_bytes().as_slice());
         result.extend_from_slice(chain_name_digest.inner().as_slice());
+
+        result
+    }
+}
+
+impl BlockHeader {
+    /// Returns a sequence of bytes for mapping to a block digest.
+    pub fn get_bytes_for_hash(&self) -> Vec<u8> {
+        let mut result: Vec<u8> = Vec::new();
+        result.extend_from_slice(self.parent_hash().inner().as_slice());
+        result.extend_from_slice(self.state_root_hash().as_slice());
+        result.extend_from_slice(self.body_hash().as_slice());
+
+        result.extend_from_slice(
+            u8::from(self.random_bit().to_owned())
+                .to_le_bytes()
+                .as_slice(),
+        );
+
+        // result.extend_from_slice(self.random_bit());
+        result.extend_from_slice(self.accumulated_seed().as_slice());
+        // result.extend_from_slice(self.era_end().hash(state););
+        // result.extend_from_slice(self.timestamp());
+        result.extend_from_slice(self.era_id().inner().to_le_bytes().as_slice());
+        result.extend_from_slice(self.height().inner().to_le_bytes().as_slice());
+        // result.extend_from_slice(self.protocol_version());
+        result.extend_from_slice(self.proposer().as_slice());
+        result.extend_from_slice(self.current_gas_price().to_le_bytes().as_slice());
+        // result.extend_from_slice(self.last_switch_block_hash().unwrap().inner().as_slice());
 
         result
     }

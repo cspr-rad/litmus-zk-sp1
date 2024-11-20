@@ -61,8 +61,13 @@ impl Block {
 // ------------------------------------------------------------------------
 
 impl Block {
-    /// Returns a digest to be signed over when commiting to finality.
+    /// Returns a sequence of bytes for mapping to a block digest.
+    pub fn get_bytes_for_hash(&self) -> Vec<u8> {
+        unimplemented!("v1 block get_bytes_for_hash");
+    }
+
+    /// Returns a sequence of bytes to be signed over when commiting to block finality.
     pub fn get_bytes_for_finality_signature(&self) -> Vec<u8> {
-        unimplemented!()
+        unimplemented!("v1 block get_bytes_for_finality_signature");
     }
 }
