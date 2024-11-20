@@ -1,32 +1,29 @@
 use crate::fixtures::{
-    wrapped::{WrappedBlockWithProofs, WrappedDigest, WrappedSignature},
+    wrapped::{
+        WrappedBlockV1WithProofs, WrappedBlockV2WithProofs, WrappedDigest, WrappedSignature,
+    },
     Fixtures,
 };
 use sp1_sdk::SP1Stdin;
 
 const VERIFICATION_TYPE_DIGEST: u8 = 0;
 const VERIFICATION_TYPE_SIGNATURE: u8 = 1;
-const VERIFICATION_TYPE_BLOCK_WITH_PROOFS: u8 = 10;
+const VERIFICATION_TYPE_BLOCK_V1_WITH_PROOFS: u8 = 10;
+const VERIFICATION_TYPE_BLOCK_V2_WITH_PROOFS: u8 = 11;
 
 impl From<Fixtures> for Vec<SP1Stdin> {
     fn from(fixtures: Fixtures) -> Self {
         let mut result: Vec<SP1Stdin> = Vec::new();
 
-        // for f in fixtures.set_of_digests {
-        //     println!("{}", f.inner());
-        //     // result.push(SP1Stdin::try_from(&f).unwrap());
-        // }
-        for f in fixtures.set_of_signatures {
-            println!("{}", f.msg());
-            println!("{}", f.sig());
-            println!("{}", f.vkey());
+        for f in fixtures.set_of_digests {
             result.push(SP1Stdin::try_from(&f).unwrap());
-            break;
         }
-        // for f in fixtures.set_of_blocks_with_proofs {
-        //     result.push(SP1Stdin::try_from(&f).unwrap());
-        //     break;
-        // }
+        for f in fixtures.set_of_signatures {
+            result.push(SP1Stdin::try_from(&f).unwrap());
+        }
+        for f in fixtures.set_of_blocks_with_proofs {
+            result.push(SP1Stdin::try_from(&f).unwrap());
+        }
 
         result
     }
@@ -55,10 +52,20 @@ impl From<&WrappedSignature> for SP1Stdin {
     }
 }
 
-impl From<&WrappedBlockWithProofs> for SP1Stdin {
-    fn from(value: &WrappedBlockWithProofs) -> Self {
+impl From<&WrappedBlockV1WithProofs> for SP1Stdin {
+    fn from(value: &WrappedBlockV1WithProofs) -> Self {
         let mut vm_stdin = Self::new();
-        vm_stdin.write(&VERIFICATION_TYPE_BLOCK_WITH_PROOFS);
+        vm_stdin.write(&VERIFICATION_TYPE_BLOCK_V1_WITH_PROOFS);
+        vm_stdin.write_vec(serde_cbor::to_vec(value.inner()).unwrap());
+
+        vm_stdin
+    }
+}
+
+impl From<&WrappedBlockV2WithProofs> for SP1Stdin {
+    fn from(value: &WrappedBlockV2WithProofs) -> Self {
+        let mut vm_stdin = Self::new();
+        vm_stdin.write(&VERIFICATION_TYPE_BLOCK_V2_WITH_PROOFS);
         vm_stdin.write_vec(serde_cbor::to_vec(value.inner()).unwrap());
         vm_stdin.write_vec(serde_cbor::to_vec(value.chain_name_digest()).unwrap());
 

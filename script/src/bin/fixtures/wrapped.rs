@@ -2,12 +2,23 @@ use lcrypto::{Digest, Signature, VerificationKey};
 use ltypes::chain::{BlockWithProofs, ChainNameDigest};
 use serde::{Deserialize, Serialize};
 
-// Wrapped domain type -> foreign trait constraint workaround.
+// V1 block with associated proof set.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct WrappedBlockWithProofs(pub BlockWithProofs, pub ChainNameDigest);
+pub struct WrappedBlockV1WithProofs(pub BlockWithProofs);
 
-impl WrappedBlockWithProofs {
-    // Nmae of chain associated with block.
+impl WrappedBlockV1WithProofs {
+    // Block and set of associated finality signatures.
+    pub(crate) fn inner(&self) -> &BlockWithProofs {
+        &self.0
+    }
+}
+
+// V2 block with associated proof set.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct WrappedBlockV2WithProofs(pub BlockWithProofs, pub ChainNameDigest);
+
+impl WrappedBlockV2WithProofs {
+    // Name of chain associated with block.
     pub(crate) fn chain_name_digest(&self) -> &ChainNameDigest {
         &self.1
     }
@@ -18,6 +29,7 @@ impl WrappedBlockWithProofs {
     }
 }
 
+// Cryptographic digest.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct WrappedDigest(pub lcrypto::Digest, pub Vec<u8>);
 
@@ -33,6 +45,7 @@ impl WrappedDigest {
     }
 }
 
+// Cryptographic signature.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct WrappedSignature(pub Signature, pub VerificationKey, pub Digest);
 

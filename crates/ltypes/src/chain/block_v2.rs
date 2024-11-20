@@ -1,6 +1,8 @@
 extern crate alloc;
 
-use super::{BlockHash, BlockHeight, EraEndV2, EraId, ProtocolVersion, TransactionV2Hash};
+use super::{
+    BlockHash, BlockHeight, ChainNameDigest, EraEndV2, EraId, ProtocolVersion, TransactionV2Hash,
+};
 use crate::crypto::{Digest, PublicKey};
 use crate::misc::Timestamp;
 use alloc::collections::BTreeMap;
@@ -223,36 +225,13 @@ impl BlockHeader {
 
 impl Block {
     /// Returns a digest to be signed over when commiting to finality.
-    pub fn get_bytes_for_finality_signature(&self) -> Vec<u8> {
-        unimplemented!()
-        // let mut result = self.hash().inner().as_slice().to_vec();
-        // result.extend_from_slice(self.header().height().inner().to_le_bytes().as_slice());
-        // result.extend_from_slice(self.header().era_id().inner().to_le_bytes().as_slice());
-        // result.extend_from_slice(
-        //     self.header()
-        //         .chain_name_hash()
-        //         .inner()
-        //         .to_le_bytes()
-        //         .as_slice(),
-        // );
+    pub fn get_bytes_for_finality_signature(&self, chain_name_digest: &ChainNameDigest) -> Vec<u8> {
+        let mut result: Vec<u8> = Vec::new();
+        result.extend_from_slice(self.hash().inner().as_slice());
+        result.extend_from_slice(self.header().height().inner().to_le_bytes().as_slice());
+        result.extend_from_slice(self.header().era_id().inner().to_le_bytes().as_slice());
+        result.extend_from_slice(chain_name_digest.inner().as_slice());
 
-        // [
-        //     self.hash().inner().as_slice().to_vec(),
-        //     self.header().era_id().inner().to_le_bytes().to_vec(),
-        // ]
-        // .concat()
+        result
     }
 }
-
-// fn bytes_to_sign(
-//     block_hash: BlockHash,
-//     block_height: u64,
-//     era_id: EraId,
-//     chain_name_hash: ChainNameDigest,
-// ) -> Vec<u8> {
-//     let mut bytes = block_hash.inner().into_vec();
-//     bytes.extend_from_slice(&block_height.to_le_bytes());
-//     bytes.extend_from_slice(&era_id.to_le_bytes());
-//     bytes.extend_from_slice(chain_name_hash.inner().as_ref());
-//     bytes
-// }

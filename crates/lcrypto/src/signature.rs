@@ -34,7 +34,6 @@ impl Signature {
     /// * `raw_bytes` - A sequence of bytes.
     ///
     pub fn new(raw_bytes: &[u8]) -> Self {
-        println!("dd {}", raw_bytes.len());
         assert!(
             raw_bytes.len() == SIG_SIZE + 1,
             "Invalid signature byte array length"

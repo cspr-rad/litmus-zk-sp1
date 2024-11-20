@@ -1,6 +1,6 @@
 use crate::fixtures::{
     crypto::{Digest as DigestFixture, Fixtures as CryptoFixtures, Signature as SignatureFixture},
-    wrapped::{WrappedBlockWithProofs, WrappedDigest, WrappedSignature},
+    wrapped::{WrappedBlockV2WithProofs, WrappedDigest, WrappedSignature},
     Fixtures,
 };
 use lcrypto::{Digest, Signature, VerificationKey};
@@ -45,15 +45,15 @@ fn get_path_to_fixture(fname: String) -> String {
 
 fn get_set_of_blocks_with_proofs(
     chain_name_digest: &ChainNameDigest,
-) -> Vec<WrappedBlockWithProofs> {
+) -> Vec<WrappedBlockV2WithProofs> {
     fn get_inner(block_id: u32) -> BlockWithProofs {
         let fname = format!("block-{block_id}.json");
 
         serde_json::from_str(&get_fixture_content(fname)).unwrap()
     }
 
-    fn get_one(block_id: u32, chain_name_digest: &ChainNameDigest) -> WrappedBlockWithProofs {
-        WrappedBlockWithProofs(get_inner(block_id), chain_name_digest.to_owned())
+    fn get_one(block_id: u32, chain_name_digest: &ChainNameDigest) -> WrappedBlockV2WithProofs {
+        WrappedBlockV2WithProofs(get_inner(block_id), chain_name_digest.to_owned())
     }
 
     (BLOCK_RANGE_MIN..BLOCK_RANGE_MAX)
