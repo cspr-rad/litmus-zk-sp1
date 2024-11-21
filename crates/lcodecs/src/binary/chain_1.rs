@@ -1,24 +1,21 @@
-use super::utils::Encode;
+use super::utils::{CodecError, Decode, Encode};
 use ltypes::chain::EraId;
 
 impl Encode for EraId {
-    fn to_bytes(&self) -> Result<Vec<u8>, super::utils::CodecError> {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         self.inner().to_bytes()
     }
 
-    fn into_bytes(self) -> Result<Vec<u8>, super::utils::CodecError>
-    where
-        Self: Sized,
-    {
-        unimplemented!("Encode for EraId::into_bytes");
-    }
-
     fn get_encoded_size(&self) -> usize {
-        unimplemented!("Encode for EraId::get_encoded_size");
+        self.inner().get_encoded_size()
     }
+}
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), super::utils::CodecError> {
-        unimplemented!("Encode for EraId::write_bytes");
+impl Decode for EraId {
+    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bytes) = u64::from_bytes(&bytes).unwrap();
+
+        Ok((Self::new(inner), &bytes))
     }
 }
 
@@ -27,17 +24,48 @@ impl Encode for EraId {
 // ------------------------------------------------------------------------
 
 #[cfg(test)]
-mod tests {
-    use std::u64;
+use proptest::prelude::*;
 
-    use super::super::encode;
-    use ltypes::chain::EraId;
+#[cfg(test)]
+mod arbs {
+    use super::*;
 
-    #[test]
-    fn test_new() {
-        for (f, g) in [(u64::MAX, [255; 8]), (u64::MIN, [0; 8])] {
-            let encoded = encode::<EraId>(&EraId::new(f));
-            assert_eq!(encoded, g);
+    #[cfg(test)]
+    pub fn era_id() -> impl Strategy<Value = EraId> {
+        any::<u64>().prop_map(EraId::new)
+    }
+}
+
+#[cfg(test)]
+mod proptests {
+    use super::super::utils::assert_codec;
+    use super::*;
+
+    proptest! {
+        #[test]
+        fn codec_era_id(era_id in arbs::era_id()) {
+            assert_codec(&era_id);
         }
     }
 }
+
+// let serialized = ToBytes::to_bytes(t).expect("Unable to serialize data");
+// assert_eq!(
+//     serialized.len(),
+//     t.serialized_length(),
+//     "\nLength of serialized data: {},\nserialized_length() yielded: {},\n t is {:?}",
+//     serialized.len(),
+//     t.serialized_length(),
+//     t
+// );
+// let mut written_bytes = vec![];
+// t.write_bytes(&mut written_bytes)
+//     .expect("Unable to serialize data via write_bytes");
+// assert_eq!(serialized, written_bytes);
+
+// let deserialized_from_slice =
+//     deserialize_from_slice(&serialized).expect("Unable to deserialize data");
+// assert_eq!(*t, deserialized_from_slice);
+
+// let deserialized = deserialize::<T>(serialized).expect("Unable to deserialize data");
+// assert_eq!(*t, deserialized);

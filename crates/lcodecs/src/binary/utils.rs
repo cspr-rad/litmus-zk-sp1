@@ -1,4 +1,5 @@
 use super::constants;
+use core::fmt::{Debug, Display};
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
@@ -66,6 +67,26 @@ pub(crate) fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<u8>
         return Err(CodecError::OutOfMemory);
     }
     Ok(Vec::with_capacity(serialized_length))
+}
+
+pub(crate) fn assert_codec<T>(entity: &T)
+where
+    T: Decode + Encode + Debug + Display + PartialEq,
+{
+    let encoded = T::to_bytes(&entity).unwrap();
+
+    // Assert size.
+    let size = T::get_encoded_size(&entity);
+    assert_eq!(size, encoded.len(), "Size mismatch");
+
+    let mut written_bytes = vec![];
+    entity.write_bytes(&mut written_bytes).unwrap();
+    assert_eq!(encoded, written_bytes);
+
+    // Assert decoding.
+    let (decoded, bytes) = T::from_bytes(&encoded).unwrap();
+    assert_eq!(entity, &decoded);
+    assert_eq!(bytes.len(), 0);
 }
 
 /// Serializes a slice of bytes with a length prefix.

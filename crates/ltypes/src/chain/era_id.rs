@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 // ------------------------------------------------------------------------
 // Declarations.
@@ -42,6 +43,16 @@ impl EraId {
 }
 
 // ------------------------------------------------------------------------
+// Traits.
+// ------------------------------------------------------------------------
+
+impl fmt::Display for EraId {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "ERA-ID::{}", self.inner())
+    }
+}
+
+// ------------------------------------------------------------------------
 // Tests.
 // ------------------------------------------------------------------------
 
@@ -50,10 +61,6 @@ use proptest::prelude::*;
 
 #[cfg(test)]
 use rand::Rng;
-
-// pub fn era_id_arb() -> impl Strategy<Value = EraId> {
-//     any::<u64>().prop_map(EraId::from)
-// }
 
 #[cfg(test)]
 impl EraId {
