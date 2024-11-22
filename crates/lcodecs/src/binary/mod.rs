@@ -1,11 +1,7 @@
-mod bites;
-mod chain_1;
-mod chain_2;
+mod chain;
 mod constants;
 mod crypto;
-mod primitives_1;
-mod primitives_2;
-mod primitives_3;
+mod primitives;
 mod utils;
 
 pub use utils::{CodecError, Decode, Encode};

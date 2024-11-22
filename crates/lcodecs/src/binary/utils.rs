@@ -128,38 +128,6 @@ pub(crate) fn safe_split_at(bytes: &[u8], n: usize) -> Result<(&[u8], &[u8]), Co
     }
 }
 
-/// Asserts that `t` can be serialized and when deserialized back into an instance `T` compares
-/// equal to `t`.
-///
-/// Also asserts that `t.serialized_length()` is the same as the actual number of bytes of the
-/// serialized `t` instance.
-#[cfg(any(feature = "testing", test))]
-#[track_caller]
-pub fn test_serialization_roundtrip<T>(t: &T)
-where
-    T: Encode + Decode + PartialEq,
-{
-    let encoded = Encode::to_bytes(t).expect("Unable to serialize data");
-    assert_eq!(
-        encoded.len(),
-        t.get_encoded_size(),
-        "\nLength of serialized data: {},\nserialized_length() yielded: {},\n t is XXXXX",
-        encoded.len(),
-        t.get_encoded_size(),
-    );
-
-    let mut written_bytes = vec![];
-    t.write_bytes(&mut written_bytes)
-        .expect("Unable to serialize data via write_bytes");
-    assert_eq!(encoded, written_bytes);
-
-    // let decoded = decode_from_slice(&serialized).expect("Unable to deserialize data");
-    // assert_eq!(*t, decoded);
-
-    // let decoded = decode::<T>(encoded).expect("Unable to deserialize data");
-    // assert_eq!(*t, decoded);
-}
-
 /// Returns a `Vec<u8>` initialized with sufficient capacity to hold `to_be_serialized` after
 /// serialization.
 pub(crate) fn unchecked_allocate_buffer<T: Encode>(to_be_serialized: &T) -> Vec<u8> {
