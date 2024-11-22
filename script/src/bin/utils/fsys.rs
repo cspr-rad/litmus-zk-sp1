@@ -3,8 +3,10 @@ use crate::fixtures::{
     wrapped::{WrappedBlockV2WithProofs, WrappedDigest, WrappedSignature},
     Fixtures,
 };
-use lcrypto::{Digest, Signature, VerificationKey};
-use ltypes::chain::{BlockHash, BlockWithProofs, ChainNameDigest};
+use ltypes::{
+    chain::{BlockHash, BlockWithProofs, ChainNameDigest},
+    crypto::{Digest, Signature, VerificationKey},
+};
 use std::fs;
 
 // TODO: scan folder and derive.

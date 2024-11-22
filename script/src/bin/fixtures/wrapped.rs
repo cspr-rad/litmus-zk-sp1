@@ -1,5 +1,7 @@
-use lcrypto::{Digest, Signature, VerificationKey};
-use ltypes::chain::{BlockWithProofs, ChainNameDigest};
+use ltypes::{
+    chain::{BlockWithProofs, ChainNameDigest},
+    crypto::{Digest, Signature, VerificationKey},
+};
 use serde::{Deserialize, Serialize};
 
 // V1 block with associated proof set.
