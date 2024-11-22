@@ -1,4 +1,4 @@
-use crate::misc::SemanticVersion;
+use crate::primitives::SemanticVersion;
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------

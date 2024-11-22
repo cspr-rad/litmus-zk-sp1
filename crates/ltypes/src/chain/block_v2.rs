@@ -1,14 +1,15 @@
 extern crate alloc;
 
-use std::hash::Hash;
-
-use super::{
-    BlockHash, BlockHeight, ChainNameDigest, EraEndV2, EraId, ProtocolVersion, TransactionV2Hash,
+use crate::{
+    chain::{
+        BlockHash, BlockHeight, ChainNameDigest, EraEndV2, EraId, ProtocolVersion,
+        TransactionV2Hash,
+    },
+    crypto::{Digest, PublicKey},
 };
-use crate::crypto::{Digest, PublicKey};
-use crate::misc::Timestamp;
 use alloc::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
+use std::hash::Hash;
 
 // ------------------------------------------------------------------------
 // Declarations.
