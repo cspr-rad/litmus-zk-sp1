@@ -7,4 +7,3 @@ edition = "2021"
 lcodecs = { path = "../lcodecs" }
 lcrypto = { path = "../lcrypto" }
 ltypes = { path = "../ltypes" }
-lutils = { path = "../lutils" }

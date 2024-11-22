@@ -6,7 +6,6 @@ edition = "2021"
 [dependencies]
 lcrypto = { path = "../lcrypto" }
 ltypes = { path = "../ltypes" }
-lutils = { path = "../lutils" }
 serde.workspace = true
 
 [dev-dependencies]

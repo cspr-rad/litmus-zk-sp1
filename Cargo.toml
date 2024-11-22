@@ -5,7 +5,6 @@ members = [
     "crates/lcodecs",
     "crates/lcrypto",
     "crates/ltypes",
-    "crates/lutils",
     "crates/lverifiers",
     "hack",
     "program",

@@ -1,5 +1,5 @@
 use crate::binary::utils::{safe_split_at, CodecError, Decode, Encode};
-use lutils::bites::{Bytes32, Bytes33, Bytes64, SIZE_32, SIZE_33, SIZE_64};
+use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64, SIZE_32, SIZE_33, SIZE_64};
 
 // ------------------------------------------------------------------------
 // Type: [Byte; N].

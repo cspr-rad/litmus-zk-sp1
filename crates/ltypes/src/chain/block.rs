@@ -1,5 +1,4 @@
 use super::{BlockHash, BlockV1, BlockV2};
-use crate::crypto::Digest;
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------
