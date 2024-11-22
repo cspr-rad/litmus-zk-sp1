@@ -1,6 +1,7 @@
 use super::digest::Digest;
 use super::verification_key::VerificationKey;
-use lutils::bites::Bytes64;
+use crate::primitives::bites::Bytes64;
+use lcrypto;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 
@@ -112,28 +113,13 @@ impl Signature {
         match self {
             Signature::ED25519(sig) => match vkey {
                 VerificationKey::ED25519(vk) => {
-                    use ed25519_consensus::{Signature, VerificationKey};
-
-                    let sig = Signature::try_from(sig.as_slice()).unwrap();
-                    let vkey = VerificationKey::try_from(vk.as_slice()).unwrap();
-                    match vkey.verify(&sig, &msg) {
-                        Result::Ok(_) => {}
-                        Result::Err(_) => panic!("ED25519 signature verification failure"),
-                    }
+                    lcrypto::verify_signature_ed25519(&sig.data(), &vk.data(), msg)
                 }
                 _ => panic!("Invalid verification key type"),
             },
             Signature::SECP256K1(sig) => match vkey {
                 VerificationKey::SECP256K1(vk) => {
-                    use secp256k1::{ecdsa::Signature, Message, PublicKey, Secp256k1};
-
-                    let msg = Message::from_digest_slice(msg).unwrap();
-                    let pbk = PublicKey::from_slice(vk.as_slice()).unwrap();
-                    let sig = Signature::from_compact(&sig.as_slice()).unwrap();
-                    match Secp256k1::new().verify_ecdsa(&msg, &sig, &pbk) {
-                        Result::Ok(_) => {}
-                        Result::Err(_) => panic!("SECP256K1 signature verification failure"),
-                    }
+                    lcrypto::verify_signature_secp256k1(&sig.data(), &vk.data(), msg)
                 }
                 _ => panic!("Invalid verification key type"),
             },

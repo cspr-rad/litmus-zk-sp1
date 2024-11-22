@@ -1,4 +1,4 @@
-use lutils::bites::{Bytes32, Bytes33};
+use crate::primitives::bites::{Bytes32, Bytes33};
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 

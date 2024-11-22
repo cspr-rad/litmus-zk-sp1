@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 hex.workspace = true
 serde.workspace = true
-lcrypto1 = { path = "../lcrypto1" }
+lcrypto = { path = "../lcrypto" }
 serde_bytes = "0.11.15"
 
 [dev-dependencies]
