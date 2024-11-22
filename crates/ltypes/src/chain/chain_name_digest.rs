@@ -1,4 +1,4 @@
-use lcrypto::Digest;
+use crate::crypto::Digest;
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------

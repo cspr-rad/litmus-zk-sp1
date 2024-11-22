@@ -2,6 +2,8 @@ use lutils::bites::Bytes32;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 
+use lcrypto1;
+
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
@@ -66,17 +68,7 @@ impl Digest {
     /// * `data` - Data against which to generate a blake2b digest.
     ///
     pub fn get_blake2b(data: Vec<u8>) -> Self {
-        use blake2::{
-            digest::{Update, VariableOutput},
-            Blake2bVar,
-        };
-
-        let mut hasher = Blake2bVar::new(Bytes32::len()).unwrap();
-        hasher.update(&data);
-        let mut buffer = Bytes32::default().data();
-        hasher.finalize_variable(&mut buffer).unwrap();
-
-        Self::BLAKE2B(Bytes32::new(buffer))
+        Self::BLAKE2B(Bytes32::new(lcrypto1::get_hash_blake2b(data)))
     }
 
     /// Verifies digest against passed data.

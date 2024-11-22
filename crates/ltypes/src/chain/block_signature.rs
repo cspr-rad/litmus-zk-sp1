@@ -1,4 +1,4 @@
-use lcrypto::{Signature, VerificationKey};
+use crate::crypto::{Signature, VerificationKey};
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------

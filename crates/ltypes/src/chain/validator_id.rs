@@ -1,4 +1,4 @@
-use lcrypto::VerificationKey;
+use crate::crypto::VerificationKey;
 
 // ------------------------------------------------------------------------
 // Declarations.

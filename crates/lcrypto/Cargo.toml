@@ -4,12 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-blake2 = "0.11.0-pre.3"
 ed25519-consensus = "2.1.0"
 hex.workspace = true
 lutils = { path = "../lutils" }
 secp256k1 = { version = "0.29", features = ["recovery", "global-context"] }
 serde.workspace = true
+lcrypto1 = { path = "../lcrypto1" }
 
 [dev-dependencies]
 rand.workspace = true

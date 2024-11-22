@@ -3,7 +3,7 @@ resolver = "2"
 # exclude = ["hack"]
 members = [
     "crates/lcodecs",
-    "crates/lcrypto",
+    "crates/lcrypto", "crates/lcrypto1",
     "crates/ltypes",
     "crates/lutils",
     "crates/lverifiers",
