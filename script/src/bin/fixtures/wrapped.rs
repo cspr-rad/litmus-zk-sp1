@@ -33,11 +33,11 @@ impl WrappedBlockV2WithProofs {
 
 // Cryptographic digest.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct WrappedDigest(pub lcrypto::Digest, pub Vec<u8>);
+pub struct WrappedDigest(pub Digest, pub Vec<u8>);
 
 impl WrappedDigest {
     // Computed digest.
-    pub(crate) fn inner(&self) -> &lcrypto::Digest {
+    pub(crate) fn inner(&self) -> &Digest {
         &self.0
     }
 
