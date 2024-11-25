@@ -22,3 +22,6 @@ Cargo.lock
 
 # Hacking folder.
 /hack
+
+# Local todo
+TODO.txt

@@ -53,19 +53,6 @@ impl Add for Motes {
 // Traits -> serde.
 // ------------------------------------------------------------------------
 
-// impl<'de> Deserialize<'de> for Motes {
-//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-//     where
-//         D: Deserializer<'de>,
-//     {
-//         let raw: &str = Deserialize::deserialize(deserializer).unwrap();
-//         println!("123 {:?}", raw);
-
-//         let parsed: u64 = raw.parse().unwrap();
-//         Ok(Motes::new(parsed))
-//     }
-// }
-
 impl<'de> Deserialize<'de> for Motes {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

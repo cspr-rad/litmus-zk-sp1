@@ -257,13 +257,13 @@ impl BlockHeader {
         result.extend_from_slice(self.state_root_hash().as_slice());
         result.extend_from_slice(self.body_hash().as_slice());
 
+        // result.extend_from_slice(self.random_bit());
         result.extend_from_slice(
             u8::from(self.random_bit().to_owned())
                 .to_le_bytes()
                 .as_slice(),
         );
 
-        // result.extend_from_slice(self.random_bit());
         result.extend_from_slice(self.accumulated_seed().as_slice());
         // result.extend_from_slice(self.era_end().hash(state););
         // result.extend_from_slice(self.timestamp());

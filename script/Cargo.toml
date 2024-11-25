@@ -11,6 +11,7 @@ path = "src/bin/main.rs"
 [dependencies]
 clap = { version = "4.0", features = ["derive", "env"] }
 hex.workspace = true
+humantime = "2.1.0"
 lcrypto = { path = "../crates/lcrypto" }
 ltypes = { path = "../crates/ltypes" }
 serde.workspace = true
