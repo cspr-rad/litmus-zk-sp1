@@ -1,8 +1,5 @@
-use crate::fixtures::{
-    wrapped::{
-        WrappedBlockV1WithProofs, WrappedBlockV2WithProofs, WrappedDigest, WrappedSignature,
-    },
-    Fixtures,
+use crate::fixtures::types::{
+    Fixtures, WrappedBlockV1WithProofs, WrappedBlockV2WithProofs, WrappedDigest, WrappedSignature,
 };
 use sp1_sdk::SP1Stdin;
 
@@ -15,12 +12,12 @@ impl From<Fixtures> for Vec<SP1Stdin> {
     fn from(fixtures: Fixtures) -> Self {
         let mut result: Vec<SP1Stdin> = Vec::new();
 
-        for f in fixtures.set_of_digests {
-            result.push(SP1Stdin::try_from(&f).unwrap());
-        }
-        for f in fixtures.set_of_signatures {
-            result.push(SP1Stdin::try_from(&f).unwrap());
-        }
+        // for f in fixtures.set_of_digests {
+        //     result.push(SP1Stdin::try_from(&f).unwrap());
+        // }
+        // for f in fixtures.set_of_signatures {
+        //     result.push(SP1Stdin::try_from(&f).unwrap());
+        // }
         for f in fixtures.set_of_blocks_with_proofs {
             result.push(SP1Stdin::try_from(&f).unwrap());
         }

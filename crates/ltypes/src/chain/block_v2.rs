@@ -6,6 +6,7 @@ use crate::{
         TransactionV2Hash,
     },
     crypto::{Digest, PublicKey},
+    primitives::time::Timestamp,
 };
 use alloc::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
@@ -44,42 +45,42 @@ pub struct BlockHeader {
     /// A seed needed for initializing a future era.
     accumulated_seed: Digest,
 
-    /// The hash of the block's body.
+    /// Digest over block's body.
     body_hash: Digest,
 
-    /// The gas price of the era
+    /// Era specific gas price.
     current_gas_price: u8,
 
-    /// The `EraEnd` of a block if it is a switch block.
+    /// `EraEnd` report (if it is a switch block).
     era_end: Option<EraEndV2>,
 
-    /// The era ID in which this block was created.
+    /// ID of era at point in chain time when block was created.
     era_id: EraId,
 
-    /// The height of this block, i.e. the number of ancestors.
+    /// Height of this block, i.e. the number of ancestors.
     height: BlockHeight,
 
-    /// The most recent switch block hash.
+    /// Most recent switch block hash.
     last_switch_block_hash: Option<BlockHash>,
 
-    /// The parent block's hash.
+    /// Parent block hash.
     parent_hash: BlockHash,
 
-    /// The public key of the validator which proposed the block.
+    /// Public key of validator granted protocol permission to propose block.
     proposer: PublicKey,
 
-    /// The protocol version of the network from when this block was created.
+    /// Protocol version of network at point of block creation.
     protocol_version: ProtocolVersion,
 
     /// A random bit needed for initializing a future era.
     random_bit: bool,
 
-    /// The root hash of global state after the deploys in this block have been executed.
+    /// Root hash of global state after deploys in this block have been executed.
     state_root_hash: Digest,
-}
 
-// The timestamp from when the block was proposed.
-// timestamp: Timestamp,
+    /// Timestamp at which block was created.
+    timestamp: Timestamp,
+}
 
 // ------------------------------------------------------------------------
 // Constructors.
@@ -119,7 +120,7 @@ impl BlockHeader {
         protocol_version: ProtocolVersion,
         random_bit: bool,
         state_root_hash: Digest,
-        // timestamp: Timestamp,
+        timestamp: Timestamp,
     ) -> Self {
         // TODO: validate inputs.
         Self {
@@ -135,7 +136,7 @@ impl BlockHeader {
             protocol_version,
             random_bit,
             state_root_hash,
-            // timestamp,
+            timestamp,
         }
     }
 }
@@ -217,9 +218,9 @@ impl BlockHeader {
         &self.state_root_hash
     }
 
-    // pub fn timestamp(&self) -> &Timestamp {
-    //     &self.timestamp
-    // }
+    pub fn timestamp(&self) -> &Timestamp {
+        &self.timestamp
+    }
 }
 
 // ------------------------------------------------------------------------
@@ -266,7 +267,7 @@ impl BlockHeader {
 
         result.extend_from_slice(self.accumulated_seed().as_slice());
         // result.extend_from_slice(self.era_end().hash(state););
-        // result.extend_from_slice(self.timestamp());
+        result.extend_from_slice(self.timestamp().inner().to_le_bytes().as_slice());
         result.extend_from_slice(self.era_id().inner().to_le_bytes().as_slice());
         result.extend_from_slice(self.height().inner().to_le_bytes().as_slice());
         // result.extend_from_slice(self.protocol_version());

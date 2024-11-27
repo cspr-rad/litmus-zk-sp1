@@ -1,4 +1,5 @@
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
+use std::fmt;
 
 // ------------------------------------------------------------------------
 // Declarations.
@@ -40,17 +41,33 @@ impl<'de> Deserialize<'de> for SemanticVersion {
     where
         D: Deserializer<'de>,
     {
-        let raw: &str = Deserialize::deserialize(deserializer).unwrap();
-        let tokens: Vec<&str> = raw.split('.').collect();
-        if tokens.len() != 3 {
-            panic!("SemanticVersion deserialization error.")
+        struct SemanticVersionVistor;
+
+        impl<'de> Visitor<'de> for SemanticVersionVistor {
+            type Value = SemanticVersion;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("supported formats: 64 char hex encoded string | 32 byte array")
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                let tokens: Vec<&str> = v.split('.').collect();
+                if tokens.len() != 3 {
+                    panic!("SemanticVersion deserialization error.")
+                }
+
+                Ok(SemanticVersion {
+                    major: tokens[0].parse().unwrap(),
+                    minor: tokens[1].parse().unwrap(),
+                    patch: tokens[2].parse().unwrap(),
+                })
+            }
         }
 
-        Ok(SemanticVersion {
-            major: tokens[0].parse().unwrap(),
-            minor: tokens[1].parse().unwrap(),
-            patch: tokens[2].parse().unwrap(),
-        })
+        deserializer.deserialize_any(SemanticVersionVistor)
     }
 }
 

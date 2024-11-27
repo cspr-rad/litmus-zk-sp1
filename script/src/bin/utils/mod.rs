@@ -1,4 +1,2 @@
-mod fsys;
+pub(crate) mod fsys;
 mod inputs;
-
-pub use fsys::get_fixtures;

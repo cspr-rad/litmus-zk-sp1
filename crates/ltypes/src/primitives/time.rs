@@ -55,7 +55,7 @@ impl TimeDiff {
     pub const MIN: TimeDiff = TimeDiff(Duration::from_secs(0));
 
     /// Returns time difference as number of milliseconds since Unix epoch
-    pub const fn inner(&self) -> Duration {
+    pub fn inner(&self) -> Duration {
         self.0
     }
 }
@@ -68,7 +68,7 @@ impl Timestamp {
     pub const MIN: Timestamp = Timestamp(u128::MIN);
 
     /// Returns time difference as number of milliseconds since Unix epoch
-    pub const fn inner(&self) -> u128 {
+    pub fn inner(&self) -> u128 {
         self.0
     }
 }
@@ -78,13 +78,13 @@ impl Timestamp {
 // ------------------------------------------------------------------------
 
 impl Display for TimeDiff {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+    fn fmt(&self, _: &mut Formatter) -> fmt::Result {
         unimplemented!();
     }
 }
 
 impl Display for Timestamp {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+    fn fmt(&self, _: &mut Formatter) -> fmt::Result {
         unimplemented!();
     }
 }
@@ -98,24 +98,6 @@ impl From<&str> for Timestamp {
             .as_millis() as u128;
 
         Self(inner)
-    }
-}
-
-impl From<&[u8]> for Timestamp {
-    fn from(value: &[u8]) -> Self {
-        unimplemented!()
-    }
-}
-
-impl From<Vec<u8>> for Timestamp {
-    fn from(value: Vec<u8>) -> Self {
-        Self::from(value.as_slice())
-    }
-}
-
-impl From<&Vec<u8>> for Timestamp {
-    fn from(value: &Vec<u8>) -> Self {
-        Self::from(value.as_slice())
     }
 }
 
@@ -134,14 +116,7 @@ impl<'de> Deserialize<'de> for Timestamp {
             type Value = Timestamp;
 
             fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("milliseconds since Unix epoch")
-            }
-
-            fn visit_bytes<E>(self, v: &[u8]) -> Result<Self::Value, E>
-            where
-                E: serde::de::Error,
-            {
-                Ok(Timestamp::from(v))
+                formatter.write_str("utf-8 representation of milliseconds since Unix epoch")
             }
 
             fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
@@ -161,7 +136,7 @@ impl Serialize for Timestamp {
     where
         S: Serializer,
     {
-        unimplemented!()
+        serializer.serialize_u128(self.inner())
     }
 }
 

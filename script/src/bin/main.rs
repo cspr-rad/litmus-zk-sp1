@@ -30,7 +30,7 @@ fn main() {
     }
 
     // Set stdin set ... i.e. a sequence of ZK-VM prover inputs.
-    let set_of_stdin = Vec::<SP1Stdin>::from(utils::get_fixtures());
+    let set_of_stdin = Vec::<SP1Stdin>::from(fixtures::get_fixtures());
 
     // Invoke stdin set.
     for stdin in set_of_stdin {

@@ -1,3 +1,5 @@
+use crate::binary::decode;
+
 use super::super::utils::{CodecError, Decode, Encode};
 use ltypes::primitives::time::Timestamp;
 
@@ -7,25 +9,23 @@ use ltypes::primitives::time::Timestamp;
 
 impl Decode for Timestamp {
     #[inline(always)]
-    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        unimplemented!();
+    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bytes) = u128::from_bytes(&bytes).unwrap();
+
+        Ok((Self::new(inner), &bytes))
     }
 }
 
 impl Encode for Timestamp {
     fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        match self {
-            unimplemented!()
-        }
+        unimplemented!();
     }
 
     fn get_encoded_size(&self) -> usize {
-        match self {
-            unimplemented!()
-        }
+        unimplemented!();
     }
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        unimplemented!()
+        unimplemented!();
     }
 }

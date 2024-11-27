@@ -15,7 +15,7 @@ pub fn verify_block_v1_with_proofs(_: BlockWithProofs) {
 pub fn verify_block_v2_with_proofs(
     entity: BlockWithProofs,
     chain_name_digest: ChainNameDigest,
-    era_consensus_info: EraConsensusInfo,
+    era_consensus_info: Option<EraConsensusInfo>,
 ) {
     // Exception if recomputed block hash is not equal to actual block hash.
 

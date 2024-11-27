@@ -26,6 +26,14 @@ impl Encode for BlockHash {
 // Type: EraId.
 // ------------------------------------------------------------------------
 
+impl Decode for EraId {
+    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bytes) = u64::from_bytes(&bytes).unwrap();
+
+        Ok((Self::new(inner), &bytes))
+    }
+}
+
 impl Encode for EraId {
     fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         self.inner().to_bytes()
@@ -33,14 +41,6 @@ impl Encode for EraId {
 
     fn get_encoded_size(&self) -> usize {
         self.inner().get_encoded_size()
-    }
-}
-
-impl Decode for EraId {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, bytes) = u64::from_bytes(&bytes).unwrap();
-
-        Ok((Self::new(inner), &bytes))
     }
 }
 

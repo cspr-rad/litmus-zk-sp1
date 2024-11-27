@@ -14,5 +14,5 @@ pub fn verify_block_v2_with_proofs(
     let chain_name_digest: ChainNameDigest =
         serde_cbor::from_slice(&encoded_chain_name_digest).unwrap();
 
-    lverifiers::verify_block_v2_with_proofs(block_with_proofs, chain_name_digest);
+    lverifiers::verify_block_v2_with_proofs(block_with_proofs, chain_name_digest, None);
 }
