@@ -1,5 +1,5 @@
 use super::super::constants;
-use super::super::utils::{safe_split_at, CodecError, Decode, Encode};
+use super::super::utils::{deconstruct_bytes, CodecError, Decode, Encode};
 
 // ------------------------------------------------------------------------
 // Type: i32.
@@ -7,10 +7,9 @@ use super::super::utils::{safe_split_at, CodecError, Decode, Encode};
 
 impl Decode for i32 {
     fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let mut result = [0u8; constants::ENCODED_SIZE_I32];
-        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_I32)?;
-        result.copy_from_slice(bytes);
-        Ok((<i32>::from_le_bytes(result), remainder))
+        let (bytes, remainder) = deconstruct_bytes::<4>(&bytes).unwrap();
+
+        Ok((<i32>::from_le_bytes(bytes), remainder))
     }
 }
 
@@ -35,10 +34,9 @@ impl Encode for i32 {
 
 impl Decode for i64 {
     fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let mut result = [0u8; constants::ENCODED_SIZE_I64];
-        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_I64)?;
-        result.copy_from_slice(bytes);
-        Ok((<i64>::from_le_bytes(result), remainder))
+        let (bytes, remainder) = deconstruct_bytes::<8>(&bytes).unwrap();
+
+        Ok((<i64>::from_le_bytes(bytes), remainder))
     }
 }
 
@@ -91,10 +89,9 @@ impl Encode for u8 {
 
 impl Decode for u16 {
     fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let mut result = [0u8; constants::ENCODED_SIZE_U16];
-        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_U16)?;
-        result.copy_from_slice(bytes);
-        Ok((<u16>::from_le_bytes(result), remainder))
+        let (bytes, remainder) = deconstruct_bytes::<2>(&bytes).unwrap();
+
+        Ok((<u16>::from_le_bytes(bytes), remainder))
     }
 }
 
@@ -119,10 +116,9 @@ impl Encode for u16 {
 
 impl Decode for u32 {
     fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let mut result = [0u8; constants::ENCODED_SIZE_U32];
-        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_U32)?;
-        result.copy_from_slice(bytes);
-        Ok((<u32>::from_le_bytes(result), remainder))
+        let (bytes, remainder) = deconstruct_bytes::<4>(&bytes).unwrap();
+
+        Ok((<u32>::from_le_bytes(bytes), remainder))
     }
 }
 
@@ -147,10 +143,9 @@ impl Encode for u32 {
 
 impl Decode for u64 {
     fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let mut result = [0u8; constants::ENCODED_SIZE_U64];
-        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_U64)?;
-        result.copy_from_slice(bytes);
-        Ok((<u64>::from_le_bytes(result), remainder))
+        let (bytes, remainder) = deconstruct_bytes::<8>(&bytes).unwrap();
+
+        Ok((<u64>::from_le_bytes(bytes), remainder))
     }
 }
 
@@ -175,10 +170,9 @@ impl Encode for u64 {
 
 impl Decode for u128 {
     fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let mut result = [0u8; constants::ENCODED_SIZE_U128];
-        let (bytes, remainder) = safe_split_at(bytes, constants::ENCODED_SIZE_U128)?;
-        result.copy_from_slice(bytes);
-        Ok((<u128>::from_le_bytes(result), remainder))
+        let (bytes, remainder) = deconstruct_bytes::<16>(&bytes).unwrap();
+
+        Ok((<u128>::from_le_bytes(bytes), remainder))
     }
 }
 

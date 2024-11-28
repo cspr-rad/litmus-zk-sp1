@@ -69,6 +69,7 @@ pub(crate) fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<u8>
     Ok(Vec::with_capacity(serialized_length))
 }
 
+/// Asserts codec roundtrip over an instance of an entity of type T.
 pub(crate) fn assert_codec<T>(entity: &T)
 where
     T: Decode + Encode + Debug + Display + PartialEq,
@@ -87,6 +88,17 @@ where
     let (decoded, bytes) = T::from_bytes(&encoded).unwrap();
     assert_eq!(entity, &decoded);
     assert_eq!(bytes.len(), 0);
+}
+
+/// Deconstructs a byte sequence into left & right sequences at a certain index.
+pub(crate) fn deconstruct_bytes<const N: usize>(
+    bytes: &[u8],
+) -> Result<([u8; N], &[u8]), CodecError> {
+    let mut result = [0u8; N];
+    let (bytes, remainder) = safe_split_at(bytes, N)?;
+    result.copy_from_slice(bytes);
+
+    Ok((result, remainder))
 }
 
 /// Serializes a slice of bytes with a length prefix.

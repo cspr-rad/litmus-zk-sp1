@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 lcrypto = { path = "../lcrypto" }
 ltypes = { path = "../ltypes" }
+num = "0.4.3"
 serde.workspace = true
 
 [dev-dependencies]

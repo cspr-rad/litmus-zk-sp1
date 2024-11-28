@@ -89,6 +89,12 @@ impl Display for Timestamp {
     }
 }
 
+impl From<u128> for Timestamp {
+    fn from(value: u128) -> Self {
+        Self(value)
+    }
+}
+
 impl From<&str> for Timestamp {
     fn from(value: &str) -> Self {
         let system_time = humantime::parse_rfc3339_weak(value).unwrap();
@@ -97,7 +103,7 @@ impl From<&str> for Timestamp {
             .unwrap()
             .as_millis() as u128;
 
-        Self(inner)
+        Self::from(inner)
     }
 }
 
@@ -119,6 +125,16 @@ impl<'de> Deserialize<'de> for Timestamp {
                 formatter.write_str("utf-8 representation of milliseconds since Unix epoch")
             }
 
+            fn visit_bytes<E>(self, v: &[u8]) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                unimplemented!()
+                // let g = u128::from_le_bytes(v);
+
+                // Ok(Timestamp::from(u128::from_le_bytes(&v)))
+            }
+
             fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
@@ -136,7 +152,7 @@ impl Serialize for Timestamp {
     where
         S: Serializer,
     {
-        serializer.serialize_u128(self.inner())
+        serializer.serialize_bytes(&self.inner().to_le_bytes())
     }
 }
 
