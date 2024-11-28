@@ -1,4 +1,5 @@
-use ltypes::chain::{Block, BlockWithProofs, ChainNameDigest, EraConsensusInfo};
+use lcodecs::binary::Encode;
+use ltypes::chain::{Block, BlockHash, BlockWithProofs, ChainNameDigest, EraConsensusInfo};
 
 pub fn verify_block_v1_with_proofs(_: BlockWithProofs) {
     unimplemented!("verify_block_v1_with_proofs");
@@ -13,18 +14,22 @@ pub fn verify_block_v1_with_proofs(_: BlockWithProofs) {
 /// * `era_consensus_info` - Information pulled from a previous era necessary to tally finality signatures.
 ///
 pub fn verify_block_v2_with_proofs(
-    entity: BlockWithProofs,
+    block_with_proofs: BlockWithProofs,
     chain_name_digest: ChainNameDigest,
     era_consensus_info: Option<EraConsensusInfo>,
 ) {
-    // Exception if recomputed block hash is not equal to actual block hash.
-
-    // 1. Validate finality signatures.
-    let msg = match entity.block() {
-        Block::V2(inner) => inner.get_bytes_for_finality_signature(&chain_name_digest),
+    // Destructure inner block.
+    let block = match block_with_proofs.block() {
+        Block::V2(inner) => inner,
         _ => panic!("Invalid block version."),
     };
-    for proof in entity.proofs() {
+
+    // Error if invalid recomputed block hash.
+    assert_eq!(block.hash(), &BlockHash::from(block.get_bytes_for_hash()));
+
+    // Error if invalid finality signature.
+    let msg = block.get_bytes_for_finality_signature(&chain_name_digest);
+    for proof in block_with_proofs.proofs() {
         proof.signature().verify(proof.verification_key(), &msg);
     }
 }

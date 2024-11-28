@@ -56,7 +56,7 @@ mod arbs {
     use super::*;
 
     #[cfg(test)]
-    pub fn era_id() -> impl Strategy<Value = EraId> {
+    pub(super) fn era_id() -> impl Strategy<Value = EraId> {
         any::<u64>().prop_map(EraId::new)
     }
 }

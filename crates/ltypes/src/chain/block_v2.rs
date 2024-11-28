@@ -231,9 +231,7 @@ impl Block {
     /// Returns a sequence of bytes for mapping to a block digest.
     pub fn get_bytes_for_hash(&self) -> Vec<u8> {
         let mut result: Vec<u8> = Vec::new();
-        result.extend_from_slice(self.hash().inner().as_slice());
-        result.extend_from_slice(self.header().height().inner().to_le_bytes().as_slice());
-        result.extend_from_slice(self.header().era_id().inner().to_le_bytes().as_slice());
+        result.extend_from_slice(&self.header().get_bytes_for_hash());
 
         result
     }
@@ -257,14 +255,11 @@ impl BlockHeader {
         result.extend_from_slice(self.parent_hash().inner().as_slice());
         result.extend_from_slice(self.state_root_hash().as_slice());
         result.extend_from_slice(self.body_hash().as_slice());
-
-        // result.extend_from_slice(self.random_bit());
         result.extend_from_slice(
             u8::from(self.random_bit().to_owned())
                 .to_le_bytes()
                 .as_slice(),
         );
-
         result.extend_from_slice(self.accumulated_seed().as_slice());
         // result.extend_from_slice(self.era_end().hash(state););
         result.extend_from_slice(self.timestamp().inner().to_le_bytes().as_slice());

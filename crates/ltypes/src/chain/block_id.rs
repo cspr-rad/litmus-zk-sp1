@@ -74,3 +74,27 @@ impl fmt::Display for BlockHeight {
         write!(f, "{}", self.inner())
     }
 }
+
+impl From<&str> for BlockHash {
+    fn from(value: &str) -> Self {
+        Self::new(Digest::from(value))
+    }
+}
+
+impl From<&[u8]> for BlockHash {
+    fn from(value: &[u8]) -> Self {
+        Self::new(Digest::from(value))
+    }
+}
+
+impl From<Vec<u8>> for BlockHash {
+    fn from(value: Vec<u8>) -> Self {
+        Self::from(value.as_slice())
+    }
+}
+
+impl From<&Vec<u8>> for BlockHash {
+    fn from(value: &Vec<u8>) -> Self {
+        Self::from(value.as_slice())
+    }
+}

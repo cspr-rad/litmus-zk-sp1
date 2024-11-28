@@ -1,5 +1,5 @@
 use crate::binary::utils::{safe_split_at, CodecError, Decode, Encode};
-use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64, SIZE_32, SIZE_33, SIZE_64};
+use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64};
 
 // ------------------------------------------------------------------------
 // Type: [Byte; N].
@@ -8,7 +8,6 @@ use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64, SIZE_32, SIZE_33, SIZ
 impl<const N: usize> Decode for [u8; N] {
     fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (bytes, rem) = safe_split_at(bytes, N)?;
-        // SAFETY: safe_split_at makes sure `bytes` is exactly `COUNT` bytes.
         let ptr = bytes.as_ptr() as *const [u8; N];
         let result = unsafe { *ptr };
         Ok((result, rem))
@@ -46,7 +45,7 @@ impl Encode for Bytes32 {
     }
 
     fn get_encoded_size(&self) -> usize {
-        SIZE_32
+        Bytes32::len()
     }
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
@@ -71,7 +70,7 @@ impl Encode for Bytes33 {
     }
 
     fn get_encoded_size(&self) -> usize {
-        SIZE_33
+        Bytes33::len()
     }
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
@@ -96,7 +95,7 @@ impl Encode for Bytes64 {
     }
 
     fn get_encoded_size(&self) -> usize {
-        SIZE_64
+        Bytes64::len()
     }
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {

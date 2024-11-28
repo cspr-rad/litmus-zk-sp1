@@ -18,14 +18,41 @@ impl Decode for Timestamp {
 
 impl Encode for Timestamp {
     fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        unimplemented!();
+        Ok(self.inner().to_le_bytes().to_vec())
     }
 
     fn get_encoded_size(&self) -> usize {
-        unimplemented!();
+        self.inner().get_encoded_size()
     }
+}
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        unimplemented!();
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+use num::PrimInt;
+#[cfg(test)]
+use proptest::prelude::*;
+
+#[cfg(test)]
+mod arbs {
+    use super::*;
+
+    #[cfg(test)]
+    pub fn timestamp() -> impl Strategy<Value = Timestamp> {
+        any::<u128>().prop_map(Timestamp::new)
+    }
+}
+
+#[cfg(test)]
+mod proptests {
+    use super::*;
+    use crate::binary::utils::assert_codec;
+
+    proptest! {
+        #[test]
+        fn codec_timestamp(timestamp in arbs::timestamp()) {
+            assert_codec(&timestamp);
+        }
     }
 }

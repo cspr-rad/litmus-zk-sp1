@@ -1,7 +1,9 @@
+use crate::utils::deconstruct_bytes;
 use humantime;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
     fmt::{self, Display, Formatter},
+    io::Read,
     time::{Duration, SystemTime},
 };
 
@@ -129,10 +131,9 @@ impl<'de> Deserialize<'de> for Timestamp {
             where
                 E: serde::de::Error,
             {
-                unimplemented!()
-                // let g = u128::from_le_bytes(v);
-
-                // Ok(Timestamp::from(u128::from_le_bytes(&v)))
+                let (bytes, remainder) = deconstruct_bytes::<16>(v).unwrap();
+                assert_eq!(remainder.len(), 0);
+                Ok(Timestamp::from(u128::from_le_bytes(bytes)))
             }
 
             fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>

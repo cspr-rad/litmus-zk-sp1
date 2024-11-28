@@ -54,7 +54,7 @@ pub trait Encode {
 
     /// Writes `&self` into a mutable `writer`.
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        writer.extend(self.to_bytes()?);
+        writer.extend(self.to_bytes().unwrap());
         Ok(())
     }
 }
