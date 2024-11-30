@@ -17,12 +17,12 @@ impl Decode for Timestamp {
 }
 
 impl Encode for Timestamp {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.inner().to_le_bytes().to_vec())
-    }
-
     fn get_encoded_size(&self) -> usize {
         self.inner().get_encoded_size()
+    }
+
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+        Ok(self.inner().to_le_bytes().to_vec())
     }
 }
 

@@ -3,7 +3,6 @@ use humantime;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
     fmt::{self, Display, Formatter},
-    io::Read,
     time::{Duration, SystemTime},
 };
 

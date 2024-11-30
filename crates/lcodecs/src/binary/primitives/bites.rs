@@ -22,11 +22,6 @@ impl<const N: usize> Encode for [u8; N] {
     fn get_encoded_size(&self) -> usize {
         N
     }
-
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        writer.extend_from_slice(&self.as_slice());
-        Ok(())
-    }
 }
 
 // ------------------------------------------------------------------------
@@ -46,11 +41,6 @@ impl Encode for Bytes32 {
 
     fn get_encoded_size(&self) -> usize {
         Bytes32::len()
-    }
-
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        writer.extend_from_slice(&self.as_slice());
-        Ok(())
     }
 }
 
@@ -72,11 +62,6 @@ impl Encode for Bytes33 {
     fn get_encoded_size(&self) -> usize {
         Bytes33::len()
     }
-
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        writer.extend_from_slice(&self.as_slice());
-        Ok(())
-    }
 }
 
 // ------------------------------------------------------------------------
@@ -96,10 +81,5 @@ impl Encode for Bytes64 {
 
     fn get_encoded_size(&self) -> usize {
         Bytes64::len()
-    }
-
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        writer.extend_from_slice(&self.as_slice());
-        Ok(())
     }
 }

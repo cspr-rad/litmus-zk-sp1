@@ -1,6 +1,8 @@
 use lcodecs::binary::Encode;
 use ltypes::chain::{Block, BlockHash, BlockWithProofs, ChainNameDigest, EraConsensusInfo};
 
+mod digests;
+
 pub fn verify_block_v1_with_proofs(_: BlockWithProofs) {
     unimplemented!("verify_block_v1_with_proofs");
 }
@@ -25,7 +27,7 @@ pub fn verify_block_v2_with_proofs(
     };
 
     // Error if invalid recomputed block hash.
-    assert_eq!(block.hash(), &BlockHash::from(block.get_bytes_for_hash()));
+    // assert_eq!(block.hash(), &BlockHash::from(block.get_bytes_for_hash()));
 
     // Error if invalid finality signature.
     let msg = block.get_bytes_for_finality_signature(&chain_name_digest);

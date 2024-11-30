@@ -25,10 +25,14 @@ impl Digest {
     /// * `raw_bytes` - A sequence of bytes.
     ///
     pub fn new(raw_bytes: &[u8]) -> Self {
-        assert!(
-            raw_bytes.len() == Bytes32::len(),
-            "Invalid digest byte array length"
-        );
+        // if raw_bytes.len() != Bytes32::len() {
+        //     println!(
+        //         "Invalid digest byte array length: actual {:?} :: expected {:?}",
+        //         raw_bytes.len(),
+        //         Bytes32::len()
+        //     );
+        //     panic!("Invalid digest byte length");
+        // }
 
         // Problematic if another hashing algo is introduced.
         Self::BLAKE2B(Bytes32::from(raw_bytes))

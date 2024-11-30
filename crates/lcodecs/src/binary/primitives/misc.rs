@@ -19,17 +19,12 @@ impl Decode for bool {
 }
 
 impl Encode for bool {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        u8::from(*self).to_bytes()
-    }
-
     fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_BOOL
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        writer.push(*self as u8);
-        Ok(())
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+        u8::from(*self).to_bytes()
     }
 }
 
@@ -52,38 +47,26 @@ impl<T: Decode> Decode for Option<T> {
 }
 
 impl<T: Encode> Encode for Option<T> {
+    fn get_encoded_size(&self) -> usize {
+        match self {
+            Some(v) => constants::ENCODED_SIZE_u8 + v.get_encoded_size(),
+            None => constants::ENCODED_SIZE_u8,
+        }
+    }
+
     fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         match self {
             None => Ok(vec![constants::TAG_OPTION_NONE]),
             Some(v) => {
-                let mut result = allocate_buffer(self)?;
+                let mut result = allocate_buffer(self).unwrap();
                 result.push(constants::TAG_OPTION_SOME);
 
-                let mut value = v.to_bytes()?;
+                let mut value = v.to_bytes().unwrap();
                 result.append(&mut value);
 
                 Ok(result)
             }
         }
-    }
-
-    fn get_encoded_size(&self) -> usize {
-        constants::ENCODED_SIZE_u8
-            + match self {
-                Some(v) => v.get_encoded_size(),
-                None => 0,
-            }
-    }
-
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        match self {
-            None => writer.push(constants::TAG_OPTION_NONE),
-            Some(v) => {
-                writer.push(constants::TAG_OPTION_SOME);
-                v.write_bytes(writer)?;
-            }
-        };
-        Ok(())
     }
 }
 
@@ -109,37 +92,26 @@ impl<T: Decode, E: Decode> Decode for Result<T, E> {
 }
 
 impl<T: Encode, E: Encode> Encode for Result<T, E> {
+    fn get_encoded_size(&self) -> usize {
+        match self {
+            Err(error) => constants::ENCODED_SIZE_u8 + error.get_encoded_size(),
+            Ok(value) => constants::ENCODED_SIZE_u8 + value.get_encoded_size(),
+        }
+    }
+
     fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         let mut result = allocate_buffer(self)?;
-        let (variant, mut value) = match self {
-            Err(error) => (constants::TAG_RESULT_ERR, error.to_bytes()?),
-            Ok(result) => (constants::TAG_RESULT_OK, result.to_bytes()?),
-        };
-        result.push(variant);
-        result.append(&mut value);
-        Ok(result)
-    }
-
-    fn get_encoded_size(&self) -> usize {
-        constants::ENCODED_SIZE_u8
-            + match self {
-                Ok(ok) => ok.get_encoded_size(),
-                Err(error) => error.get_encoded_size(),
-            }
-    }
-
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             Err(error) => {
-                writer.push(constants::TAG_RESULT_ERR);
-                error.write_bytes(writer)?;
+                result.push(constants::TAG_RESULT_ERR);
+                result.extend(error.to_bytes().unwrap());
             }
-            Ok(result) => {
-                writer.push(constants::TAG_RESULT_OK);
-                result.write_bytes(writer)?;
+            Ok(value) => {
+                result.push(constants::TAG_RESULT_OK);
+                result.extend(value.to_bytes().unwrap());
             }
         };
-        Ok(())
+        Ok(result)
     }
 }
 

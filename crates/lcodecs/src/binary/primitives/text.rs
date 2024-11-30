@@ -9,19 +9,13 @@ use crate::binary::utils::{
 
 impl Encode for str {
     #[inline(always)]
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        encode_byte_slice(self.as_bytes())
-    }
-
-    #[inline(always)]
     fn get_encoded_size(&self) -> usize {
         get_encoded_size_of_byte_slice(self.as_bytes())
     }
 
-    #[inline]
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        write_byte_slice(self.as_bytes(), writer)?;
-        Ok(())
+    #[inline(always)]
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+        encode_byte_slice(self.as_bytes())
     }
 }
 
@@ -38,19 +32,13 @@ impl Decode for &str {
 
 impl Encode for &str {
     #[inline(always)]
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        (*self).to_bytes()
-    }
-
-    #[inline(always)]
     fn get_encoded_size(&self) -> usize {
         (*self).get_encoded_size()
     }
 
-    #[inline]
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        write_byte_slice(self.as_bytes(), writer)?;
-        Ok(())
+    #[inline(always)]
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+        (*self).to_bytes()
     }
 }
 
@@ -68,17 +56,11 @@ impl Decode for String {
 }
 
 impl Encode for String {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        let bytes = self.as_bytes();
-        encode_byte_slice(bytes)
-    }
-
     fn get_encoded_size(&self) -> usize {
         get_encoded_size_of_byte_slice(self.as_bytes())
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        write_byte_slice(self.as_bytes(), writer)?;
-        Ok(())
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+        encode_byte_slice(self.as_bytes())
     }
 }
