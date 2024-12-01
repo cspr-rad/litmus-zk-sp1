@@ -21,10 +21,13 @@ impl Encode for Digest {
         }
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
-            Digest::BLAKE2B(inner) => Ok(inner.to_vec()),
+            Digest::BLAKE2B(inner) => {
+                inner.write_bytes(writer).unwrap();
+            }
         }
+        Ok(())
     }
 }
 

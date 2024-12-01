@@ -18,8 +18,9 @@ impl Encode for i32 {
         constants::ENCODED_SIZE_I32
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_le_bytes().to_vec())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.to_le_bytes());
+        Ok(())
     }
 }
 
@@ -40,8 +41,9 @@ impl Encode for i64 {
         constants::ENCODED_SIZE_I64
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_le_bytes().to_vec())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.to_le_bytes());
+        Ok(())
     }
 }
 
@@ -63,8 +65,9 @@ impl Encode for u8 {
         constants::ENCODED_SIZE_u8
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(vec![*self])
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.push(*self);
+        Ok(())
     }
 }
 
@@ -85,8 +88,9 @@ impl Encode for u16 {
         constants::ENCODED_SIZE_U16
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_le_bytes().to_vec())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.to_le_bytes());
+        Ok(())
     }
 }
 
@@ -107,8 +111,9 @@ impl Encode for u32 {
         constants::ENCODED_SIZE_U32
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_le_bytes().to_vec())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.to_le_bytes());
+        Ok(())
     }
 }
 
@@ -129,8 +134,9 @@ impl Encode for u64 {
         constants::ENCODED_SIZE_U64
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_le_bytes().to_vec())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.to_le_bytes());
+        Ok(())
     }
 }
 
@@ -151,8 +157,9 @@ impl Encode for u128 {
         constants::ENCODED_SIZE_U128
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_le_bytes().to_vec())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(&self.to_le_bytes());
+        Ok(())
     }
 }
 

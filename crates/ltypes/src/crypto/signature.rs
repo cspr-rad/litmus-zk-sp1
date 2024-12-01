@@ -95,6 +95,14 @@ impl Signature {
             Signature::SECP256K1(_) => TAG_SECP256K1,
         }
     }
+
+    /// Returns inner bytes.
+    pub fn inner(&self) -> &Bytes64 {
+        match self {
+            Signature::ED25519(inner) => inner,
+            Signature::SECP256K1(inner) => inner,
+        }
+    }
 }
 
 // ------------------------------------------------------------------------

@@ -15,12 +15,13 @@ impl<const N: usize> Decode for [u8; N] {
 }
 
 impl<const N: usize> Encode for [u8; N] {
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_vec())
-    }
-
     fn get_encoded_size(&self) -> usize {
         N
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(self.as_slice());
+        Ok(())
     }
 }
 
@@ -35,12 +36,13 @@ impl Decode for Bytes32 {
 }
 
 impl Encode for Bytes32 {
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_vec())
-    }
-
     fn get_encoded_size(&self) -> usize {
         Bytes32::len()
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(self.as_slice());
+        Ok(())
     }
 }
 
@@ -55,12 +57,13 @@ impl Decode for Bytes33 {
 }
 
 impl Encode for Bytes33 {
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_vec())
-    }
-
     fn get_encoded_size(&self) -> usize {
         Bytes33::len()
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(self.as_slice());
+        Ok(())
     }
 }
 
@@ -75,12 +78,13 @@ impl Decode for Bytes64 {
 }
 
 impl Encode for Bytes64 {
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_vec())
-    }
-
     fn get_encoded_size(&self) -> usize {
         Bytes64::len()
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(self.as_slice());
+        Ok(())
     }
 }
 
@@ -95,11 +99,12 @@ impl Decode for Bytes65 {
 }
 
 impl Encode for Bytes65 {
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.to_vec())
-    }
-
     fn get_encoded_size(&self) -> usize {
         Bytes65::len()
+    }
+
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(self.as_slice());
+        Ok(())
     }
 }

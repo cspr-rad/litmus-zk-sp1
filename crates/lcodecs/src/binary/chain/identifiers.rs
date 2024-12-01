@@ -17,8 +17,8 @@ impl Encode for BlockHash {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        unimplemented!("conversion from vec of bytes to domain type BlockV2");
+    fn write_bytes(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
+        unimplemented!("Encode for BlockHash:write_bytes")
     }
 }
 
@@ -39,8 +39,9 @@ impl Encode for EraId {
         self.inner().get_encoded_size()
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        self.inner().encode()
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.inner().write_bytes(writer).unwrap();
+        Ok(())
     }
 }
 

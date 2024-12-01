@@ -17,8 +17,8 @@ impl Encode for Block {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        unimplemented!("conversion from vec of bytes to domain type BlockV2");
+    fn write_bytes(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
+        unimplemented!("Encode for Block:write_bytes");
     }
 }
 
@@ -38,20 +38,11 @@ impl Encode for BlockV2 {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        let mut result: Vec<u8> = Vec::<u8>::new();
-
-        // self.hash.write_bytes(writer)?;
-        // self.header.write_bytes(writer)?;
-        // self.body.write_bytes(writer)
-
-        // self.hash().write_bytes(writer);
-
-        result.extend(self.hash().encode().unwrap());
-        result.extend(self.header().encode().unwrap());
-        result.extend(self.body().encode().unwrap());
-
-        Ok(result)
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.hash().write_bytes(writer).unwrap();
+        self.header().write_bytes(writer).unwrap();
+        self.body().write_bytes(writer).unwrap();
+        Ok(())
     }
 }
 
@@ -71,8 +62,8 @@ impl Encode for BlockV2Body {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        unimplemented!("conversion from vec of bytes to domain type BlockV2");
+    fn write_bytes(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
+        unimplemented!("Encode for BlockV2Body:write_bytes");
     }
 }
 
@@ -92,12 +83,11 @@ impl Encode for BlockV2Header {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        let mut result: Vec<u8> = Vec::<u8>::new();
-
-        result.extend(self.parent_hash().encode().unwrap());
-        result.extend(self.state_root_hash().encode().unwrap());
-        result.extend(self.body_hash().encode().unwrap());
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.parent_hash().write_bytes(writer).unwrap();
+        self.state_root_hash().write_bytes(writer).unwrap();
+        self.body_hash().write_bytes(writer).unwrap();
+        Ok(())
 
         // result.extend_from_slice(self.parent_hash().inner().as_slice());
         // result.extend_from_slice(self.state_root_hash().as_slice());
@@ -116,7 +106,5 @@ impl Encode for BlockV2Header {
         // result.extend_from_slice(self.proposer().as_slice());
         // result.extend_from_slice(self.current_gas_price().to_le_bytes().as_slice());
         // // result.extend_from_slice(self.last_switch_block_hash().unwrap().inner().as_slice());
-
-        Ok(result)
     }
 }

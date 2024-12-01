@@ -20,8 +20,9 @@ impl Encode for Timestamp {
         self.inner().get_encoded_size()
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(self.inner().to_le_bytes().to_vec())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.inner().write_bytes(writer).unwrap();
+        Ok(())
     }
 }
 

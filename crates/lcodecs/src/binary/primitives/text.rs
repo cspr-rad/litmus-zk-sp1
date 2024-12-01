@@ -12,9 +12,9 @@ impl Encode for str {
         get_encoded_size_of_byte_slice(self.as_bytes())
     }
 
-    #[inline(always)]
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        encode_byte_slice(self.as_bytes())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(encode_byte_slice(self.as_bytes()).unwrap().as_slice());
+        Ok(())
     }
 }
 
@@ -36,8 +36,9 @@ impl Encode for &str {
     }
 
     #[inline(always)]
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        (*self).encode()
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice((*self).encode().unwrap().as_slice());
+        Ok(())
     }
 }
 
@@ -59,7 +60,8 @@ impl Encode for String {
         get_encoded_size_of_byte_slice(self.as_bytes())
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        encode_byte_slice(self.as_bytes())
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.extend_from_slice(encode_byte_slice(self.as_bytes()).unwrap().as_slice());
+        Ok(())
     }
 }

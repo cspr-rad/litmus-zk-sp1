@@ -37,19 +37,17 @@ impl Encode for Signature {
         Bytes65::len()
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        let mut result: Vec<u8> = Vec::<u8>::new();
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
-            Signature::ED25519(inner) => {
-                result.push(TAG_ED25519);
-                result.extend(inner.to_vec());
+            Signature::ED25519(_) => {
+                writer.push(TAG_ED25519);
             }
-            Signature::SECP256K1(inner) => {
-                result.push(TAG_SECP256K1);
-                result.extend(inner.to_vec());
+            Signature::SECP256K1(_) => {
+                writer.push(TAG_SECP256K1);
             }
         }
-        Ok(result)
+        self.inner().write_bytes(writer).unwrap();
+        Ok(())
     }
 }
 

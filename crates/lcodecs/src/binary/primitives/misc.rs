@@ -23,8 +23,9 @@ impl Encode for bool {
         constants::ENCODED_SIZE_BOOL
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        u8::from(*self).encode()
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        writer.push(u8::from(*self));
+        Ok(())
     }
 }
 
@@ -54,19 +55,17 @@ impl<T: Encode> Encode for Option<T> {
         }
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
-            None => Ok(vec![constants::TAG_OPTION_NONE]),
-            Some(v) => {
-                let mut result = allocate_buffer(self).unwrap();
-                result.push(constants::TAG_OPTION_SOME);
-
-                let mut value = v.encode().unwrap();
-                result.append(&mut value);
-
-                Ok(result)
+            None => {
+                writer.push(constants::TAG_OPTION_NONE);
+            }
+            Some(inner) => {
+                writer.push(constants::TAG_OPTION_SOME);
+                inner.write_bytes(writer).unwrap();
             }
         }
+        Ok(())
     }
 }
 
@@ -99,19 +98,18 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
         }
     }
 
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        let mut result = allocate_buffer(self)?;
+    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             Err(error) => {
-                result.push(constants::TAG_RESULT_ERR);
-                result.extend(error.encode().unwrap());
+                writer.push(constants::TAG_RESULT_ERR);
+                error.write_bytes(writer).unwrap();
             }
             Ok(value) => {
-                result.push(constants::TAG_RESULT_OK);
-                result.extend(value.encode().unwrap());
+                writer.push(constants::TAG_RESULT_OK);
+                value.write_bytes(writer).unwrap();
             }
-        };
-        Ok(result)
+        }
+        Ok(())
     }
 }
 
@@ -126,11 +124,11 @@ impl Decode for () {
 }
 
 impl Encode for () {
-    fn encode(&self) -> Result<Vec<u8>, CodecError> {
-        Ok(Vec::new())
-    }
-
     fn get_encoded_size(&self) -> usize {
         constants::ENCODED_SIZE_UNIT
+    }
+
+    fn write_bytes(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
+        Ok(())
     }
 }
