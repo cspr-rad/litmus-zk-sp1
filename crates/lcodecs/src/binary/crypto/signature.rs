@@ -13,13 +13,6 @@ impl Decode for Signature {
 }
 
 impl Encode for Signature {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        match self {
-            Signature::ED25519(inner) => Ok(inner.to_vec()),
-            Signature::SECP256K1(inner) => Ok(inner.to_vec()),
-        }
-    }
-
     fn get_encoded_size(&self) -> usize {
         match self {
             Signature::ED25519(inner) => inner.as_slice().len(),
@@ -27,8 +20,10 @@ impl Encode for Signature {
         }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        writer.extend_from_slice(&self.as_slice());
-        Ok(())
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+        match self {
+            Signature::ED25519(inner) => Ok(inner.to_vec()),
+            Signature::SECP256K1(inner) => Ok(inner.to_vec()),
+        }
     }
 }

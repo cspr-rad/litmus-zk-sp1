@@ -13,11 +13,11 @@ impl Decode for Block {
 }
 
 impl Encode for Block {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn get_encoded_size(&self) -> usize {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn get_encoded_size(&self) -> usize {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 }
@@ -34,6 +34,10 @@ impl Decode for BlockV2 {
 }
 
 impl Encode for BlockV2 {
+    fn get_encoded_size(&self) -> usize {
+        unimplemented!("conversion from vec of bytes to domain type BlockV2");
+    }
+
     fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         let mut result: Vec<u8> = Vec::<u8>::new();
 
@@ -49,10 +53,6 @@ impl Encode for BlockV2 {
 
         Ok(result)
     }
-
-    fn get_encoded_size(&self) -> usize {
-        unimplemented!("conversion from vec of bytes to domain type BlockV2");
-    }
 }
 
 // ------------------------------------------------------------------------
@@ -67,11 +67,11 @@ impl Decode for BlockV2Body {
 }
 
 impl Encode for BlockV2Body {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn get_encoded_size(&self) -> usize {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn get_encoded_size(&self) -> usize {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 }
@@ -88,6 +88,10 @@ impl Decode for BlockV2Header {
 }
 
 impl Encode for BlockV2Header {
+    fn get_encoded_size(&self) -> usize {
+        unimplemented!("conversion from vec of bytes to domain type BlockV2");
+    }
+
     fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         let mut result: Vec<u8> = Vec::<u8>::new();
 
@@ -114,9 +118,5 @@ impl Encode for BlockV2Header {
         // // result.extend_from_slice(self.last_switch_block_hash().unwrap().inner().as_slice());
 
         Ok(result)
-    }
-
-    fn get_encoded_size(&self) -> usize {
-        unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 }

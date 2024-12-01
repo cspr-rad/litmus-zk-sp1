@@ -13,11 +13,11 @@ impl Decode for BlockHash {
 }
 
 impl Encode for BlockHash {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn get_encoded_size(&self) -> usize {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn get_encoded_size(&self) -> usize {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 }
@@ -35,12 +35,12 @@ impl Decode for EraId {
 }
 
 impl Encode for EraId {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        self.inner().to_bytes()
-    }
-
     fn get_encoded_size(&self) -> usize {
         self.inner().get_encoded_size()
+    }
+
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+        self.inner().to_bytes()
     }
 }
 

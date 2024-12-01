@@ -24,18 +24,9 @@ impl Digest {
     ///
     /// * `raw_bytes` - A sequence of bytes.
     ///
-    pub fn new(raw_bytes: &[u8]) -> Self {
-        // if raw_bytes.len() != Bytes32::len() {
-        //     println!(
-        //         "Invalid digest byte array length: actual {:?} :: expected {:?}",
-        //         raw_bytes.len(),
-        //         Bytes32::len()
-        //     );
-        //     panic!("Invalid digest byte length");
-        // }
-
-        // Problematic if another hashing algo is introduced.
-        Self::BLAKE2B(Bytes32::from(raw_bytes))
+    pub fn new(bytes_32: Bytes32) -> Self {
+        // N.B. Defaults to BLAKE2B, problematic if other hashing algos are introduced.
+        Self::BLAKE2B(bytes_32)
     }
 }
 
@@ -109,7 +100,7 @@ impl From<&str> for Digest {
 
 impl From<&[u8]> for Digest {
     fn from(value: &[u8]) -> Self {
-        Self::new(&value)
+        Self::new(Bytes32::from(value))
     }
 }
 

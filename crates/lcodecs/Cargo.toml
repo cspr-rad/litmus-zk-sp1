@@ -10,6 +10,7 @@ num = "0.4.3"
 serde.workspace = true
 
 [dev-dependencies]
+hex.workspace = true
 proptest.workspace = true
 proptest-derive.workspace = true
 rand.workspace = true
