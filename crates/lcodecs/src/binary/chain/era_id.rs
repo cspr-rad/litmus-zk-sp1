@@ -1,20 +1,19 @@
-use super::super::utils::{CodecError, Decode, Encode};
-use crate::binary::decode;
-use ltypes::primitives::time::Timestamp;
+use crate::binary::utils::{CodecError, Decode, Encode};
+use ltypes::chain::EraId;
 
 // ------------------------------------------------------------------------
-// Codec: Digest.
+// Codec: EraId.
 // ------------------------------------------------------------------------
 
-impl Decode for Timestamp {
+impl Decode for EraId {
     fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, bytes) = u128::decode(&bytes).unwrap();
+        let (inner, bytes) = u64::decode(&bytes).unwrap();
 
         Ok((Self::new(inner), &bytes))
     }
 }
 
-impl Encode for Timestamp {
+impl Encode for EraId {
     fn get_encoded_size(&self) -> usize {
         self.inner().get_encoded_size()
     }
@@ -37,8 +36,8 @@ mod arbs {
     use super::*;
 
     #[cfg(test)]
-    pub fn timestamp() -> impl Strategy<Value = Timestamp> {
-        any::<u128>().prop_map(Timestamp::new)
+    pub(super) fn era_id() -> impl Strategy<Value = EraId> {
+        any::<u64>().prop_map(EraId::new)
     }
 }
 
@@ -49,8 +48,8 @@ mod proptests {
 
     proptest! {
         #[test]
-        fn codec_timestamp(timestamp in arbs::timestamp()) {
-            assert_codec(&timestamp);
+        fn codec_era_id(era_id in arbs::era_id()) {
+            assert_codec(&era_id);
         }
     }
 }

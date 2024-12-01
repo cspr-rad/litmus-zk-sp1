@@ -2,7 +2,7 @@ use super::super::constants;
 use crate::binary::utils::{allocate_buffer, CodecError, Decode, Encode};
 
 // ------------------------------------------------------------------------
-// Type: bool.
+// Codec: bool.
 // ------------------------------------------------------------------------
 
 impl Decode for bool {
@@ -30,7 +30,7 @@ impl Encode for bool {
 }
 
 // ------------------------------------------------------------------------
-// Type: Option<T>.
+// Codec: Option<T>.
 // ------------------------------------------------------------------------
 
 impl<T: Decode> Decode for Option<T> {
@@ -50,8 +50,8 @@ impl<T: Decode> Decode for Option<T> {
 impl<T: Encode> Encode for Option<T> {
     fn get_encoded_size(&self) -> usize {
         match self {
-            Some(v) => constants::ENCODED_SIZE_u8 + v.get_encoded_size(),
-            None => constants::ENCODED_SIZE_u8,
+            Some(v) => constants::ENCODED_SIZE_U8 + v.get_encoded_size(),
+            None => constants::ENCODED_SIZE_U8,
         }
     }
 
@@ -70,7 +70,7 @@ impl<T: Encode> Encode for Option<T> {
 }
 
 // ------------------------------------------------------------------------
-// Type: Result<T, E>.
+// Codec: Result<T, E>.
 // ------------------------------------------------------------------------
 
 impl<T: Decode, E: Decode> Decode for Result<T, E> {
@@ -93,8 +93,8 @@ impl<T: Decode, E: Decode> Decode for Result<T, E> {
 impl<T: Encode, E: Encode> Encode for Result<T, E> {
     fn get_encoded_size(&self) -> usize {
         match self {
-            Err(error) => constants::ENCODED_SIZE_u8 + error.get_encoded_size(),
-            Ok(value) => constants::ENCODED_SIZE_u8 + value.get_encoded_size(),
+            Err(error) => constants::ENCODED_SIZE_U8 + error.get_encoded_size(),
+            Ok(value) => constants::ENCODED_SIZE_U8 + value.get_encoded_size(),
         }
     }
 
@@ -114,7 +114,7 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
 }
 
 // ------------------------------------------------------------------------
-// Type: unit.
+// Codec: unit.
 // ------------------------------------------------------------------------
 
 impl Decode for () {

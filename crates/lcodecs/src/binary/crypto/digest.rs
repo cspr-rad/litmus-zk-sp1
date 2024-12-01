@@ -2,7 +2,7 @@ use super::super::utils::{CodecError, Decode, Encode};
 use ltypes::{crypto::Digest, primitives::bites::Bytes32};
 
 // ------------------------------------------------------------------------
-// Type: Digest.
+// Codec: Digest.
 // ------------------------------------------------------------------------
 
 impl Decode for Digest {

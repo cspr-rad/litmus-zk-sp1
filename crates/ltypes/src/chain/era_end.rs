@@ -14,17 +14,66 @@ pub struct EraEndV1 {}
 
 #[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize, Serialize)]
 pub struct EraEndV2 {
-    /// The set of equivocators.
-    pub(super) equivocators: Vec<PublicKey>,
+    /// Set of validators deemed to have equivocated.
+    equivocators: Vec<PublicKey>,
 
-    /// Validators that haven't produced any unit during the era.
-    pub(super) inactive_validators: Vec<PublicKey>,
+    /// Validators that did not produce units during era.
+    inactive_validators: Vec<PublicKey>,
 
-    /// The validators for the upcoming era and their respective weights.
-    pub(super) next_era_validator_weights: Vec<ValidatorWeight>,
+    /// Validator set for upcoming era plus respective weights.
+    next_era_validator_weights: Vec<ValidatorWeight>,
 
-    /// The rewards distributed to the validators.
-    pub(super) rewards: BTreeMap<PublicKey, Vec<Motes>>,
+    /// Rewards to be distributed to validators within era.
+    rewards: BTreeMap<PublicKey, Vec<Motes>>,
 
-    pub(super) next_era_gas_price: u8,
+    /// Gas price to be applied in next era.
+    next_era_gas_price: u8,
+}
+
+// ------------------------------------------------------------------------
+// Constructors.
+// ------------------------------------------------------------------------
+
+impl EraEndV2 {
+    pub fn new(
+        equivocators: Vec<PublicKey>,
+        inactive_validators: Vec<PublicKey>,
+        next_era_validator_weights: Vec<ValidatorWeight>,
+        rewards: BTreeMap<PublicKey, Vec<Motes>>,
+        next_era_gas_price: u8,
+    ) -> Self {
+        Self {
+            equivocators,
+            inactive_validators,
+            next_era_validator_weights,
+            rewards,
+            next_era_gas_price,
+        }
+    }
+}
+
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
+impl EraEndV2 {
+    pub fn equivocators(&self) -> &Vec<PublicKey> {
+        &self.equivocators
+    }
+
+    pub fn inactive_validators(&self) -> &Vec<PublicKey> {
+        &self.inactive_validators
+    }
+
+    pub fn next_era_validator_weights(&self) -> &Vec<ValidatorWeight> {
+        &self.next_era_validator_weights
+    }
+
+    pub fn rewards(&self) -> &BTreeMap<PublicKey, Vec<Motes>> {
+        &self.rewards
+    }
+
+    pub fn next_era_gas_price(&self) -> u8 {
+        self.next_era_gas_price
+    }
 }
