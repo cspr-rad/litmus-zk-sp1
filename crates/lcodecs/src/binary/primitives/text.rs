@@ -7,7 +7,6 @@ use crate::binary::utils::{
 // ------------------------------------------------------------------------
 
 impl Encode for str {
-    #[inline(always)]
     fn get_encoded_size(&self) -> usize {
         get_encoded_size_of_byte_slice(self.as_bytes())
     }
@@ -23,19 +22,16 @@ impl Encode for str {
 // ------------------------------------------------------------------------
 
 impl Decode for &str {
-    #[inline(always)]
     fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!();
     }
 }
 
 impl Encode for &str {
-    #[inline(always)]
     fn get_encoded_size(&self) -> usize {
         (*self).get_encoded_size()
     }
 
-    #[inline(always)]
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice((*self).encode().unwrap().as_slice());
         Ok(())

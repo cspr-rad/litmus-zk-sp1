@@ -6,7 +6,6 @@ use ltypes::{crypto::Digest, primitives::bites::Bytes32};
 // ------------------------------------------------------------------------
 
 impl Decode for Digest {
-    #[inline(always)]
     fn decode(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (inner, remainder) = Bytes32::decode(encoded).unwrap();
 
@@ -50,7 +49,8 @@ mod tests {
 
     #[test]
     fn test_from_new() {
-        assert_codec(&Digest::new(get_digest_bytes()));
+        let entity = Digest::new(get_digest_bytes());
+        assert_codec(&entity);
     }
 
     #[test]

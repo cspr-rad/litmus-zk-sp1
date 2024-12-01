@@ -16,7 +16,6 @@ const TAG_SECP256K1: u8 = 2;
 // ------------------------------------------------------------------------
 
 impl Decode for Signature {
-    #[inline(always)]
     fn decode(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (inner, remainder) = Bytes65::decode(encoded).unwrap();
         let sig_tag = inner.data()[0];

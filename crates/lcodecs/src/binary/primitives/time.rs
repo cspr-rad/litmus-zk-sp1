@@ -7,7 +7,6 @@ use ltypes::primitives::time::Timestamp;
 // ------------------------------------------------------------------------
 
 impl Decode for Timestamp {
-    #[inline(always)]
     fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (inner, bytes) = u128::decode(&bytes).unwrap();
 
