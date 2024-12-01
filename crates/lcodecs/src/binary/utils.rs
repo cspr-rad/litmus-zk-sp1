@@ -28,25 +28,25 @@ pub enum CodecError {
 /// Trait implemented by types decodeable from a `Vec<Byte>`.
 pub trait Decode: Sized {
     /// Decodes slice into instance of `Self`.
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError>;
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError>;
 
     /// Decodes `Vec<u8>` into instance of `Self`.
     fn from_vec(bytes: Vec<u8>) -> Result<(Self, Vec<u8>), CodecError> {
-        Self::from_bytes(bytes.as_slice()).map(|(x, remainder)| (x, Vec::from(remainder)))
+        Self::decode(bytes.as_slice()).map(|(x, remainder)| (x, Vec::from(remainder)))
     }
 }
 
 /// Trait implemented by types encodeable as a `Vec<Byte>`.
 pub trait Encode {
     /// Encodes `&self` as a `Vec<Byte>`.
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError>;
+    fn encode(&self) -> Result<Vec<u8>, CodecError>;
 
     /// Consumes `self` and encodes accordingly.
     fn into_bytes(self) -> Result<Vec<u8>, CodecError>
     where
         Self: Sized,
     {
-        self.to_bytes()
+        self.encode()
     }
 
     /// Returns size of `Vec<u8>` returned from call to `encode()`.
@@ -54,7 +54,7 @@ pub trait Encode {
 
     /// Writes `&self` into a mutable `writer`.
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        writer.extend(self.to_bytes().unwrap());
+        writer.extend(self.encode().unwrap());
         Ok(())
     }
 }
@@ -75,7 +75,7 @@ pub(crate) fn assert_codec<T>(entity: &T)
 where
     T: Decode + Encode + Debug + Display + PartialEq,
 {
-    let encoded = T::to_bytes(&entity).unwrap();
+    let encoded = T::encode(&entity).unwrap();
 
     // Assert size.
     let size = T::get_encoded_size(&entity);
@@ -86,7 +86,7 @@ where
     assert_eq!(encoded, written_bytes);
 
     // Assert decoding.
-    let (decoded, bytes) = T::from_bytes(&encoded).unwrap();
+    let (decoded, bytes) = T::decode(&encoded).unwrap();
     assert_eq!(entity, &decoded);
     assert_eq!(bytes.len(), 0);
 }

@@ -7,7 +7,7 @@ use ltypes::chain::{Block, BlockV2, BlockV2Body, BlockV2Header};
 
 impl Decode for Block {
     #[inline(always)]
-    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!();
     }
 }
@@ -17,7 +17,7 @@ impl Encode for Block {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 }
@@ -28,7 +28,7 @@ impl Encode for Block {
 
 impl Decode for BlockV2 {
     #[inline(always)]
-    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!();
     }
 }
@@ -38,7 +38,7 @@ impl Encode for BlockV2 {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         let mut result: Vec<u8> = Vec::<u8>::new();
 
         // self.hash.write_bytes(writer)?;
@@ -47,9 +47,9 @@ impl Encode for BlockV2 {
 
         // self.hash().write_bytes(writer);
 
-        result.extend(self.hash().to_bytes().unwrap());
-        result.extend(self.header().to_bytes().unwrap());
-        result.extend(self.body().to_bytes().unwrap());
+        result.extend(self.hash().encode().unwrap());
+        result.extend(self.header().encode().unwrap());
+        result.extend(self.body().encode().unwrap());
 
         Ok(result)
     }
@@ -61,7 +61,7 @@ impl Encode for BlockV2 {
 
 impl Decode for BlockV2Body {
     #[inline(always)]
-    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!();
     }
 }
@@ -71,7 +71,7 @@ impl Encode for BlockV2Body {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 }
@@ -82,7 +82,7 @@ impl Encode for BlockV2Body {
 
 impl Decode for BlockV2Header {
     #[inline(always)]
-    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!();
     }
 }
@@ -92,12 +92,12 @@ impl Encode for BlockV2Header {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         let mut result: Vec<u8> = Vec::<u8>::new();
 
-        result.extend(self.parent_hash().to_bytes().unwrap());
-        result.extend(self.state_root_hash().to_bytes().unwrap());
-        result.extend(self.body_hash().to_bytes().unwrap());
+        result.extend(self.parent_hash().encode().unwrap());
+        result.extend(self.state_root_hash().encode().unwrap());
+        result.extend(self.body_hash().encode().unwrap());
 
         // result.extend_from_slice(self.parent_hash().inner().as_slice());
         // result.extend_from_slice(self.state_root_hash().as_slice());

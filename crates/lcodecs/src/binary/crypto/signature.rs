@@ -17,8 +17,8 @@ const TAG_SECP256K1: u8 = 2;
 
 impl Decode for Signature {
     #[inline(always)]
-    fn from_bytes(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, remainder) = Bytes65::from_bytes(encoded).unwrap();
+    fn decode(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, remainder) = Bytes65::decode(encoded).unwrap();
         let sig_tag = inner.data()[0];
         let sig_bytes = Bytes64::from(&inner.data()[1..]);
         Ok((
@@ -37,7 +37,7 @@ impl Encode for Signature {
         Bytes65::len()
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         let mut result: Vec<u8> = Vec::<u8>::new();
         match self {
             Signature::ED25519(inner) => {

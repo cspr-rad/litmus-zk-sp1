@@ -13,7 +13,7 @@ impl Encode for str {
     }
 
     #[inline(always)]
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         encode_byte_slice(self.as_bytes())
     }
 }
@@ -24,7 +24,7 @@ impl Encode for str {
 
 impl Decode for &str {
     #[inline(always)]
-    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!();
     }
 }
@@ -36,8 +36,8 @@ impl Encode for &str {
     }
 
     #[inline(always)]
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        (*self).to_bytes()
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
+        (*self).encode()
     }
 }
 
@@ -46,8 +46,8 @@ impl Encode for &str {
 // ------------------------------------------------------------------------
 
 impl Decode for String {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (size, remainder) = u32::from_bytes(bytes)?;
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (size, remainder) = u32::decode(bytes)?;
         let (str_bytes, remainder) = safe_split_at(remainder, size as usize)?;
         let result = String::from_utf8(str_bytes.to_vec()).map_err(|_| CodecError::Formatting)?;
         Ok((result, remainder))
@@ -59,7 +59,7 @@ impl Encode for String {
         get_encoded_size_of_byte_slice(self.as_bytes())
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         encode_byte_slice(self.as_bytes())
     }
 }

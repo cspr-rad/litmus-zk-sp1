@@ -5,33 +5,14 @@ use std::fmt;
 // Constants.
 // ------------------------------------------------------------------------
 
-// Sizes of fixed byte digest arrays.
-pub const SIZE_32: usize = 32;
-pub const SIZE_33: usize = 33;
-pub const SIZE_64: usize = 64;
-pub const SIZE_65: usize = 65;
+const SIZE_32: usize = 32;
+const SIZE_33: usize = 33;
+const SIZE_64: usize = 64;
+const SIZE_65: usize = 65;
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
-
-// // Byte arrays of various lengths used within scope of application space.
-// pub enum Bytes1 {
-//     // Fixed 32 byte array.
-//     Fixed32([Byte; SIZE_32]),
-
-//     // Fixed 32 byte array.
-//     Fixed33([Byte; SIZE_33]),
-
-//     // Fixed 64 byte array.
-//     Fixed64([Byte; SIZE_64]),
-
-//     // Fixed 65 byte array.
-//     Fixed65([Byte; SIZE_65]),
-
-//     // Unbounded.
-//     Unbounded(Vec<Byte>),
-// }
 
 // Generic byte array with constant size of N.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Deserialize, Serialize)]

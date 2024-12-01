@@ -8,8 +8,8 @@ use ltypes::primitives::time::Timestamp;
 
 impl Decode for Timestamp {
     #[inline(always)]
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, bytes) = u128::from_bytes(&bytes).unwrap();
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bytes) = u128::decode(&bytes).unwrap();
 
         Ok((Self::new(inner), &bytes))
     }
@@ -20,7 +20,7 @@ impl Encode for Timestamp {
         self.inner().get_encoded_size()
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(self.inner().to_le_bytes().to_vec())
     }
 }

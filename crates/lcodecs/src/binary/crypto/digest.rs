@@ -7,8 +7,8 @@ use ltypes::{crypto::Digest, primitives::bites::Bytes32};
 
 impl Decode for Digest {
     #[inline(always)]
-    fn from_bytes(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, remainder) = Bytes32::from_bytes(encoded).unwrap();
+    fn decode(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, remainder) = Bytes32::decode(encoded).unwrap();
 
         Ok((Digest::new(inner), remainder))
     }
@@ -21,7 +21,7 @@ impl Encode for Digest {
         }
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         match self {
             Digest::BLAKE2B(inner) => Ok(inner.to_vec()),
         }
@@ -53,7 +53,7 @@ mod tests {
     #[test]
     fn test_from_bytes() {
         let bytes_32 = get_digest_bytes();
-        let (entity, remainder) = Digest::from_bytes(bytes_32.as_slice()).unwrap();
+        let (entity, remainder) = Digest::decode(bytes_32.as_slice()).unwrap();
         assert_eq!(remainder.len(), 0);
         assert_codec(&entity);
     }

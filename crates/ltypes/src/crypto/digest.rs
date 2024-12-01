@@ -181,7 +181,7 @@ impl Digest {
     pub fn random() -> Self {
         let g: [u8; 32] = rand::thread_rng().gen();
 
-        Self::new(g.as_slice())
+        Self::from(g.as_slice())
     }
 }
 

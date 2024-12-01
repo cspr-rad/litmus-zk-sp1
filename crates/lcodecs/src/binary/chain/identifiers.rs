@@ -7,7 +7,7 @@ use ltypes::chain::{BlockHash, BlockHeight, EraId};
 
 impl Decode for BlockHash {
     #[inline(always)]
-    fn from_bytes(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!();
     }
 }
@@ -17,7 +17,7 @@ impl Encode for BlockHash {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         unimplemented!("conversion from vec of bytes to domain type BlockV2");
     }
 }
@@ -27,8 +27,8 @@ impl Encode for BlockHash {
 // ------------------------------------------------------------------------
 
 impl Decode for EraId {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, bytes) = u64::from_bytes(&bytes).unwrap();
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bytes) = u64::decode(&bytes).unwrap();
 
         Ok((Self::new(inner), &bytes))
     }
@@ -39,8 +39,8 @@ impl Encode for EraId {
         self.inner().get_encoded_size()
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        self.inner().to_bytes()
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
+        self.inner().encode()
     }
 }
 

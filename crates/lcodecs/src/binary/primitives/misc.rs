@@ -6,7 +6,7 @@ use crate::binary::utils::{allocate_buffer, CodecError, Decode, Encode};
 // ------------------------------------------------------------------------
 
 impl Decode for bool {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         match bytes.split_first() {
             None => Err(CodecError::EarlyEndOfStream),
             Some((byte, rem)) => match byte {
@@ -23,8 +23,8 @@ impl Encode for bool {
         constants::ENCODED_SIZE_BOOL
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
-        u8::from(*self).to_bytes()
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
+        u8::from(*self).encode()
     }
 }
 
@@ -33,12 +33,12 @@ impl Encode for bool {
 // ------------------------------------------------------------------------
 
 impl<T: Decode> Decode for Option<T> {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (tag, rem) = u8::from_bytes(bytes)?;
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (tag, rem) = u8::decode(bytes)?;
         match tag {
             constants::TAG_OPTION_NONE => Ok((None, rem)),
             constants::TAG_OPTION_SOME => {
-                let (t, rem) = T::from_bytes(rem)?;
+                let (t, rem) = T::decode(rem)?;
                 Ok((Some(t), rem))
             }
             _ => Err(CodecError::Formatting),
@@ -54,14 +54,14 @@ impl<T: Encode> Encode for Option<T> {
         }
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         match self {
             None => Ok(vec![constants::TAG_OPTION_NONE]),
             Some(v) => {
                 let mut result = allocate_buffer(self).unwrap();
                 result.push(constants::TAG_OPTION_SOME);
 
-                let mut value = v.to_bytes().unwrap();
+                let mut value = v.encode().unwrap();
                 result.append(&mut value);
 
                 Ok(result)
@@ -75,15 +75,15 @@ impl<T: Encode> Encode for Option<T> {
 // ------------------------------------------------------------------------
 
 impl<T: Decode, E: Decode> Decode for Result<T, E> {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (variant, rem) = u8::from_bytes(bytes)?;
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (variant, rem) = u8::decode(bytes)?;
         match variant {
             constants::TAG_RESULT_ERR => {
-                let (value, rem) = E::from_bytes(rem)?;
+                let (value, rem) = E::decode(rem)?;
                 Ok((Err(value), rem))
             }
             constants::TAG_RESULT_OK => {
-                let (value, rem) = T::from_bytes(rem)?;
+                let (value, rem) = T::decode(rem)?;
                 Ok((Ok(value), rem))
             }
             _ => Err(CodecError::Formatting),
@@ -99,16 +99,16 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
         }
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         let mut result = allocate_buffer(self)?;
         match self {
             Err(error) => {
                 result.push(constants::TAG_RESULT_ERR);
-                result.extend(error.to_bytes().unwrap());
+                result.extend(error.encode().unwrap());
             }
             Ok(value) => {
                 result.push(constants::TAG_RESULT_OK);
-                result.extend(value.to_bytes().unwrap());
+                result.extend(value.encode().unwrap());
             }
         };
         Ok(result)
@@ -120,13 +120,13 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
 // ------------------------------------------------------------------------
 
 impl Decode for () {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         Ok(((), bytes))
     }
 }
 
 impl Encode for () {
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(Vec::new())
     }
 

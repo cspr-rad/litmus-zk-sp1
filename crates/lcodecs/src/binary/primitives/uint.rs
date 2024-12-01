@@ -6,7 +6,7 @@ use super::super::utils::{deconstruct_bytes, CodecError, Decode, Encode};
 // ------------------------------------------------------------------------
 
 impl Decode for i32 {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (bytes, remainder) = deconstruct_bytes::<4>(&bytes).unwrap();
 
         Ok((<i32>::from_le_bytes(bytes), remainder))
@@ -18,7 +18,7 @@ impl Encode for i32 {
         constants::ENCODED_SIZE_I32
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 }
@@ -28,7 +28,7 @@ impl Encode for i32 {
 // ------------------------------------------------------------------------
 
 impl Decode for i64 {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (bytes, remainder) = deconstruct_bytes::<8>(&bytes).unwrap();
 
         Ok((<i64>::from_le_bytes(bytes), remainder))
@@ -40,7 +40,7 @@ impl Encode for i64 {
         constants::ENCODED_SIZE_I64
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 }
@@ -50,7 +50,7 @@ impl Encode for i64 {
 // ------------------------------------------------------------------------
 
 impl Decode for u8 {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         match bytes.split_first() {
             None => Err(CodecError::EarlyEndOfStream),
             Some((byte, rem)) => Ok((*byte, rem)),
@@ -63,7 +63,7 @@ impl Encode for u8 {
         constants::ENCODED_SIZE_u8
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(vec![*self])
     }
 }
@@ -73,7 +73,7 @@ impl Encode for u8 {
 // ------------------------------------------------------------------------
 
 impl Decode for u16 {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (bytes, remainder) = deconstruct_bytes::<2>(&bytes).unwrap();
 
         Ok((<u16>::from_le_bytes(bytes), remainder))
@@ -85,7 +85,7 @@ impl Encode for u16 {
         constants::ENCODED_SIZE_U16
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 }
@@ -95,7 +95,7 @@ impl Encode for u16 {
 // ------------------------------------------------------------------------
 
 impl Decode for u32 {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (bytes, remainder) = deconstruct_bytes::<4>(&bytes).unwrap();
 
         Ok((<u32>::from_le_bytes(bytes), remainder))
@@ -107,7 +107,7 @@ impl Encode for u32 {
         constants::ENCODED_SIZE_U32
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 }
@@ -117,7 +117,7 @@ impl Encode for u32 {
 // ------------------------------------------------------------------------
 
 impl Decode for u64 {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (bytes, remainder) = deconstruct_bytes::<8>(&bytes).unwrap();
 
         Ok((<u64>::from_le_bytes(bytes), remainder))
@@ -129,7 +129,7 @@ impl Encode for u64 {
         constants::ENCODED_SIZE_U64
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 }
@@ -139,7 +139,7 @@ impl Encode for u64 {
 // ------------------------------------------------------------------------
 
 impl Decode for u128 {
-    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (bytes, remainder) = deconstruct_bytes::<16>(&bytes).unwrap();
 
         Ok((<u128>::from_le_bytes(bytes), remainder))
@@ -151,7 +151,7 @@ impl Encode for u128 {
         constants::ENCODED_SIZE_U128
     }
 
-    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+    fn encode(&self) -> Result<Vec<u8>, CodecError> {
         Ok(self.to_le_bytes().to_vec())
     }
 }
