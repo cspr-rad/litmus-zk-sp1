@@ -1,5 +1,5 @@
 use super::super::utils::{CodecError, Decode, Encode};
-use std::{collections::BTreeMap, vec::Vec};
+use std::collections::BTreeMap;
 
 // ------------------------------------------------------------------------
 // Codec: Vec<T>.

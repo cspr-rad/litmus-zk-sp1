@@ -1,7 +1,6 @@
 mod block;
-mod block_id;
-mod era_end;
-mod era_id;
+mod era;
 mod motes;
 mod protocol_version;
+mod transaction_hash;
 mod validator_weight;

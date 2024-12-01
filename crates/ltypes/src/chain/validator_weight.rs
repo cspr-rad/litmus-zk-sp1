@@ -1,5 +1,4 @@
-use super::Motes;
-use super::ValidatorID;
+use super::{Motes, ValidatorID};
 use serde::{Deserialize, Serialize};
 
 // ------------------------------------------------------------------------

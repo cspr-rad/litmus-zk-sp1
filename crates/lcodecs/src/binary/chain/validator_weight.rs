@@ -1,8 +1,8 @@
-use super::super::utils::{CodecError, Decode, Encode};
+use crate::binary::utils::{CodecError, Decode, Encode};
 use ltypes::chain::ValidatorWeight;
 
 // ------------------------------------------------------------------------
-// Codec: ValidatorWeight.
+// Codec: Motes.
 // ------------------------------------------------------------------------
 
 impl Decode for ValidatorWeight {
