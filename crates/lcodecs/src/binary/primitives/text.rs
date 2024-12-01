@@ -1,6 +1,5 @@
 use crate::binary::utils::{
-    encode_byte_slice, get_encoded_size_of_byte_slice, safe_split_at, write_byte_slice, CodecError,
-    Decode, Encode,
+    encode_byte_slice, get_encoded_size_of_byte_slice, safe_split_at, CodecError, Decode, Encode,
 };
 
 // ------------------------------------------------------------------------

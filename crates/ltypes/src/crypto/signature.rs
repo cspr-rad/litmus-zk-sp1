@@ -9,9 +9,9 @@ use std::fmt;
 // Constants.
 // ------------------------------------------------------------------------
 
-const TAG_ED25519: u8 = 1;
-const TAG_SECP256K1: u8 = 2;
-const SIG_SIZE: usize = 64;
+pub const TAG_ED25519: u8 = 1;
+pub const TAG_SECP256K1: u8 = 2;
+pub const SIG_SIZE: usize = 64;
 
 // ------------------------------------------------------------------------
 // Declarations.

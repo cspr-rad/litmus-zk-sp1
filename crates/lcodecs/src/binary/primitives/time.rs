@@ -1,6 +1,5 @@
-use crate::binary::decode;
-
 use super::super::utils::{CodecError, Decode, Encode};
+use crate::binary::decode;
 use ltypes::primitives::time::Timestamp;
 
 // ------------------------------------------------------------------------
@@ -30,7 +29,6 @@ impl Encode for Timestamp {
 // Tests.
 // ------------------------------------------------------------------------
 
-use num::PrimInt;
 #[cfg(test)]
 use proptest::prelude::*;
 

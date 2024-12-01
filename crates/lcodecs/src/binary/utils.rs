@@ -70,6 +70,7 @@ pub(crate) fn allocate_buffer<T: Encode>(to_be_serialized: &T) -> Result<Vec<u8>
 }
 
 /// Asserts codec roundtrip over an instance of an entity of type T.
+#[cfg(test)]
 pub(crate) fn assert_codec<T>(entity: &T)
 where
     T: Decode + Encode + Debug + Display + PartialEq,

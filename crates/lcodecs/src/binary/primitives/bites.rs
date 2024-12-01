@@ -1,5 +1,5 @@
 use crate::binary::utils::{safe_split_at, CodecError, Decode, Encode};
-use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64};
+use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64, Bytes65};
 
 // ------------------------------------------------------------------------
 // Type: [Byte; N].
@@ -81,5 +81,25 @@ impl Encode for Bytes64 {
 
     fn get_encoded_size(&self) -> usize {
         Bytes64::len()
+    }
+}
+
+// ------------------------------------------------------------------------
+// Type: Bytes65.
+// ------------------------------------------------------------------------
+
+impl Decode for Bytes65 {
+    fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        Decode::from_bytes(bytes).map(|(arr, rem)| (Bytes65::new(arr), rem))
+    }
+}
+
+impl Encode for Bytes65 {
+    fn to_bytes(&self) -> Result<Vec<u8>, CodecError> {
+        Ok(self.to_vec())
+    }
+
+    fn get_encoded_size(&self) -> usize {
+        Bytes65::len()
     }
 }

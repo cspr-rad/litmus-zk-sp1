@@ -35,19 +35,26 @@ impl Encode for Digest {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::binary::utils::assert_codec;
     use hex;
 
-    const MSG: &[u8] = "أبو يوسف يعقوب بن إسحاق الصبّاح الكندي‎".as_bytes();
     const MSG_DIGEST_BLAKE2B_HEX: &str =
         "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";
 
+    fn get_digest_bytes() -> Bytes32 {
+        Bytes32::from(hex::decode(MSG_DIGEST_BLAKE2B_HEX).unwrap())
+    }
+
     #[test]
-    fn test_new_from_vec() {
-        let as_vec = hex::decode(MSG_DIGEST_BLAKE2B_HEX).unwrap();
+    fn test_from_new() {
+        assert_codec(&Digest::new(get_digest_bytes()));
+    }
 
-        let _ = Digest::from_bytes(as_vec.as_slice()).unwrap();
-
-        assert_eq!(as_vec.len(), 32)
+    #[test]
+    fn test_from_bytes() {
+        let bytes_32 = get_digest_bytes();
+        let (entity, remainder) = Digest::from_bytes(bytes_32.as_slice()).unwrap();
+        assert_eq!(remainder.len(), 0);
+        assert_codec(&entity);
     }
 }
-// 44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4
