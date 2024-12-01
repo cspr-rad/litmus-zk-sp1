@@ -9,15 +9,14 @@ impl Decode for Digest {
     fn decode(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         let (inner, remainder) = Bytes32::decode(encoded).unwrap();
 
+        // N.B. defaults to BLAKE2B as there is no tag prefix.
         Ok((Digest::new(inner), remainder))
     }
 }
 
 impl Encode for Digest {
     fn get_encoded_size(&self) -> usize {
-        match self {
-            Digest::BLAKE2B(inner) => inner.as_slice().len(),
-        }
+        Bytes32::len()
     }
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {

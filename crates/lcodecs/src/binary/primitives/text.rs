@@ -1,5 +1,9 @@
-use crate::binary::utils::{
-    encode_byte_slice, get_encoded_size_of_byte_slice, safe_split_at, CodecError, Decode, Encode,
+use crate::binary::{
+    constants,
+    utils::{
+        encode_byte_slice, get_encoded_size_of_byte_slice, safe_split_at, CodecError, Decode,
+        Encode,
+    },
 };
 
 // ------------------------------------------------------------------------
@@ -8,7 +12,7 @@ use crate::binary::utils::{
 
 impl Encode for str {
     fn get_encoded_size(&self) -> usize {
-        get_encoded_size_of_byte_slice(self.as_bytes())
+        constants::ENCODED_SIZE_U32 + self.as_bytes().len()
     }
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
@@ -23,7 +27,7 @@ impl Encode for str {
 
 impl Decode for &str {
     fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        unimplemented!();
+        unimplemented!()
     }
 }
 

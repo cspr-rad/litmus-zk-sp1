@@ -1,4 +1,7 @@
-use super::super::utils::{CodecError, Decode, Encode};
+use super::super::{
+    constants,
+    utils::{CodecError, Decode, Encode},
+};
 use std::collections::BTreeMap;
 
 // ------------------------------------------------------------------------
@@ -7,62 +10,50 @@ use std::collections::BTreeMap;
 
 impl<T: Decode> Decode for Vec<T> {
     fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        unimplemented!()
+        // Vec size.
+        let (size, mut bytes_1) = u32::decode(bytes).unwrap();
+        if size == 0 {
+            return Ok((Vec::new(), bytes_1));
+        }
+
+        // Vec data.
+        let mut result = Vec::<T>::with_capacity(size as usize);
+        for _ in 0..size {
+            let (entity, bytes_2) = T::decode(bytes_1).unwrap();
+            result.push(entity);
+            bytes_1 = bytes_2;
+        }
+
+        Ok((result, bytes_1))
     }
 }
 
 impl<T: Encode> Encode for Vec<T> {
     fn get_encoded_size(&self) -> usize {
-        unimplemented!()
+        let mut result = constants::ENCODED_SIZE_U32;
+        for entity in self.iter() {
+            result += entity.get_encoded_size();
+        }
+        result
     }
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        unimplemented!()
+        // Vec size.
+        let size: u32 = self
+            .len()
+            .try_into()
+            .map_err(|_| CodecError::NotRepresentable)
+            .unwrap();
+        size.write_bytes(writer).unwrap();
+
+        // Vec data.
+        for entity in self.iter() {
+            entity.write_bytes(writer).unwrap();
+        }
+
+        Ok(())
     }
 }
-
-// impl<T: ToBytes> ToBytes for Vec<T> {
-//     fn to_bytes(&self) -> Result<Vec<u8>, Error> {
-//         ensure_efficient_serialization::<T>();
-
-//         let mut result = Vec::with_capacity(self.serialized_length());
-//         let length_32: u32 = self.len().try_into().map_err(|_| Error::NotRepresentable)?;
-//         result.append(&mut length_32.to_bytes()?);
-
-//         for item in self.iter() {
-//             result.append(&mut item.to_bytes()?);
-//         }
-
-//         Ok(result)
-//     }
-
-//     fn into_bytes(self) -> Result<Vec<u8>, Error> {
-//         ensure_efficient_serialization::<T>();
-
-//         let mut result = allocate_buffer(&self)?;
-//         let length_32: u32 = self.len().try_into().map_err(|_| Error::NotRepresentable)?;
-//         result.append(&mut length_32.to_bytes()?);
-
-//         for item in self {
-//             result.append(&mut item.into_bytes()?);
-//         }
-
-//         Ok(result)
-//     }
-
-//     fn serialized_length(&self) -> usize {
-//         iterator_serialized_length(self.iter())
-//     }
-
-//     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), Error> {
-//         let length_32: u32 = self.len().try_into().map_err(|_| Error::NotRepresentable)?;
-//         writer.extend_from_slice(&length_32.to_le_bytes());
-//         for item in self.iter() {
-//             item.write_bytes(writer)?;
-//         }
-//         Ok(())
-//     }
-// }
 
 // ------------------------------------------------------------------------
 // Codec: BTreeMap<K, V>.
@@ -74,7 +65,19 @@ where
     V: Decode,
 {
     fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        unimplemented!()
+        // BTreeMap size.
+        let (size, mut bytes_1) = u32::decode(bytes).unwrap();
+
+        // BTreeMap data.
+        let mut result = BTreeMap::new();
+        for _ in 0..size {
+            let (k, bytes_2) = K::decode(bytes_1).unwrap();
+            let (v, bytes_2) = V::decode(bytes_2).unwrap();
+            result.insert(k, v);
+            bytes_1 = bytes_2;
+        }
+
+        Ok((result, bytes_1))
     }
 }
 
@@ -84,66 +87,28 @@ where
     V: Encode,
 {
     fn get_encoded_size(&self) -> usize {
-        unimplemented!()
+        constants::ENCODED_SIZE_U32
+            + self
+                .iter()
+                .map(|(key, value)| key.get_encoded_size() + value.get_encoded_size())
+                .sum::<usize>()
     }
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        unimplemented!()
+        // BTreeMap size.
+        let size: u32 = self
+            .len()
+            .try_into()
+            .map_err(|_| CodecError::NotRepresentable)
+            .unwrap();
+        size.write_bytes(writer).unwrap();
+
+        // BTreeMap data.
+        for (key, value) in self.iter() {
+            key.write_bytes(writer).unwrap();
+            value.write_bytes(writer).unwrap();
+        }
+
+        Ok(())
     }
 }
-
-// impl<K, V> ToBytes for BTreeMap<K, V>
-// where
-//     K: ToBytes,
-//     V: ToBytes,
-// {
-//     fn to_bytes(&self) -> Result<Vec<u8>, Error> {
-//         let mut result = allocate_buffer(self)?;
-
-//         let num_keys: u32 = self.len().try_into().map_err(|_| Error::NotRepresentable)?;
-//         result.append(&mut num_keys.to_bytes()?);
-
-//         for (key, value) in self.iter() {
-//             result.append(&mut key.to_bytes()?);
-//             result.append(&mut value.to_bytes()?);
-//         }
-
-//         Ok(result)
-//     }
-
-//     fn serialized_length(&self) -> usize {
-//         U32_SERIALIZED_LENGTH
-//             + self
-//                 .iter()
-//                 .map(|(key, value)| key.serialized_length() + value.serialized_length())
-//                 .sum::<usize>()
-//     }
-
-//     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), Error> {
-//         let length_32: u32 = self.len().try_into().map_err(|_| Error::NotRepresentable)?;
-//         writer.extend_from_slice(&length_32.to_le_bytes());
-//         for (key, value) in self.iter() {
-//             key.write_bytes(writer)?;
-//             value.write_bytes(writer)?;
-//         }
-//         Ok(())
-//     }
-// }
-
-// impl<K, V> FromBytes for BTreeMap<K, V>
-// where
-//     K: FromBytes + Ord,
-//     V: FromBytes,
-// {
-//     fn from_bytes(bytes: &[u8]) -> Result<(Self, &[u8]), Error> {
-//         let (num_keys, mut stream) = u32::from_bytes(bytes)?;
-//         let mut result = BTreeMap::new();
-//         for _ in 0..num_keys {
-//             let (k, rem) = K::from_bytes(stream)?;
-//             let (v, rem) = V::from_bytes(rem)?;
-//             result.insert(k, v);
-//             stream = rem;
-//         }
-//         Ok((result, stream))
-//     }
-// }

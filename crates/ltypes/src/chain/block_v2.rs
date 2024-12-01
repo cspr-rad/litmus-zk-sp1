@@ -122,7 +122,6 @@ impl BlockHeader {
         state_root_hash: Digest,
         timestamp: Timestamp,
     ) -> Self {
-        // TODO: validate inputs.
         Self {
             accumulated_seed,
             body_hash,

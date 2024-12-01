@@ -1,5 +1,5 @@
 use super::super::constants;
-use crate::binary::utils::{allocate_buffer, CodecError, Decode, Encode};
+use crate::binary::utils::{CodecError, Decode, Encode};
 
 // ------------------------------------------------------------------------
 // Codec: bool.

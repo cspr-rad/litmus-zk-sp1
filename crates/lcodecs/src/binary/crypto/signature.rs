@@ -1,7 +1,7 @@
 use super::super::utils::{CodecError, Decode, Encode};
 use ltypes::{
     crypto::Signature,
-    primitives::bites::{Bytes32, Bytes33, Bytes64, Bytes65},
+    primitives::bites::{Bytes64, Bytes65},
 };
 
 // ------------------------------------------------------------------------
@@ -17,16 +17,15 @@ const TAG_SECP256K1: u8 = 2;
 
 impl Decode for Signature {
     fn decode(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, remainder) = Bytes65::decode(encoded).unwrap();
-        let sig_tag = inner.data()[0];
-        let sig_bytes = Bytes64::from(&inner.data()[1..]);
+        let (sig_tag, bytes) = u8::decode(encoded).unwrap();
+        let (sig_bytes, bytes) = Bytes64::decode(bytes).unwrap();
         Ok((
             match sig_tag {
                 TAG_ED25519 => Signature::new_ed25519(sig_bytes),
                 TAG_SECP256K1 => Signature::new_secp256k1(sig_bytes),
                 _ => panic!("Unsupported signature key type prefix"),
             },
-            remainder,
+            bytes,
         ))
     }
 }
@@ -38,14 +37,15 @@ impl Encode for Signature {
 
     fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
-            Signature::ED25519(_) => {
+            Signature::ED25519(inner) => {
                 writer.push(TAG_ED25519);
+                inner.write_bytes(writer).unwrap();
             }
-            Signature::SECP256K1(_) => {
+            Signature::SECP256K1(inner) => {
                 writer.push(TAG_SECP256K1);
+                inner.write_bytes(writer).unwrap();
             }
         }
-        self.inner().write_bytes(writer).unwrap();
         Ok(())
     }
 }
@@ -59,6 +59,7 @@ mod tests {
     use super::*;
     use crate::binary::utils::assert_codec;
     use hex;
+    use ltypes::primitives::bites::{Bytes32, Bytes33};
 
     const MSG_DIGEST_BLAKE2B_HEX: &str =
         "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";

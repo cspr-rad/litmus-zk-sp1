@@ -1,5 +1,4 @@
 use super::super::utils::{CodecError, Decode, Encode};
-use crate::binary::decode;
 use ltypes::primitives::time::Timestamp;
 
 // ------------------------------------------------------------------------
