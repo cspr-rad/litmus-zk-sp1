@@ -16,16 +16,16 @@ const TAG_SECP256K1: u8 = 2;
 // ------------------------------------------------------------------------
 
 impl Decode for Signature {
-    fn decode(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (sig_tag, bytes) = u8::decode(encoded).unwrap();
-        let (sig_bytes, bytes) = Bytes64::decode(bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (sig_tag, bstream) = u8::decode(bstream).unwrap();
+        let (sig_bytes, bstream) = Bytes64::decode(bstream).unwrap();
         Ok((
             match sig_tag {
                 TAG_ED25519 => Signature::new_ed25519(sig_bytes),
                 TAG_SECP256K1 => Signature::new_secp256k1(sig_bytes),
                 _ => panic!("Unsupported signature key type prefix"),
             },
-            bytes,
+            bstream,
         ))
     }
 }
@@ -35,15 +35,15 @@ impl Encode for Signature {
         Bytes65::len()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             Signature::ED25519(inner) => {
                 writer.push(TAG_ED25519);
-                inner.write_bytes(writer).unwrap();
+                inner.write_encoded(writer).unwrap();
             }
             Signature::SECP256K1(inner) => {
                 writer.push(TAG_SECP256K1);
-                inner.write_bytes(writer).unwrap();
+                inner.write_encoded(writer).unwrap();
             }
         }
         Ok(())

@@ -19,20 +19,21 @@ const TAG_SECP256K1: u8 = 2;
 // ------------------------------------------------------------------------
 
 impl Decode for VerificationKey {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (vkey_tag, bytes) = u8::decode(bytes).unwrap();
-        let (vkey, bytes) = match vkey_tag {
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (vkey_tag, bstream) = u8::decode(bstream).unwrap();
+        let (vkey, bstream) = match vkey_tag {
             TAG_ED25519 => {
-                let (vk, bytes) = Bytes32::decode(bytes).unwrap();
-                (VerificationKey::new_ed25519(vk), bytes)
+                let (vk, bstream) = Bytes32::decode(bstream).unwrap();
+                (VerificationKey::new_ed25519(vk), bstream)
             }
             TAG_SECP256K1 => {
-                let (vk, bytes) = Bytes33::decode(bytes).unwrap();
-                (VerificationKey::new_secp256k1(vk), bytes)
+                let (vk, bstream) = Bytes33::decode(bstream).unwrap();
+                (VerificationKey::new_secp256k1(vk), bstream)
             }
             _ => panic!("Invalid verification type tag"),
         };
-        Ok((vkey, bytes))
+
+        Ok((vkey, bstream))
     }
 }
 
@@ -45,17 +46,18 @@ impl Encode for VerificationKey {
             }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             VerificationKey::ED25519(inner) => {
                 writer.push(TAG_ED25519);
-                inner.write_bytes(writer).unwrap();
+                inner.write_encoded(writer).unwrap();
             }
             VerificationKey::SECP256K1(inner) => {
                 writer.push(TAG_SECP256K1);
-                inner.write_bytes(writer).unwrap();
+                inner.write_encoded(writer).unwrap();
             }
         }
+
         Ok(())
     }
 }

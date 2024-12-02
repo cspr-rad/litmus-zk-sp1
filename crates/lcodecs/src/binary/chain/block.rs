@@ -23,21 +23,21 @@ const TAG_BLOCK_V2: u8 = 1;
 // ------------------------------------------------------------------------
 
 impl Decode for Block {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (version_tag, bytes) = u8::decode(bytes).unwrap();
-        let (block, bytes) = match version_tag {
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (version_tag, bstream) = u8::decode(bstream).unwrap();
+        let (block, bstream) = match version_tag {
             TAG_BLOCK_V1 => {
-                let (inner, bytes) = BlockV1::decode(bytes).unwrap();
-                (Block::new_v1(inner), bytes)
+                let (inner, bstream) = BlockV1::decode(bstream).unwrap();
+                (Block::new_v1(inner), bstream)
             }
             TAG_BLOCK_V2 => {
-                let (inner, bytes) = BlockV2::decode(bytes).unwrap();
-                (Block::new_v2(inner), bytes)
+                let (inner, bstream) = BlockV2::decode(bstream).unwrap();
+                (Block::new_v2(inner), bstream)
             }
             _ => panic!("Invalid block version tag"),
         };
 
-        Ok((block, bytes))
+        Ok((block, bstream))
     }
 }
 
@@ -50,15 +50,15 @@ impl Encode for Block {
             }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             Block::V1(inner) => {
                 writer.push(TAG_BLOCK_V1);
-                inner.write_bytes(writer).unwrap();
+                inner.write_encoded(writer).unwrap();
             }
             Block::V2(inner) => {
                 writer.push(TAG_BLOCK_V2);
-                inner.write_bytes(writer).unwrap();
+                inner.write_encoded(writer).unwrap();
             }
         }
 
@@ -71,10 +71,10 @@ impl Encode for Block {
 // ------------------------------------------------------------------------
 
 impl Decode for BlockHash {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, remainder) = Digest::decode(bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bstream) = Digest::decode(bstream).unwrap();
 
-        Ok((BlockHash::new(inner), remainder))
+        Ok((BlockHash::new(inner), bstream))
     }
 }
 
@@ -83,8 +83,8 @@ impl Encode for BlockHash {
         self.inner().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.inner().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.inner().write_encoded(writer).unwrap();
 
         Ok(())
     }
@@ -95,10 +95,10 @@ impl Encode for BlockHash {
 // ------------------------------------------------------------------------
 
 impl Decode for BlockHeight {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, bytes) = u64::decode(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bstream) = u64::decode(&bstream).unwrap();
 
-        Ok((Self::new(inner), &bytes))
+        Ok((Self::new(inner), &bstream))
     }
 }
 
@@ -107,8 +107,8 @@ impl Encode for BlockHeight {
         self.inner().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.inner().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.inner().write_encoded(writer).unwrap();
 
         Ok(())
     }
@@ -119,12 +119,12 @@ impl Encode for BlockHeight {
 // ------------------------------------------------------------------------
 
 impl Decode for BlockV1 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (hash, bytes) = BlockHash::decode(bytes).unwrap();
-        let (header, bytes) = BlockV1Header::decode(bytes).unwrap();
-        let (body, bytes) = BlockV1Body::decode(bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (hash, bstream) = BlockHash::decode(bstream).unwrap();
+        let (header, bstream) = BlockV1Header::decode(bstream).unwrap();
+        let (body, bstream) = BlockV1Body::decode(bstream).unwrap();
 
-        Ok((BlockV1::new(body, hash, header), bytes))
+        Ok((BlockV1::new(body, hash, header), bstream))
     }
 }
 
@@ -135,10 +135,10 @@ impl Encode for BlockV1 {
             + self.body().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.hash().write_bytes(writer).unwrap();
-        self.header().write_bytes(writer).unwrap();
-        self.body().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.hash().write_encoded(writer).unwrap();
+        self.header().write_encoded(writer).unwrap();
+        self.body().write_encoded(writer).unwrap();
 
         Ok(())
     }
@@ -159,7 +159,7 @@ impl Encode for BlockV1Body {
         unimplemented!();
     }
 
-    fn write_bytes(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
         unimplemented!();
     }
 }
@@ -179,7 +179,7 @@ impl Encode for BlockV1Header {
         unimplemented!();
     }
 
-    fn write_bytes(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
         unimplemented!();
     }
 }
@@ -189,12 +189,12 @@ impl Encode for BlockV1Header {
 // ------------------------------------------------------------------------
 
 impl Decode for BlockV2 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (hash, bytes) = BlockHash::decode(bytes).unwrap();
-        let (header, bytes) = BlockV2Header::decode(bytes).unwrap();
-        let (body, bytes) = BlockV2Body::decode(bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (hash, bstream) = BlockHash::decode(bstream).unwrap();
+        let (header, bstream) = BlockV2Header::decode(bstream).unwrap();
+        let (body, bstream) = BlockV2Body::decode(bstream).unwrap();
 
-        Ok((BlockV2::new(body, hash, header), bytes))
+        Ok((BlockV2::new(body, hash, header), bstream))
     }
 }
 
@@ -205,10 +205,10 @@ impl Encode for BlockV2 {
             + self.body().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.hash().write_bytes(writer).unwrap();
-        self.header().write_bytes(writer).unwrap();
-        self.body().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.hash().write_encoded(writer).unwrap();
+        self.header().write_encoded(writer).unwrap();
+        self.body().write_encoded(writer).unwrap();
 
         Ok(())
     }
@@ -219,7 +219,7 @@ impl Encode for BlockV2 {
 // ------------------------------------------------------------------------
 
 impl Decode for BlockV2Body {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!()
     }
 }
@@ -229,9 +229,9 @@ impl Encode for BlockV2Body {
         self.transactions().get_encoded_size() + self.rewarded_signatures().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.transactions().write_bytes(writer).unwrap();
-        self.rewarded_signatures().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.transactions().write_encoded(writer).unwrap();
+        self.rewarded_signatures().write_encoded(writer).unwrap();
 
         Ok(())
     }
@@ -242,20 +242,20 @@ impl Encode for BlockV2Body {
 // ------------------------------------------------------------------------
 
 impl Decode for BlockV2Header {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (parent_hash, bytes) = BlockHash::decode(bytes).unwrap();
-        let (state_root_hash, bytes) = Digest::decode(bytes).unwrap();
-        let (body_hash, bytes) = Digest::decode(bytes).unwrap();
-        let (random_bit, bytes) = bool::decode(bytes).unwrap();
-        let (accumulated_seed, bytes) = Digest::decode(bytes).unwrap();
-        let (era_end, bytes) = Option::<EraEndV2>::decode(bytes).unwrap();
-        let (timestamp, bytes) = Timestamp::decode(bytes).unwrap();
-        let (era_id, bytes) = EraId::decode(bytes).unwrap();
-        let (height, bytes) = BlockHeight::decode(bytes).unwrap();
-        let (protocol_version, bytes) = ProtocolVersion::decode(bytes).unwrap();
-        let (proposer, bytes) = PublicKey::decode(bytes).unwrap();
-        let (current_gas_price, bytes) = u8::decode(bytes).unwrap();
-        let (last_switch_block_hash, bytes) = Option::<BlockHash>::decode(bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (parent_hash, bstream) = BlockHash::decode(bstream).unwrap();
+        let (state_root_hash, bstream) = Digest::decode(bstream).unwrap();
+        let (body_hash, bstream) = Digest::decode(bstream).unwrap();
+        let (random_bit, bstream) = bool::decode(bstream).unwrap();
+        let (accumulated_seed, bstream) = Digest::decode(bstream).unwrap();
+        let (era_end, bstream) = Option::<EraEndV2>::decode(bstream).unwrap();
+        let (timestamp, bstream) = Timestamp::decode(bstream).unwrap();
+        let (era_id, bstream) = EraId::decode(bstream).unwrap();
+        let (height, bstream) = BlockHeight::decode(bstream).unwrap();
+        let (protocol_version, bstream) = ProtocolVersion::decode(bstream).unwrap();
+        let (proposer, bstream) = PublicKey::decode(bstream).unwrap();
+        let (current_gas_price, bstream) = u8::decode(bstream).unwrap();
+        let (last_switch_block_hash, bstream) = Option::<BlockHash>::decode(bstream).unwrap();
 
         Ok((
             BlockV2Header::new(
@@ -273,7 +273,7 @@ impl Decode for BlockV2Header {
                 state_root_hash,
                 timestamp,
             ),
-            bytes,
+            bstream,
         ))
     }
 }
@@ -295,20 +295,20 @@ impl Encode for BlockV2Header {
             + self.last_switch_block_hash().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.parent_hash().write_bytes(writer).unwrap();
-        self.state_root_hash().write_bytes(writer).unwrap();
-        self.body_hash().write_bytes(writer).unwrap();
-        self.random_bit().write_bytes(writer).unwrap();
-        self.accumulated_seed().write_bytes(writer).unwrap();
-        self.era_end().write_bytes(writer).unwrap();
-        self.timestamp().write_bytes(writer).unwrap();
-        self.era_id().write_bytes(writer).unwrap();
-        self.height().write_bytes(writer).unwrap();
-        self.protocol_version().write_bytes(writer).unwrap();
-        self.proposer().write_bytes(writer).unwrap();
-        self.current_gas_price().write_bytes(writer).unwrap();
-        self.last_switch_block_hash().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.parent_hash().write_encoded(writer).unwrap();
+        self.state_root_hash().write_encoded(writer).unwrap();
+        self.body_hash().write_encoded(writer).unwrap();
+        self.random_bit().write_encoded(writer).unwrap();
+        self.accumulated_seed().write_encoded(writer).unwrap();
+        self.era_end().write_encoded(writer).unwrap();
+        self.timestamp().write_encoded(writer).unwrap();
+        self.era_id().write_encoded(writer).unwrap();
+        self.height().write_encoded(writer).unwrap();
+        self.protocol_version().write_encoded(writer).unwrap();
+        self.proposer().write_encoded(writer).unwrap();
+        self.current_gas_price().write_encoded(writer).unwrap();
+        self.last_switch_block_hash().write_encoded(writer).unwrap();
         Ok(())
     }
 }

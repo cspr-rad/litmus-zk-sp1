@@ -28,11 +28,11 @@ pub enum CodecError {
 /// Trait implemented by types decodeable from a `Vec<Byte>`.
 pub trait Decode: Sized {
     /// Decodes slice into instance of `Self`.
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError>;
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError>;
 
     /// Decodes `Vec<u8>` into instance of `Self`.
-    fn from_vec(bytes: Vec<u8>) -> Result<(Self, Vec<u8>), CodecError> {
-        Self::decode(bytes.as_slice()).map(|(x, remainder)| (x, Vec::from(remainder)))
+    fn from_vec(bstream: Vec<u8>) -> Result<(Self, Vec<u8>), CodecError> {
+        Self::decode(bstream.as_slice()).map(|(x, remainder)| (x, Vec::from(remainder)))
     }
 }
 
@@ -45,7 +45,7 @@ pub trait Encode {
             return Err(CodecError::OutOfMemory);
         }
         let mut result = Vec::<u8>::with_capacity(encoded_length);
-        self.write_bytes(&mut result)?;
+        self.write_encoded(&mut result)?;
         Ok(result)
     }
 
@@ -61,7 +61,7 @@ pub trait Encode {
     fn get_encoded_size(&self) -> usize;
 
     /// Writes `&self` into a mutable `writer`.
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError>;
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError>;
 }
 
 /// Returns a `Vec<Byte>` initialized with sufficient capacity to hold `to_be_serialized` after
@@ -84,18 +84,16 @@ where
 {
     let encoded = T::encode(&entity).unwrap();
 
-    // Assert size.
     let size = T::get_encoded_size(&entity);
     assert_eq!(size, encoded.len(), "Size mismatch");
 
     let mut written_bytes = vec![];
-    entity.write_bytes(&mut written_bytes).unwrap();
+    entity.write_encoded(&mut written_bytes).unwrap();
     assert_eq!(encoded, written_bytes);
 
-    // Assert decoding.
-    let (decoded, bytes) = T::decode(&encoded).unwrap();
+    let (decoded, bstream) = T::decode(&encoded).unwrap();
     assert_eq!(entity, &decoded);
-    assert_eq!(bytes.len(), 0);
+    assert_eq!(bstream.len(), 0);
 }
 
 /// Deconstructs a byte sequence into left & right sequences at a certain index.

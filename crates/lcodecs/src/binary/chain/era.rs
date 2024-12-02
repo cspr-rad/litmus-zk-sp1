@@ -7,12 +7,12 @@ use std::{collections::BTreeMap, vec::Vec};
 // ------------------------------------------------------------------------
 
 impl Decode for EraEndV2 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (equivocators, bytes) = Vec::decode(bytes).unwrap();
-        let (inactive_validators, bytes) = Vec::decode(bytes).unwrap();
-        let (next_era_validator_weights, bytes) = Vec::decode(bytes).unwrap();
-        let (rewards, bytes) = BTreeMap::decode(bytes).unwrap();
-        let (next_era_gas_price, bytes) = u8::decode(bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (equivocators, bstream) = Vec::decode(bstream).unwrap();
+        let (inactive_validators, bstream) = Vec::decode(bstream).unwrap();
+        let (next_era_validator_weights, bstream) = Vec::decode(bstream).unwrap();
+        let (rewards, bstream) = BTreeMap::decode(bstream).unwrap();
+        let (next_era_gas_price, bstream) = u8::decode(bstream).unwrap();
         Ok((
             EraEndV2::new(
                 equivocators,
@@ -21,7 +21,7 @@ impl Decode for EraEndV2 {
                 rewards,
                 next_era_gas_price,
             ),
-            bytes,
+            bstream,
         ))
     }
 }
@@ -35,14 +35,14 @@ impl Encode for EraEndV2 {
             + self.next_era_gas_price().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.equivocators().write_bytes(writer).unwrap();
-        self.inactive_validators().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.equivocators().write_encoded(writer).unwrap();
+        self.inactive_validators().write_encoded(writer).unwrap();
         self.next_era_validator_weights()
-            .write_bytes(writer)
+            .write_encoded(writer)
             .unwrap();
-        self.rewards().write_bytes(writer).unwrap();
-        self.next_era_gas_price().write_bytes(writer).unwrap();
+        self.rewards().write_encoded(writer).unwrap();
+        self.next_era_gas_price().write_encoded(writer).unwrap();
         Ok(())
     }
 }
@@ -52,10 +52,10 @@ impl Encode for EraEndV2 {
 // ------------------------------------------------------------------------
 
 impl Decode for EraId {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, bytes) = u64::decode(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bstream) = u64::decode(&bstream).unwrap();
 
-        Ok((Self::new(inner), &bytes))
+        Ok((Self::new(inner), &bstream))
     }
 }
 
@@ -64,8 +64,8 @@ impl Encode for EraId {
         self.inner().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.inner().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.inner().write_encoded(writer).unwrap();
         Ok(())
     }
 }

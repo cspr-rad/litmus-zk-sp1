@@ -6,10 +6,10 @@ use ltypes::chain::Motes;
 // ------------------------------------------------------------------------
 
 impl Decode for Motes {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, bytes) = u64::decode(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bstream) = u64::decode(&bstream).unwrap();
 
-        Ok((Self::new(inner), &bytes))
+        Ok((Self::new(inner), &bstream))
     }
 }
 
@@ -18,8 +18,8 @@ impl Encode for Motes {
         self.inner().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.inner().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.inner().write_encoded(writer).unwrap();
         Ok(())
     }
 }

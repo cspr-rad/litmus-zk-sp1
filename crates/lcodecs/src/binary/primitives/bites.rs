@@ -1,4 +1,4 @@
-use crate::binary::utils::{safe_split_at, CodecError, Decode, Encode};
+use super::super::utils::{safe_split_at, CodecError, Decode, Encode};
 use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64, Bytes65};
 
 // ------------------------------------------------------------------------
@@ -6,11 +6,11 @@ use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64, Bytes65};
 // ------------------------------------------------------------------------
 
 impl<const N: usize> Decode for [u8; N] {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (bytes, rem) = safe_split_at(bytes, N)?;
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (bytes, bstream) = safe_split_at(bstream, N)?;
         let ptr = bytes.as_ptr() as *const [u8; N];
         let result = unsafe { *ptr };
-        Ok((result, rem))
+        Ok((result, bstream))
     }
 }
 
@@ -19,7 +19,7 @@ impl<const N: usize> Encode for [u8; N] {
         N
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(self.as_slice());
         Ok(())
     }
@@ -30,8 +30,8 @@ impl<const N: usize> Encode for [u8; N] {
 // ------------------------------------------------------------------------
 
 impl Decode for Bytes32 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        Decode::decode(bytes).map(|(arr, rem)| (Bytes32::new(arr), rem))
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        Decode::decode(bstream).map(|(arr, bstream)| (Self::new(arr), bstream))
     }
 }
 
@@ -40,7 +40,7 @@ impl Encode for Bytes32 {
         Bytes32::len()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(self.as_slice());
         Ok(())
     }
@@ -51,8 +51,8 @@ impl Encode for Bytes32 {
 // ------------------------------------------------------------------------
 
 impl Decode for Bytes33 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        Decode::decode(bytes).map(|(arr, rem)| (Bytes33::new(arr), rem))
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        Decode::decode(bstream).map(|(arr, bstream)| (Self::new(arr), bstream))
     }
 }
 
@@ -61,7 +61,7 @@ impl Encode for Bytes33 {
         Bytes33::len()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(self.as_slice());
         Ok(())
     }
@@ -72,8 +72,8 @@ impl Encode for Bytes33 {
 // ------------------------------------------------------------------------
 
 impl Decode for Bytes64 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        Decode::decode(bytes).map(|(arr, rem)| (Bytes64::new(arr), rem))
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        Decode::decode(bstream).map(|(arr, bstream)| (Self::new(arr), bstream))
     }
 }
 
@@ -82,7 +82,7 @@ impl Encode for Bytes64 {
         Bytes64::len()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(self.as_slice());
         Ok(())
     }
@@ -93,8 +93,8 @@ impl Encode for Bytes64 {
 // ------------------------------------------------------------------------
 
 impl Decode for Bytes65 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        Decode::decode(bytes).map(|(arr, rem)| (Bytes65::new(arr), rem))
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        Decode::decode(bstream).map(|(arr, bstream)| (Self::new(arr), bstream))
     }
 }
 
@@ -103,7 +103,7 @@ impl Encode for Bytes65 {
         Bytes65::len()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(self.as_slice());
         Ok(())
     }

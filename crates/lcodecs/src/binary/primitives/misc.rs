@@ -6,8 +6,8 @@ use crate::binary::utils::{CodecError, Decode, Encode};
 // ------------------------------------------------------------------------
 
 impl Decode for bool {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        match bytes.split_first() {
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        match bstream.split_first() {
             None => Err(CodecError::EarlyEndOfStream),
             Some((byte, rem)) => match byte {
                 1 => Ok((true, rem)),
@@ -23,7 +23,7 @@ impl Encode for bool {
         constants::ENCODED_SIZE_BOOL
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.push(u8::from(*self));
         Ok(())
     }
@@ -34,16 +34,18 @@ impl Encode for bool {
 // ------------------------------------------------------------------------
 
 impl<T: Decode> Decode for Option<T> {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (tag, rem) = u8::decode(bytes)?;
-        match tag {
-            constants::TAG_OPTION_NONE => Ok((None, rem)),
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (tag, bstream) = u8::decode(bstream)?;
+        let (d, bstream) = match tag {
+            constants::TAG_OPTION_NONE => (None, bstream),
             constants::TAG_OPTION_SOME => {
-                let (t, rem) = T::decode(rem)?;
-                Ok((Some(t), rem))
+                let (t, bstream) = T::decode(bstream)?;
+                (Some(t), bstream)
             }
-            _ => Err(CodecError::Formatting),
-        }
+            _ => panic!("Invalid Option<T> type tag"),
+        };
+
+        Ok((d, bstream))
     }
 }
 
@@ -55,14 +57,14 @@ impl<T: Encode> Encode for Option<T> {
         }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             None => {
                 writer.push(constants::TAG_OPTION_NONE);
             }
             Some(inner) => {
                 writer.push(constants::TAG_OPTION_SOME);
-                inner.write_bytes(writer).unwrap();
+                inner.write_encoded(writer).unwrap();
             }
         }
         Ok(())
@@ -74,19 +76,21 @@ impl<T: Encode> Encode for Option<T> {
 // ------------------------------------------------------------------------
 
 impl<T: Decode, E: Decode> Decode for Result<T, E> {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (variant, rem) = u8::decode(bytes)?;
-        match variant {
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (tag, bstream) = u8::decode(bstream)?;
+        let (result, bstream) = match tag {
             constants::TAG_RESULT_ERR => {
-                let (value, rem) = E::decode(rem)?;
-                Ok((Err(value), rem))
+                let (value, bstream) = E::decode(bstream)?;
+                (Err(value), bstream)
             }
             constants::TAG_RESULT_OK => {
-                let (value, rem) = T::decode(rem)?;
-                Ok((Ok(value), rem))
+                let (value, bstream) = T::decode(bstream)?;
+                (Ok(value), bstream)
             }
-            _ => Err(CodecError::Formatting),
-        }
+            _ => panic!("Invalid Result<T, E> type tag"),
+        };
+
+        Ok((result, bstream))
     }
 }
 
@@ -98,15 +102,15 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
         }
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             Err(error) => {
                 writer.push(constants::TAG_RESULT_ERR);
-                error.write_bytes(writer).unwrap();
+                error.write_encoded(writer).unwrap();
             }
             Ok(value) => {
                 writer.push(constants::TAG_RESULT_OK);
-                value.write_bytes(writer).unwrap();
+                value.write_encoded(writer).unwrap();
             }
         }
         Ok(())
@@ -118,8 +122,8 @@ impl<T: Encode, E: Encode> Encode for Result<T, E> {
 // ------------------------------------------------------------------------
 
 impl Decode for () {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        Ok(((), bytes))
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        Ok(((), bstream))
     }
 }
 
@@ -128,7 +132,7 @@ impl Encode for () {
         constants::ENCODED_SIZE_UNIT
     }
 
-    fn write_bytes(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, _: &mut Vec<u8>) -> Result<(), CodecError> {
         Ok(())
     }
 }

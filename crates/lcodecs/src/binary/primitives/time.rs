@@ -6,10 +6,10 @@ use ltypes::primitives::time::Timestamp;
 // ------------------------------------------------------------------------
 
 impl Decode for Timestamp {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, bytes) = u128::decode(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bstream) = u128::decode(&bstream).unwrap();
 
-        Ok((Self::new(inner), &bytes))
+        Ok((Self::new(inner), &bstream))
     }
 }
 
@@ -18,8 +18,8 @@ impl Encode for Timestamp {
         self.inner().get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
-        self.inner().write_bytes(writer).unwrap();
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+        self.inner().write_encoded(writer).unwrap();
         Ok(())
     }
 }

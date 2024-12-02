@@ -15,7 +15,7 @@ impl Encode for str {
         constants::ENCODED_SIZE_U32 + self.as_bytes().len()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(encode_byte_slice(self.as_bytes()).unwrap().as_slice());
         Ok(())
     }
@@ -36,7 +36,7 @@ impl Encode for &str {
         (*self).get_encoded_size()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice((*self).encode().unwrap().as_slice());
         Ok(())
     }
@@ -47,11 +47,11 @@ impl Encode for &str {
 // ------------------------------------------------------------------------
 
 impl Decode for String {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (size, remainder) = u32::decode(bytes)?;
-        let (str_bytes, remainder) = safe_split_at(remainder, size as usize)?;
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (size, bstream) = u32::decode(bstream)?;
+        let (str_bytes, bstream) = safe_split_at(bstream, size as usize)?;
         let result = String::from_utf8(str_bytes.to_vec()).map_err(|_| CodecError::Formatting)?;
-        Ok((result, remainder))
+        Ok((result, bstream))
     }
 }
 
@@ -60,7 +60,7 @@ impl Encode for String {
         get_encoded_size_of_byte_slice(self.as_bytes())
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(encode_byte_slice(self.as_bytes()).unwrap().as_slice());
         Ok(())
     }

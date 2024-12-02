@@ -6,11 +6,11 @@ use ltypes::{crypto::Digest, primitives::bites::Bytes32};
 // ------------------------------------------------------------------------
 
 impl Decode for Digest {
-    fn decode(encoded: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (inner, remainder) = Bytes32::decode(encoded).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (inner, bstream) = Bytes32::decode(bstream).unwrap();
 
         // N.B. defaults to BLAKE2B as there is no tag prefix.
-        Ok((Digest::new(inner), remainder))
+        Ok((Digest::new(inner), bstream))
     }
 }
 
@@ -19,10 +19,10 @@ impl Encode for Digest {
         Bytes32::len()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         match self {
             Digest::BLAKE2B(inner) => {
-                inner.write_bytes(writer).unwrap();
+                inner.write_encoded(writer).unwrap();
             }
         }
         Ok(())

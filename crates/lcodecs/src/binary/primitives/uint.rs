@@ -6,10 +6,10 @@ use super::super::utils::{deconstruct_bytes, CodecError, Decode, Encode};
 // ------------------------------------------------------------------------
 
 impl Decode for i32 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (bytes, remainder) = deconstruct_bytes::<4>(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (bytes, bstream) = deconstruct_bytes::<4>(&bstream).unwrap();
 
-        Ok((<i32>::from_le_bytes(bytes), remainder))
+        Ok((<i32>::from_le_bytes(bytes), bstream))
     }
 }
 
@@ -18,7 +18,7 @@ impl Encode for i32 {
         constants::ENCODED_SIZE_I32
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.to_le_bytes());
         Ok(())
     }
@@ -29,10 +29,10 @@ impl Encode for i32 {
 // ------------------------------------------------------------------------
 
 impl Decode for i64 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (bytes, remainder) = deconstruct_bytes::<8>(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (bytes, bstream) = deconstruct_bytes::<8>(&bstream).unwrap();
 
-        Ok((<i64>::from_le_bytes(bytes), remainder))
+        Ok((<i64>::from_le_bytes(bytes), bstream))
     }
 }
 
@@ -41,7 +41,7 @@ impl Encode for i64 {
         constants::ENCODED_SIZE_I64
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.to_le_bytes());
         Ok(())
     }
@@ -52,10 +52,10 @@ impl Encode for i64 {
 // ------------------------------------------------------------------------
 
 impl Decode for u8 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        match bytes.split_first() {
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        match bstream.split_first() {
             None => Err(CodecError::EarlyEndOfStream),
-            Some((byte, rem)) => Ok((*byte, rem)),
+            Some((byte, bstream)) => Ok((*byte, bstream)),
         }
     }
 }
@@ -65,7 +65,7 @@ impl Encode for u8 {
         constants::ENCODED_SIZE_U8
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.push(*self);
         Ok(())
     }
@@ -76,10 +76,10 @@ impl Encode for u8 {
 // ------------------------------------------------------------------------
 
 impl Decode for u16 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (bytes, remainder) = deconstruct_bytes::<2>(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (bytes, bstream) = deconstruct_bytes::<2>(&bstream).unwrap();
 
-        Ok((<u16>::from_le_bytes(bytes), remainder))
+        Ok((<u16>::from_le_bytes(bytes), bstream))
     }
 }
 
@@ -88,7 +88,7 @@ impl Encode for u16 {
         constants::ENCODED_SIZE_U16
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.to_le_bytes());
         Ok(())
     }
@@ -99,10 +99,10 @@ impl Encode for u16 {
 // ------------------------------------------------------------------------
 
 impl Decode for u32 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (bytes, remainder) = deconstruct_bytes::<4>(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (bytes, bstream) = deconstruct_bytes::<4>(&bstream).unwrap();
 
-        Ok((<u32>::from_le_bytes(bytes), remainder))
+        Ok((<u32>::from_le_bytes(bytes), bstream))
     }
 }
 
@@ -111,7 +111,7 @@ impl Encode for u32 {
         constants::ENCODED_SIZE_U32
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.to_le_bytes());
         Ok(())
     }
@@ -122,10 +122,10 @@ impl Encode for u32 {
 // ------------------------------------------------------------------------
 
 impl Decode for u64 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (bytes, remainder) = deconstruct_bytes::<8>(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (bytes, bstream) = deconstruct_bytes::<8>(&bstream).unwrap();
 
-        Ok((<u64>::from_le_bytes(bytes), remainder))
+        Ok((<u64>::from_le_bytes(bytes), bstream))
     }
 }
 
@@ -134,7 +134,7 @@ impl Encode for u64 {
         constants::ENCODED_SIZE_U64
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.to_le_bytes());
         Ok(())
     }
@@ -145,10 +145,10 @@ impl Encode for u64 {
 // ------------------------------------------------------------------------
 
 impl Decode for u128 {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        let (bytes, remainder) = deconstruct_bytes::<16>(&bytes).unwrap();
+    fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+        let (bytes, bstream) = deconstruct_bytes::<16>(&bstream).unwrap();
 
-        Ok((<u128>::from_le_bytes(bytes), remainder))
+        Ok((<u128>::from_le_bytes(bytes), bstream))
     }
 }
 
@@ -157,7 +157,7 @@ impl Encode for u128 {
         constants::ENCODED_SIZE_U128
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         writer.extend_from_slice(&self.to_le_bytes());
         Ok(())
     }

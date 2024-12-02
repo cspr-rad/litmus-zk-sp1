@@ -6,7 +6,7 @@ use ltypes::chain::ValidatorWeight;
 // ------------------------------------------------------------------------
 
 impl Decode for ValidatorWeight {
-    fn decode(bytes: &[u8]) -> Result<(Self, &[u8]), CodecError> {
+    fn decode(_: &[u8]) -> Result<(Self, &[u8]), CodecError> {
         unimplemented!()
     }
 }
@@ -16,7 +16,7 @@ impl Encode for ValidatorWeight {
         unimplemented!()
     }
 
-    fn write_bytes(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
+    fn write_encoded(&self, writer: &mut Vec<u8>) -> Result<(), CodecError> {
         unimplemented!()
     }
 }
