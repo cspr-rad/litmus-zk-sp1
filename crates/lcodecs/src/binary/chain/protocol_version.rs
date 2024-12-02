@@ -2,7 +2,7 @@ use super::super::utils::{CodecError, Decode, Encode};
 use ltypes::{chain::ProtocolVersion, primitives::SemanticVersion};
 
 // ------------------------------------------------------------------------
-// Codec: SemanticVersion.
+// Codec: ProtocolVersion.
 // ------------------------------------------------------------------------
 
 impl Decode for ProtocolVersion {

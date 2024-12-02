@@ -1,7 +1,6 @@
-use lcodecs::binary::Encode;
-use ltypes::chain::{Block, BlockHash, BlockWithProofs, ChainNameDigest, EraConsensusInfo};
-
 mod digests;
+
+use ltypes::chain::{Block, BlockHash, BlockWithProofs, ChainNameDigest, EraConsensusInfo};
 
 pub fn verify_block_v1_with_proofs(_: BlockWithProofs) {
     unimplemented!("verify_block_v1_with_proofs");

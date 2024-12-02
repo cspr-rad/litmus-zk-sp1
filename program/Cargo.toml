@@ -7,7 +7,6 @@ edition = "2021"
 sp1-build = "2.0.0"
 
 [dependencies]
-lcrypto = { path = "../crates/lcrypto" }
 ltypes = { path = "../crates/ltypes" }
 lverifiers = { path = "../crates/lverifiers" }
 serde.workspace = true
