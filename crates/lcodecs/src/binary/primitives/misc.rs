@@ -7,14 +7,16 @@ use crate::binary::utils::{CodecError, Decode, Encode};
 
 impl Decode for bool {
     fn decode(bstream: &[u8]) -> Result<(Self, &[u8]), CodecError> {
-        match bstream.split_first() {
-            None => Err(CodecError::EarlyEndOfStream),
-            Some((byte, rem)) => match byte {
-                1 => Ok((true, rem)),
-                0 => Ok((false, rem)),
-                _ => Err(CodecError::Formatting),
+        let (value, bstream) = match bstream.split_first() {
+            None => panic!("Invalid bool encoding"),
+            Some((val, bstream)) => match val {
+                1 => (true, bstream),
+                0 => (false, bstream),
+                _ => panic!("Invalid bool encoding"),
             },
-        }
+        };
+
+        Ok((value, bstream))
     }
 }
 
