@@ -1,0 +1,58 @@
+{
+  "block": {
+    "Version2": {
+      "hash": "8f199dbcea0de7793c03a095d73f4f960feb738b93f9297d62f5ada8a82a09c2",
+      "header": {
+        "parent_hash": "46d0e12877b2e985037d54262ca46ad0f1bdc4d08c1a5e66a910d571d3f75a39",
+        "state_root_hash": "0380b3ba138043dd202c2e4037fe61cb085b54a2bf34bf3c10a43f081123c7be",
+        "body_hash": "18937e8cf4338b5f5fdc2581f8d7d6a47de736d2799e3f3bc9b0ff9f1e7cf106",
+        "random_bit": true,
+        "accumulated_seed": "960274632e2f879b58a9d1b0caa32af066bd1f20c26b4b1db1767e748152dc5d",
+        "era_end": null,
+        "timestamp": "2024-12-02T10:00:03.495Z",
+        "era_id": 3,
+        "height": 30,
+        "protocol_version": "2.0.0",
+        "proposer": "019b5bd3e7f3c2ba280bb264928ba0d18aab832eb92714d9a455e7737e976c8a41",
+        "current_gas_price": 1,
+        "last_switch_block_hash": "fc5b862cb19094df75f2e406f1c8c6f0c8466b8b8e5dc15a0f88ebac88c5cd5f"
+      },
+      "body": {
+        "transactions": {},
+        "rewarded_signatures": [
+          [
+            248
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ]
+      }
+    }
+  },
+  "proofs": [
+    {
+      "public_key": "016c07fa407f46f7381bb424fbe18c320e8184a7d3e4360acb38d2d58172a9028a",
+      "signature": "0187b9fa89909df1b9ebfd03554e55d548d3277a6c6a5e6d672d904ea4bf186de834b4a7ac9ef83d370b72a7d1d7f54458e83783c44ed8e5a4db7ea514729ed80a"
+    },
+    {
+      "public_key": "01706f36a2ebfccea720b49a6424c196cf0bb7aa929f39842975865848b87773ef",
+      "signature": "01df376fc2609ba1c48ab1e7a5e01f376821c65bcb6953e13613bb568cb02699f6b7cbd4cde63c37fad0478b1a3f36ee41955ec8058f2e07534d228a3e81b30b08"
+    },
+    {
+      "public_key": "018b2bda41097182c387b72c41a490984aad26a64bc75cd926dee7f0b8d82b4e43",
+      "signature": "01fae22fc453a4be023c285ce4636281edb269f868ad0c513dc1623ecfd54654cfa176a97a10ffe0af60baf9178f72f613a6bde8aa353e7a4d564c552d75a75109"
+    },
+    {
+      "public_key": "019b5bd3e7f3c2ba280bb264928ba0d18aab832eb92714d9a455e7737e976c8a41",
+      "signature": "012c5facf59c975a3a65ecae60207608f97bc1b1760683b814ffe00f8974d041ddaa2edc0ecc2d1a372a7e182a0ae518feb222e8d923fb63f2a79c2284cbed0100"
+    },
+    {
+      "public_key": "01f0aaadbf1ef00a83e161eaccadaf4e499d9730a09e8979cb9e8c2d3fc4d8b6f7",
+      "signature": "01fa451e056855dc3ada7f0e0737949212c1bc94ceafc5cf3054e1286f589e13a5abd7f42078e5b3086a0450a46844cbef0703c8347a1b7216af97f9de8ec2800a"
+    }
+  ]
+}
