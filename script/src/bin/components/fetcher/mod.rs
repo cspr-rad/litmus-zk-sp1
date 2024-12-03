@@ -1,8 +1,6 @@
-pub use chain::{Service as ChainFetcherService, ServiceConfig as ChainFetcherServiceConfig};
-pub use fsys::{
-    Service as FileSystemFetcherService, ServiceConfig as FileSystemFetcherServiceConfig,
-};
-use ltypes::chain::{Block, BlockHash, BlockHeight, BlockID};
+pub use chain::Fetcher as ChainFetcher;
+pub use fsys::Fetcher as FileSystemFetcher;
+use ltypes::chain::{Block, BlockID};
 use std::io::Error;
 
 mod chain;
@@ -13,8 +11,8 @@ mod fsys;
 // ------------------------------------------------------------------------
 
 pub enum Fetcher {
-    Chain(ChainFetcherService),
-    FileSystem(FileSystemFetcherService),
+    Chain(ChainFetcher),
+    FileSystem(FileSystemFetcher),
 }
 
 // ------------------------------------------------------------------------
@@ -22,11 +20,11 @@ pub enum Fetcher {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    pub fn new_chain(inner: ChainFetcherService) -> Self {
+    pub fn new_chain(inner: ChainFetcher) -> Self {
         Self::Chain(inner)
     }
 
-    pub fn new_fsys(inner: FileSystemFetcherService) -> Self {
+    pub fn new_fsys(inner: FileSystemFetcher) -> Self {
         Self::FileSystem(inner)
     }
 }
@@ -35,8 +33,8 @@ impl Fetcher {
 // Traits.
 // ------------------------------------------------------------------------
 
-/// A component that encapsulates block fetching.
-trait FetcherService {
+/// Set of backend functions that each block fetcher must implement.
+trait FetcherBackend {
     /// Retrieves a block by an identifier.
     ///
     /// # Arguments
@@ -46,7 +44,13 @@ trait FetcherService {
     fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error>;
 }
 
-impl FetcherService for Fetcher {
+impl Default for Fetcher {
+    fn default() -> Self {
+        Self::new_fsys(FileSystemFetcher::default())
+    }
+}
+
+impl FetcherBackend for Fetcher {
     fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error> {
         match self {
             Self::Chain(inner) => inner.get_block(block_id),

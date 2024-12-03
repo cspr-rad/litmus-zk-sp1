@@ -3,6 +3,7 @@ mod fixtures;
 mod utils;
 
 use clap::Parser;
+use components::Kernel;
 use sp1_sdk::{ProverClient, SP1Stdin};
 
 /// The ELF (executable and linkable format) file for the Succinct RISC-V zkVM.
@@ -20,6 +21,8 @@ struct Args {
 }
 
 fn main() {
+    // Set kernel.
+
     // Set logger.
     sp1_sdk::utils::setup_logger();
 
@@ -42,13 +45,6 @@ fn main() {
         }
     }
 }
-
-// fn build_fetcher() -> Fetcher {
-//     let cfg = FileSystemFetcherServiceConfig::new(String::from(""));
-//     let svc = FileSystemFetcherService::new(cfg);
-
-//     Fetcher::new_fsys(svc)
-// }
 
 fn do_pgm_execute(args: &Args, stdin: &SP1Stdin) {
     // Set VM client.

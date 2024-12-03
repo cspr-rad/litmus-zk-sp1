@@ -1,4 +1,4 @@
-use super::FetcherService;
+use super::FetcherBackend;
 use ltypes::chain::{Block, BlockHash, BlockHeight, BlockID};
 use std::io::Error;
 
@@ -6,11 +6,11 @@ use std::io::Error;
 // Declarations.
 // ------------------------------------------------------------------------
 
-pub struct Service {
-    config: ServiceConfig,
+pub struct Fetcher {
+    config: FetcherConfig,
 }
 
-pub struct ServiceConfig {
+pub struct FetcherConfig {
     ip_address: String,
 }
 
@@ -18,13 +18,13 @@ pub struct ServiceConfig {
 // Constructors.
 // ------------------------------------------------------------------------
 
-impl Service {
-    pub fn new(config: ServiceConfig) -> Self {
+impl Fetcher {
+    pub fn new(config: FetcherConfig) -> Self {
         Self { config }
     }
 }
 
-impl ServiceConfig {
+impl FetcherConfig {
     pub fn new(ip_address: String) -> Self {
         Self { ip_address }
     }
@@ -34,7 +34,7 @@ impl ServiceConfig {
 // Methods.
 // ------------------------------------------------------------------------
 
-impl Service {
+impl Fetcher {
     fn get_block_by_hash(&self, block_hash: BlockHash) -> Result<Option<Block>, Error> {
         todo!()
     }
@@ -48,7 +48,19 @@ impl Service {
 // Traits.
 // ------------------------------------------------------------------------
 
-impl FetcherService for Service {
+impl Default for Fetcher {
+    fn default() -> Self {
+        todo!()
+    }
+}
+
+impl Default for FetcherConfig {
+    fn default() -> Self {
+        todo!()
+    }
+}
+
+impl FetcherBackend for Fetcher {
     fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error> {
         match block_id {
             BlockID::BlockHash(inner) => self.get_block_by_hash(inner),
