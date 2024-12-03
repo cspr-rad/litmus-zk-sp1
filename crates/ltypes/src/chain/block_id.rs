@@ -38,8 +38,20 @@ impl BlockHash {
 
 impl BlockHeight {
     /// Constructor: new [`BlockHeight`] instance.
-    pub const fn new(value: u64) -> Self {
-        Self(value)
+    pub const fn new(height: u64) -> Self {
+        Self(height)
+    }
+}
+
+impl BlockID {
+    /// Constructor: new [`BlockID`] instance.
+    pub fn new_hash(digest: Digest) -> Self {
+        Self::BlockHash(BlockHash::new(digest))
+    }
+
+    /// Constructor: new [`BlockID`] instance.
+    pub fn new_height(height: u64) -> Self {
+        Self::BlockHeight(BlockHeight::new(height))
     }
 }
 

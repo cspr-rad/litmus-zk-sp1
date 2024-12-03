@@ -7,6 +7,26 @@ Proof of concept project.  Executes litmus verification algorithms within [SP1](
 - [Rust](https://rustup.rs/)
 - [SP1](https://succinctlabs.github.io/sp1/getting-started/install.html)
 
+## Contents
+
+- /crates
+
+  - Set of crates encapsulating business logic
+
+- /elf
+
+  - Executable Link File
+  - Emitted by SP1 program compiler
+
+- /program
+
+  - Program to be run within SP1 ZK-VM
+  - Delegates most functionality to crates
+
+- /script
+
+  - Driving script that executes instances of program
+
 ## Running the Project
 
 There are two ways to run this project: compile execute a program or generate a core proof.

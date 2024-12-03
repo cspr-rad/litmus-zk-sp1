@@ -16,6 +16,7 @@ const VKEY_SIZE_SECP256K1: usize = 33;
 // Declarations.
 // ------------------------------------------------------------------------
 
+// A wrapped verification key counterpart of an assymetric signing key.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum VerificationKey {
     ED25519(Bytes32),

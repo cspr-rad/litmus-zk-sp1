@@ -1,3 +1,4 @@
+mod fetcher;
 mod fixtures;
 mod utils;
 

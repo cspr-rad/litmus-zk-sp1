@@ -10,6 +10,7 @@ use ltypes::{
     chain::{BlockHash, BlockWithProofs, ChainNameDigest},
     crypto::{Digest, Signature, VerificationKey},
 };
+use std::{fs, path::Path};
 
 // TODO: scan folder and derive.
 const BLOCK_RANGE_MIN: u32 = 469;
@@ -36,6 +37,33 @@ fn get_chain_name_digest() -> ChainNameDigest {
 fn get_crypto_fixtures() -> CryptoFixtures {
     serde_json::from_str(&fsys::get_fixture_content(String::from("crypto.json"))).unwrap()
 }
+
+// fn get_set_of_blocks_with_proofs_1(
+//     chain_name_digest: &ChainNameDigest,
+// ) -> Vec<WrappedBlockV2WithProofs> {
+//     fn get_inner(block_id: u32) -> BlockWithProofs {
+//         let fname = format!("block-{block_id}.json");
+
+//         serde_json::from_str(&fsys::get_fixture_content(fname)).unwrap()
+//     }
+
+//     fn get_one(
+//         path_to_file: &Path,
+//         chain_name_digest: &ChainNameDigest,
+//     ) -> WrappedBlockV2WithProofs {
+//         let g = fs::read(path_to_file).unwrap();
+
+//         let h = serde_json::from_str(path_to_file.to_str().unwrap());
+
+//         println!("{:?}", path_to_file);
+//         unimplemented!()
+//         // WrappedBlockV2WithProofs(get_inner(block_id), chain_name_digest.to_owned())
+//     }
+
+//     fsys::get_block_fixtures_directory()
+//         .map(|x| get_one(&x.unwrap().path().as_path(), chain_name_digest))
+//         .collect()
+// }
 
 fn get_set_of_blocks_with_proofs(
     chain_name_digest: &ChainNameDigest,

@@ -17,6 +17,7 @@ pub const SIG_SIZE: usize = 64;
 // Declarations.
 // ------------------------------------------------------------------------
 
+// A wrapped digital signature issued by an assymetric signing key.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Signature {
     ED25519(Bytes64),
