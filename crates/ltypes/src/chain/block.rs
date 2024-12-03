@@ -39,3 +39,16 @@ impl Block {
         }
     }
 }
+
+// ------------------------------------------------------------------------
+// Methods.
+// ------------------------------------------------------------------------
+
+impl Block {
+    pub fn is_genesis(&self) -> bool {
+        match self {
+            Block::V1(_) => unimplemented!(),
+            Block::V2(inner) => inner.header().parent_hash().is_genesis(),
+        }
+    }
+}

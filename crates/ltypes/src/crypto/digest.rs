@@ -42,6 +42,13 @@ impl Digest {
         }
     }
 
+    // Returns inner byte array.
+    pub fn inner(&self) -> &Bytes32 {
+        match self {
+            Digest::BLAKE2B(inner) => inner,
+        }
+    }
+
     // Returns length of underlying byte array.
     pub fn len(&self) -> usize {
         match self {
@@ -63,6 +70,11 @@ impl Digest {
     ///
     pub fn get_blake2b(data: Vec<u8>) -> Self {
         Self::BLAKE2B(Bytes32::new(lcrypto::get_hash_blake2b(data)))
+    }
+
+    // Predicate: is inner array all zeros ?
+    pub fn is_zero(&self) -> bool {
+        self.inner().is_zero()
     }
 
     /// Verifies digest against passed data.

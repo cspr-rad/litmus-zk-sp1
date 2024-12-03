@@ -10,6 +10,11 @@ const SIZE_33: usize = 33;
 const SIZE_64: usize = 64;
 const SIZE_65: usize = 65;
 
+const ZERO_ARRAY_32: [u8; SIZE_32] = [0_u8; SIZE_32];
+const ZERO_ARRAY_33: [u8; SIZE_33] = [0_u8; SIZE_33];
+const ZERO_ARRAY_64: [u8; SIZE_64] = [0_u8; SIZE_64];
+const ZERO_ARRAY_65: [u8; SIZE_65] = [0_u8; SIZE_65];
+
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
@@ -60,7 +65,7 @@ impl<const N: usize> Bytes<N> {
     }
 
     // Returns underlying byte array.
-    pub fn data(&self) -> [u8; N] {
+    pub fn inner(&self) -> [u8; N] {
         self.data
     }
 
@@ -75,6 +80,17 @@ impl<const N: usize> Bytes<N> {
 // ------------------------------------------------------------------------
 
 impl<const N: usize> Bytes<N> {
+    // Predicate: is inner array all zeros ?
+    pub fn is_zero(&self) -> bool {
+        match N {
+            SIZE_32 => self.as_slice() == ZERO_ARRAY_32,
+            SIZE_33 => self.as_slice() == ZERO_ARRAY_33,
+            SIZE_64 => self.as_slice() == ZERO_ARRAY_64,
+            SIZE_65 => self.as_slice() == ZERO_ARRAY_65,
+            _ => panic!("Unsupported byte array length"),
+        }
+    }
+
     // Method: Convert data to vec.
     pub fn to_vec(&self) -> Vec<u8> {
         self.data.to_vec()

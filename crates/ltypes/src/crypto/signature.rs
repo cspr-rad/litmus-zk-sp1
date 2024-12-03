@@ -122,13 +122,13 @@ impl Signature {
         match self {
             Signature::ED25519(sig) => match vkey {
                 VerificationKey::ED25519(vk) => {
-                    lcrypto::verify_signature_ed25519(&sig.data(), &vk.data(), msg)
+                    lcrypto::verify_signature_ed25519(&sig.inner(), &vk.inner(), msg)
                 }
                 _ => panic!("Invalid verification key type"),
             },
             Signature::SECP256K1(sig) => match vkey {
                 VerificationKey::SECP256K1(vk) => {
-                    lcrypto::verify_signature_secp256k1(&sig.data(), &vk.data(), msg)
+                    lcrypto::verify_signature_secp256k1(&sig.inner(), &vk.inner(), msg)
                 }
                 _ => panic!("Invalid verification key type"),
             },

@@ -1,4 +1,4 @@
-mod fetcher;
+mod components;
 mod fixtures;
 mod utils;
 
@@ -42,6 +42,13 @@ fn main() {
         }
     }
 }
+
+// fn build_fetcher() -> Fetcher {
+//     let cfg = FileSystemFetcherServiceConfig::new(String::from(""));
+//     let svc = FileSystemFetcherService::new(cfg);
+
+//     Fetcher::new_fsys(svc)
+// }
 
 fn do_pgm_execute(args: &Args, stdin: &SP1Stdin) {
     // Set VM client.
