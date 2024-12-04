@@ -1,0 +1,8 @@
+[fetcher]
+kind = "fsys"
+
+[fetcher.chain]
+ip_address = "127.0.0.0:12101"
+
+[fetcher.fsys]
+path_to_root = "../fixtures/chain/blocks"

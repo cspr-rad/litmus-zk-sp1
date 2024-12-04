@@ -1,3 +1,5 @@
+mod config;
+
 pub use super::{
     cache::Cache,
     fetcher::{Fetcher, FileSystemFetcher},
@@ -9,6 +11,7 @@ pub use super::{
 // ------------------------------------------------------------------------
 
 pub struct Kernel {
+    config: config::Config,
     cache: Cache,
     fetcher: Fetcher,
     prover: Prover,
@@ -19,11 +22,14 @@ pub struct Kernel {
 // ------------------------------------------------------------------------
 
 impl Kernel {
-    pub fn new(cache: Cache, fetcher: Fetcher, prover: Prover) -> Self {
+    pub fn new(path_to_toml: String) -> Self {
+        let config = config::Config::new(path_to_toml);
+
         Self {
-            cache,
-            fetcher,
-            prover,
+            config,
+            cache: Cache::new(),
+            fetcher: Fetcher::new(),
+            prover: Prover::new(),
         }
     }
 }

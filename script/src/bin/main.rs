@@ -22,6 +22,7 @@ struct Args {
 
 fn main() {
     // Set kernel.
+    let kernel = Kernel::new("envs/dev.toml".to_string());
 
     // Set logger.
     sp1_sdk::utils::setup_logger();
@@ -33,17 +34,17 @@ fn main() {
         std::process::exit(1);
     }
 
-    // Set stdin set ... i.e. a sequence of ZK-VM prover inputs.
-    let set_of_stdin = Vec::<SP1Stdin>::from(fixtures::get_fixtures());
+    // // Set stdin set ... i.e. a sequence of ZK-VM prover inputs.
+    // let set_of_stdin = Vec::<SP1Stdin>::from(fixtures::get_fixtures());
 
-    // Invoke stdin set.
-    for stdin in set_of_stdin {
-        if args.execute {
-            do_pgm_execute(&args, &stdin);
-        } else {
-            do_pgm_prove(&args, &stdin);
-        }
-    }
+    // // Invoke stdin set.
+    // for stdin in set_of_stdin {
+    //     if args.execute {
+    //         do_pgm_execute(&args, &stdin);
+    //     } else {
+    //         do_pgm_prove(&args, &stdin);
+    //     }
+    // }
 }
 
 fn do_pgm_execute(args: &Args, stdin: &SP1Stdin) {

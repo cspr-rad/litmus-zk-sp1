@@ -1,5 +1,5 @@
-pub use chain::Fetcher as ChainFetcher;
-pub use fsys::Fetcher as FileSystemFetcher;
+pub use chain::{Fetcher as ChainFetcher, FetcherConfig as ChainFetcherConfig};
+pub use fsys::{Fetcher as FileSystemFetcher, FetcherConfig as FileSystemFetcherConfig};
 use ltypes::chain::{Block, BlockID};
 use std::io::Error;
 
@@ -20,6 +20,10 @@ pub enum Fetcher {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
+    pub fn new() -> Self {
+        unimplemented!()
+    }
+
     pub fn new_chain(inner: ChainFetcher) -> Self {
         Self::Chain(inner)
     }

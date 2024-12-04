@@ -1,5 +1,6 @@
 use super::FetcherBackend;
 use ltypes::chain::{Block, BlockHash, BlockHeight, BlockID};
+use serde::Deserialize;
 use std::io::Error;
 
 // ------------------------------------------------------------------------
@@ -10,6 +11,7 @@ pub struct Fetcher {
     config: FetcherConfig,
 }
 
+#[derive(Deserialize)]
 pub struct FetcherConfig {
     ip_address: String,
 }

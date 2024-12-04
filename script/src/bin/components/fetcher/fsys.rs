@@ -1,5 +1,6 @@
 use super::FetcherBackend;
 use ltypes::chain::{Block, BlockHash, BlockHeight, BlockID};
+use serde::Deserialize;
 use std::io::Error;
 
 // ------------------------------------------------------------------------
@@ -10,6 +11,7 @@ pub struct Fetcher {
     config: FetcherConfig,
 }
 
+#[derive(Deserialize)]
 pub struct FetcherConfig {
     path_to_root: String,
 }
@@ -62,7 +64,10 @@ impl Default for Fetcher {
 
 impl Default for FetcherConfig {
     fn default() -> Self {
-        Self::new("s".to_string())
+        Self::new(
+            "/Users/asladeofgreen/Coding/projects-zk/litmus-zk-sp1/script/fixtures/chain/blocks"
+                .to_string(),
+        )
     }
 }
 
