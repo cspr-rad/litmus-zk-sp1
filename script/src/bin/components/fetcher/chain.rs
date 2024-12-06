@@ -11,7 +11,7 @@ pub struct Fetcher {
     config: FetcherConfig,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct FetcherConfig {
     ip_address: String,
 }

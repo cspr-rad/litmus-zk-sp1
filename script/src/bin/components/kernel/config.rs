@@ -2,16 +2,16 @@ use super::super::fetcher::{ChainFetcherConfig, FileSystemFetcherConfig};
 use serde::Deserialize;
 use std::fs;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Config {
     name_of_chain: String,
     trusted_hash: String,
     fetcher: FetcherConfig,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct FetcherConfig {
-    kind: &'static str,
+    kind: String,
     chain: ChainFetcherConfig,
     fsys: FileSystemFetcherConfig,
 }

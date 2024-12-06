@@ -29,13 +29,12 @@ impl Fetcher {
         }
     }
 
-    pub fn new_chain(config: &Config) -> Self {
+    pub fn new_chain(_: &Config) -> Self {
         unimplemented!()
     }
 
     pub fn new_fsys(config: &Config) -> Self {
-        // Scan file system.
-        unimplemented!()
+        Fetcher::FileSystem(FileSystemFetcher::new(&config))
     }
 }
 

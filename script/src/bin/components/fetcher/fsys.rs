@@ -1,3 +1,4 @@
+use super::super::kernel::Config as KernelConfig;
 use super::FetcherBackend;
 use ltypes::chain::{Block, BlockHash, BlockHeight, BlockID};
 use serde::Deserialize;
@@ -11,7 +12,7 @@ pub struct Fetcher {
     config: FetcherConfig,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct FetcherConfig {
     path_to_root: String,
 }
@@ -21,8 +22,10 @@ pub struct FetcherConfig {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    pub fn new(config: FetcherConfig) -> Self {
-        Self { config }
+    pub fn new(config: KernelConfig) -> Self {
+        Self {
+            config: config.fetcher(),
+        }
     }
 }
 
