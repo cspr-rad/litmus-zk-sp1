@@ -1,3 +1,4 @@
+use super::kernel::Config;
 pub use chain::{Fetcher as ChainFetcher, FetcherConfig as ChainFetcherConfig};
 pub use fsys::{Fetcher as FileSystemFetcher, FetcherConfig as FileSystemFetcherConfig};
 use ltypes::chain::{Block, BlockID};
@@ -20,16 +21,21 @@ pub enum Fetcher {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    pub fn new() -> Self {
+    pub fn new(config: &Config) -> Self {
+        match config.fetcher().kind().as_str() {
+            "chain" => Self::new_chain(&config),
+            "fsys" => Self::new_fsys(&config),
+            _ => panic!("Invalid config option"),
+        }
+    }
+
+    pub fn new_chain(config: &Config) -> Self {
         unimplemented!()
     }
 
-    pub fn new_chain(inner: ChainFetcher) -> Self {
-        Self::Chain(inner)
-    }
-
-    pub fn new_fsys(inner: FileSystemFetcher) -> Self {
-        Self::FileSystem(inner)
+    pub fn new_fsys(config: &Config) -> Self {
+        // Scan file system.
+        unimplemented!()
     }
 }
 
@@ -46,12 +52,6 @@ trait FetcherBackend {
     /// * `block_id` - Identifier of a block for which to issue a query.
     ///
     fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error>;
-}
-
-impl Default for Fetcher {
-    fn default() -> Self {
-        Self::new_fsys(FileSystemFetcher::default())
-    }
 }
 
 impl FetcherBackend for Fetcher {

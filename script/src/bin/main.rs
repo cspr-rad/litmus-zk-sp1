@@ -21,6 +21,8 @@ struct Args {
 }
 
 fn main() {
+    // Set trusted hash & chain name.
+
     // Set kernel.
     let kernel = Kernel::new("envs/dev.toml".to_string());
 
