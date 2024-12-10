@@ -9,10 +9,10 @@ use std::io::Error;
 // ------------------------------------------------------------------------
 
 pub struct Fetcher {
-    config: FetcherConfig,
+    config: KernelConfig,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct FetcherConfig {
     path_to_root: String,
 }
@@ -23,9 +23,7 @@ pub struct FetcherConfig {
 
 impl Fetcher {
     pub fn new(config: KernelConfig) -> Self {
-        Self {
-            config: config.fetcher(),
-        }
+        Self { config }
     }
 }
 
@@ -58,21 +56,6 @@ impl Fetcher {
 // ------------------------------------------------------------------------
 // Traits.
 // ------------------------------------------------------------------------
-
-impl Default for Fetcher {
-    fn default() -> Self {
-        Self::new(FetcherConfig::default())
-    }
-}
-
-impl Default for FetcherConfig {
-    fn default() -> Self {
-        Self::new(
-            "/Users/asladeofgreen/Coding/projects-zk/litmus-zk-sp1/script/fixtures/chain/blocks"
-                .to_string(),
-        )
-    }
-}
 
 impl FetcherBackend for Fetcher {
     fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error> {

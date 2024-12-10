@@ -21,20 +21,20 @@ pub enum Fetcher {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    pub fn new(config: &Config) -> Self {
+    pub fn new(config: Config) -> Self {
         match config.fetcher().kind().as_str() {
-            "chain" => Self::new_chain(&config),
-            "fsys" => Self::new_fsys(&config),
+            "chain" => Self::new_chain(config),
+            "fsys" => Self::new_fsys(config),
             _ => panic!("Invalid config option"),
         }
     }
 
-    pub fn new_chain(_: &Config) -> Self {
+    pub fn new_chain(_: Config) -> Self {
         unimplemented!()
     }
 
-    pub fn new_fsys(config: &Config) -> Self {
-        Fetcher::FileSystem(FileSystemFetcher::new(&config))
+    pub fn new_fsys(config: Config) -> Self {
+        Fetcher::FileSystem(FileSystemFetcher::new(config))
     }
 }
 

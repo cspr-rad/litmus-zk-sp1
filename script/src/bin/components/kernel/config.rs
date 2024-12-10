@@ -1,15 +1,16 @@
 use super::super::fetcher::{ChainFetcherConfig, FileSystemFetcherConfig};
+use ltypes::chain::BlockHash;
 use serde::Deserialize;
 use std::fs;
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Config {
     name_of_chain: String,
-    trusted_hash: String,
+    trusted_hash_hex: BlockHash,
     fetcher: FetcherConfig,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct FetcherConfig {
     kind: String,
     chain: ChainFetcherConfig,
@@ -33,8 +34,8 @@ impl Config {
         &self.name_of_chain
     }
 
-    pub fn trusted_hash(&self) -> &String {
-        &self.trusted_hash
+    pub fn trusted_hash_hex(&self) -> &BlockHash {
+        &self.trusted_hash_hex
     }
 }
 

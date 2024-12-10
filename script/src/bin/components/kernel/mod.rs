@@ -22,9 +22,9 @@ impl Kernel {
     pub fn new(path_to_config_toml: String) -> Self {
         let config = Config::new(path_to_config_toml);
         println!("{:?}", config);
-        let cache = Cache::new(&config);
-        let fetcher = Fetcher::new(&config);
-        let prover = Prover::new(&config);
+        let cache = Cache::new(config.clone());
+        let fetcher = Fetcher::new(config.clone());
+        let prover = Prover::new(config.clone());
 
         Self {
             cache,

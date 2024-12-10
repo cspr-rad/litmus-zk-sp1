@@ -11,7 +11,7 @@ pub struct Fetcher {
     config: FetcherConfig,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct FetcherConfig {
     ip_address: String,
 }
@@ -49,18 +49,6 @@ impl Fetcher {
 // ------------------------------------------------------------------------
 // Traits.
 // ------------------------------------------------------------------------
-
-impl Default for Fetcher {
-    fn default() -> Self {
-        todo!()
-    }
-}
-
-impl Default for FetcherConfig {
-    fn default() -> Self {
-        todo!()
-    }
-}
 
 impl FetcherBackend for Fetcher {
     fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error> {
