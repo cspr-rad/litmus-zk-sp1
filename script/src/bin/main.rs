@@ -1,9 +1,8 @@
-mod components;
 mod fixtures;
 mod utils;
 
 use clap::Parser;
-use components::Kernel;
+use lkernel::Kernel;
 use sp1_sdk::{ProverClient, SP1Stdin};
 
 /// The ELF (executable and linkable format) file for the Succinct RISC-V zkVM.
@@ -25,6 +24,7 @@ fn main() {
 
     // Set kernel.
     let kernel = Kernel::new("envs/dev.toml".to_string());
+    kernel.init();
 
     // Set logger.
     sp1_sdk::utils::setup_logger();
