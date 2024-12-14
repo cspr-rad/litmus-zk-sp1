@@ -7,7 +7,7 @@ use std::io::Error;
 // ------------------------------------------------------------------------
 
 pub struct Fetcher {
-    ip_address_set: &Vec<String>,
+    ip_address_set: Vec<String>,
 }
 
 // ------------------------------------------------------------------------
@@ -15,7 +15,7 @@ pub struct Fetcher {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    pub fn new(ip_address_set: &Vec<String>) -> Self {
+    pub fn new(ip_address_set: Vec<String>) -> Self {
         Self { ip_address_set }
     }
 }

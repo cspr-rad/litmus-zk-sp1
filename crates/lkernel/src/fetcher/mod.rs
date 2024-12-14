@@ -24,10 +24,10 @@ impl Fetcher {
     pub fn new(config: Config) -> Self {
         match config.fetcher() {
             FetcherConfig::Chain { ip_address_set } => {
-                Self::Chain(ChainFetcher::new(ip_address_set))
+                Self::Chain(ChainFetcher::new(ip_address_set.to_owned()))
             }
             FetcherConfig::FileSystem { path_to_root } => {
-                Self::FileSystem(FileSystemFetcher::new(path_to_root))
+                Self::FileSystem(FileSystemFetcher::new(path_to_root.to_owned()))
             }
         }
     }

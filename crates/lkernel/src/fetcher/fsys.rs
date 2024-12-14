@@ -7,7 +7,7 @@ use std::{fs, io::Error};
 // ------------------------------------------------------------------------
 
 pub struct Fetcher {
-    path_to_root: &String,
+    path_to_root: String,
 }
 
 // ------------------------------------------------------------------------
@@ -15,7 +15,7 @@ pub struct Fetcher {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    pub fn new(path_to_root: &String) -> Self {
+    pub fn new(path_to_root: String) -> Self {
         Self { path_to_root }
     }
 }
