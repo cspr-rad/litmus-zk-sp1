@@ -5,7 +5,7 @@ trusted_block_hash = "0670c8b926f40d32fd7ba662e87072d8f6051ab7dfddda440d773a5a79
 kind = "fsys"
 
 [fetcher.chain]
-ip_address = "127.0.0.0:12101"
+ip_address_set = ["127.0.0.0:12101"]
 
 [fetcher.fsys]
 path_to_root = "fixtures/chain/blocks"

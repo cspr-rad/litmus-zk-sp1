@@ -23,7 +23,7 @@ fn main() {
     // Set trusted hash & chain name.
 
     // Set kernel.
-    let kernel = Kernel::new("envs/dev.toml".to_string());
+    let kernel = Kernel::new("../env.toml".to_string());
     kernel.init();
 
     // Set logger.
