@@ -68,3 +68,26 @@ impl FetcherBackend for Fetcher {
         unimplemented!()
     }
 }
+
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+    use super::Fetcher;
+    use std::env;
+
+    fn get_path_to_root() -> String {
+        format!(
+            "{}/fixtures/blocks",
+            env::var("CARGO_MANIFEST_DIR").unwrap()
+        )
+    }
+
+    #[test]
+    fn test_that_instance_can_be_instantiated() {
+        let path_to_root = get_path_to_root();
+        Fetcher::new(get_path_to_root());
+    }
+}

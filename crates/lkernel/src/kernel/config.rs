@@ -41,7 +41,7 @@ impl Config {
         &self.fetcher
     }
 
-    pub fn name_of_chain(&self) -> &String {
+    pub fn name_of_chain(&self) -> &str {
         &self.name_of_chain
     }
 
@@ -67,14 +67,14 @@ mod tests {
     }
 
     #[test]
-    fn test_path_to_toml_file_exists() {
+    fn test_that_path_to_toml_file_exists() {
         let path_to_toml_file = get_path_to_toml_file();
         assert!(Path::new(&path_to_toml_file).exists());
     }
 
     #[test]
-    fn test_instance_can_be_instantiated_from_toml_file() {
+    fn test_that_instance_can_be_instantiated_from_toml_file() {
         let path_to_toml_file = get_path_to_toml_file();
-        let _ = Config::new(path_to_toml_file);
+        Config::new(path_to_toml_file);
     }
 }
