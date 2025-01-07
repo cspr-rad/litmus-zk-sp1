@@ -25,11 +25,11 @@ impl Fetcher {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    fn get_block_by_hash(&self, block_hash: BlockHash) -> Result<Option<Block>, Error> {
+    fn get_block_by_hash(&self, block_hash: BlockHash) -> Option<Block> {
         todo!()
     }
 
-    fn get_block_by_height(&self, block_height: BlockHeight) -> Result<Option<Block>, Error> {
+    fn get_block_by_height(&self, block_height: BlockHeight) -> Option<Block> {
         todo!()
     }
 }
@@ -39,7 +39,7 @@ impl Fetcher {
 // ------------------------------------------------------------------------
 
 impl FetcherBackend for Fetcher {
-    fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error> {
+    fn get_block(&self, block_id: BlockID) -> Option<Block> {
         match block_id {
             BlockID::BlockHash(inner) => self.get_block_by_hash(inner),
             BlockID::BlockHeight(inner) => self.get_block_by_height(inner),

@@ -69,24 +69,24 @@ impl BlockFileInfo {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    fn get_block_by_hash(&self, block_id: BlockHash) -> Result<Option<Block>, Error> {
+    fn get_block_by_hash(&self, block_id: BlockHash) -> Option<Block> {
         for file_info in &self.block_files {
             if file_info.hash == block_id {
-                return Ok(Option::Some(Block::from(file_info)));
+                return Option::Some(Block::from(file_info));
             }
         }
 
-        Ok(None)
+        None
     }
 
-    fn get_block_by_height(&self, block_id: BlockHeight) -> Result<Option<Block>, Error> {
+    fn get_block_by_height(&self, block_id: BlockHeight) -> Option<Block> {
         for file_info in &self.block_files {
             if file_info.height() == block_id {
-                return Ok(Option::Some(Block::from(file_info)));
+                return Option::Some(Block::from(file_info));
             }
         }
 
-        Ok(None)
+        None
     }
 }
 
@@ -95,7 +95,7 @@ impl Fetcher {
 // ------------------------------------------------------------------------
 
 impl FetcherBackend for Fetcher {
-    fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error> {
+    fn get_block(&self, block_id: BlockID) -> Option<Block> {
         match block_id {
             BlockID::BlockHash(inner) => self.get_block_by_hash(inner),
             BlockID::BlockHeight(inner) => self.get_block_by_height(inner),

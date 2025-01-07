@@ -45,14 +45,14 @@ pub trait FetcherBackend {
     ///
     /// * `block_id` - Identifier of a block for which to issue a query.
     ///
-    fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error>;
+    fn get_block(&self, block_id: BlockID) -> Option<Block>;
 
     /// Fetcher initializer.
     fn init(&self) -> Result<(), Error>;
 }
 
 impl FetcherBackend for Fetcher {
-    fn get_block(&self, block_id: BlockID) -> Result<Option<Block>, Error> {
+    fn get_block(&self, block_id: BlockID) -> Option<Block> {
         match self {
             Self::Chain(inner) => inner.get_block(block_id),
             Self::FileSystem(inner) => inner.get_block(block_id),
