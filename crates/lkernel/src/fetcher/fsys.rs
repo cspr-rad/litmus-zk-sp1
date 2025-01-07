@@ -1,6 +1,6 @@
 use super::FetcherBackend;
-use camino::Utf8PathBuf;
-use ltypes::chain::{Block, BlockHash, BlockHeight, BlockID};
+use camino::{Utf8Path, Utf8PathBuf};
+use ltypes::chain::{BlockHash, BlockHeight, BlockID, BlockWithProofs};
 use std::{
     fs::{self, DirEntry},
     io::Error,
@@ -18,7 +18,7 @@ struct BlockFileInfo {
 }
 
 pub struct Fetcher {
-    block_files: Vec<BlockFileInfo>,
+    fileset: Vec<BlockFileInfo>,
 }
 
 // ------------------------------------------------------------------------
@@ -36,13 +36,17 @@ impl BlockFileInfo {
 }
 
 impl Fetcher {
-    pub fn new(path_to_root: String) -> Self {
-        let mut block_files: Vec<BlockFileInfo> = Vec::new();
-        for file in fs::read_dir(Utf8PathBuf::from(path_to_root).as_path()).unwrap() {
-            block_files.push(BlockFileInfo::try_from(&file.unwrap()).unwrap());
+    pub fn new(path_to_root: &Utf8Path) -> Self {
+        fn get_fileset(path_to_root: &Utf8Path) -> Vec<BlockFileInfo> {
+            fs::read_dir(path_to_root)
+                .unwrap()
+                .map(|f| BlockFileInfo::try_from(&f.unwrap()).unwrap())
+                .collect()
         }
 
-        Self { block_files }
+        Self {
+            fileset: get_fileset(path_to_root),
+        }
     }
 }
 
@@ -65,41 +69,27 @@ impl BlockFileInfo {
 }
 
 // ------------------------------------------------------------------------
-// Methods.
-// ------------------------------------------------------------------------
-
-impl Fetcher {
-    fn get_block_by_hash(&self, block_id: BlockHash) -> Option<Block> {
-        for file_info in &self.block_files {
-            if file_info.hash == block_id {
-                return Option::Some(Block::from(file_info));
-            }
-        }
-
-        None
-    }
-
-    fn get_block_by_height(&self, block_id: BlockHeight) -> Option<Block> {
-        for file_info in &self.block_files {
-            if file_info.height() == block_id {
-                return Option::Some(Block::from(file_info));
-            }
-        }
-
-        None
-    }
-}
-
-// ------------------------------------------------------------------------
 // Traits.
 // ------------------------------------------------------------------------
 
 impl FetcherBackend for Fetcher {
-    fn get_block(&self, block_id: BlockID) -> Option<Block> {
-        match block_id {
-            BlockID::BlockHash(inner) => self.get_block_by_hash(inner),
-            BlockID::BlockHeight(inner) => self.get_block_by_height(inner),
+    fn get_block_with_proofs(&self, block_id: BlockID) -> Option<BlockWithProofs> {
+        for file_info in &self.fileset {
+            match block_id {
+                BlockID::BlockHash(block_hash) => {
+                    if file_info.hash == block_hash {
+                        return Option::Some(BlockWithProofs::from(file_info));
+                    }
+                }
+                BlockID::BlockHeight(block_height) => {
+                    if file_info.height() == block_height {
+                        return Option::Some(BlockWithProofs::from(file_info));
+                    }
+                }
+            }
         }
+
+        None
     }
 
     fn init(&self) -> Result<(), Error> {
@@ -111,9 +101,9 @@ impl FetcherBackend for Fetcher {
 // Traits.
 // ------------------------------------------------------------------------
 
-impl From<&BlockFileInfo> for Block {
+impl From<&BlockFileInfo> for BlockWithProofs {
     fn from(value: &BlockFileInfo) -> Self {
-        unimplemented!()
+        serde_json::from_str(&fs::read_to_string(&value.path).unwrap()).unwrap()
     }
 }
 

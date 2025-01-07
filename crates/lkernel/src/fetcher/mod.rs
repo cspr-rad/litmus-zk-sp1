@@ -1,7 +1,7 @@
 use super::kernel::config::{Config, FetcherConfig};
 pub use chain::Fetcher as ChainFetcher;
 pub use fsys::Fetcher as FileSystemFetcher;
-use ltypes::chain::{Block, BlockID};
+use ltypes::chain::{BlockID, BlockWithProofs};
 use std::io::Error;
 
 pub mod chain;
@@ -27,7 +27,11 @@ impl Fetcher {
                 Self::Chain(ChainFetcher::new(ip_address_set.to_owned()))
             }
             FetcherConfig::FileSystem { path_to_root } => {
-                Self::FileSystem(FileSystemFetcher::new(path_to_root.to_owned()))
+                use camino::Utf8PathBuf;
+
+                Self::FileSystem(FileSystemFetcher::new(
+                    Utf8PathBuf::from(path_to_root).as_path(),
+                ))
             }
         }
     }
@@ -45,17 +49,17 @@ pub trait FetcherBackend {
     ///
     /// * `block_id` - Identifier of a block for which to issue a query.
     ///
-    fn get_block(&self, block_id: BlockID) -> Option<Block>;
+    fn get_block_with_proofs(&self, block_id: BlockID) -> Option<BlockWithProofs>;
 
     /// Fetcher initializer.
     fn init(&self) -> Result<(), Error>;
 }
 
 impl FetcherBackend for Fetcher {
-    fn get_block(&self, block_id: BlockID) -> Option<Block> {
+    fn get_block_with_proofs(&self, block_id: BlockID) -> Option<BlockWithProofs> {
         match self {
-            Self::Chain(inner) => inner.get_block(block_id),
-            Self::FileSystem(inner) => inner.get_block(block_id),
+            Self::Chain(inner) => inner.get_block_with_proofs(block_id),
+            Self::FileSystem(inner) => inner.get_block_with_proofs(block_id),
         }
     }
 

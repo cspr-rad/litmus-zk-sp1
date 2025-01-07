@@ -9,17 +9,13 @@ const VERIFICATION_TYPE_BLOCK_V1_WITH_PROOFS: u8 = 10;
 const VERIFICATION_TYPE_BLOCK_V2_WITH_PROOFS: u8 = 11;
 
 impl From<Fixtures> for Vec<SP1Stdin> {
-    fn from(fixtures: Fixtures) -> Self {
+    fn from(value: Fixtures) -> Self {
         let mut result: Vec<SP1Stdin> = Vec::new();
-
-        for f in fixtures.set_of_digests {
-            result.push(SP1Stdin::try_from(&f).unwrap());
+        for item in value.set_of_digests {
+            result.push(SP1Stdin::try_from(&item).unwrap());
         }
-        for f in fixtures.set_of_signatures {
-            result.push(SP1Stdin::try_from(&f).unwrap());
-        }
-        for f in fixtures.set_of_blocks_with_proofs {
-            result.push(SP1Stdin::try_from(&f).unwrap());
+        for item in value.set_of_signatures {
+            result.push(SP1Stdin::try_from(&item).unwrap());
         }
 
         result

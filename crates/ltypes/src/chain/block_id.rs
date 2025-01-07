@@ -45,12 +45,12 @@ impl BlockHeight {
 
 impl BlockID {
     /// Constructor: new [`BlockID`] instance.
-    pub fn new_hash(digest: Digest) -> Self {
-        Self::BlockHash(BlockHash::new(digest))
+    pub fn new_from_hash(identifier: BlockHash) -> Self {
+        Self::BlockHash(identifier)
     }
 
     /// Constructor: new [`BlockID`] instance.
-    pub fn new_height(height: u64) -> Self {
+    pub fn new_from_height(height: u64) -> Self {
         Self::BlockHeight(BlockHeight::new(height))
     }
 }
@@ -124,5 +124,41 @@ impl From<Vec<u8>> for BlockHash {
 impl From<&Vec<u8>> for BlockHash {
     fn from(value: &Vec<u8>) -> Self {
         Self::from(value.as_slice())
+    }
+}
+
+impl From<BlockHash> for BlockID {
+    fn from(value: BlockHash) -> Self {
+        Self::new_from_hash(value)
+    }
+}
+
+impl From<BlockHeight> for BlockID {
+    fn from(value: BlockHeight) -> Self {
+        Self::new_from_height(value.inner())
+    }
+}
+
+impl From<Digest> for BlockHash {
+    fn from(value: Digest) -> Self {
+        BlockHash::new(value)
+    }
+}
+
+impl From<Digest> for BlockID {
+    fn from(value: Digest) -> Self {
+        Self::from(BlockHash::from(value))
+    }
+}
+
+impl From<u64> for BlockHeight {
+    fn from(value: u64) -> Self {
+        BlockHeight::new(value)
+    }
+}
+
+impl From<u64> for BlockID {
+    fn from(value: u64) -> Self {
+        Self::from(BlockHeight::from(value))
     }
 }

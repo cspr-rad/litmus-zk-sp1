@@ -1,8 +1,9 @@
 pub(super) mod config;
 
 use super::fetcher::FetcherBackend;
-
 pub use super::{cache::Cache, fetcher::Fetcher, prover::Prover};
+use camino::Utf8Path;
+use ltypes::chain::{BlockHash, BlockID, BlockWithProofs, ChainNameDigest};
 pub use {config::Config, config::FetcherConfig};
 
 // ------------------------------------------------------------------------
@@ -21,8 +22,8 @@ pub struct Kernel {
 // ------------------------------------------------------------------------
 
 impl Kernel {
-    pub fn new(path_to_config_toml: String) -> Self {
-        let config = Config::new(path_to_config_toml);
+    pub fn new(path_to_config_toml: &Utf8Path) -> Self {
+        let config = Config::new(&path_to_config_toml);
         let cache = Cache::new(config.clone());
         let fetcher = Fetcher::new(config.clone());
         let prover = Prover::new(config.clone());
@@ -63,8 +64,25 @@ impl Kernel {
 // ------------------------------------------------------------------------
 
 impl Kernel {
-    /// Kernel initializer.
+    /// Initialises kernel components.
     pub fn init(&self) {
         self.fetcher.init().unwrap();
+    }
+
+    /// Returns block with associated proofs.
+    pub fn get_block_with_proofs(&self, block_hash: Option<BlockHash>) -> Option<BlockWithProofs> {
+        // If requested block hash is unspecified then set from config.
+        let block_hash = match block_hash {
+            Option::Some(inner) => inner,
+            Option::None => self.config.trusted_block_hash,
+        };
+
+        self.fetcher
+            .get_block_with_proofs(BlockID::from(block_hash))
+    }
+
+    /// Returns digest over associated chain name.
+    pub fn get_chain_name_digest(&self) -> ChainNameDigest {
+        self.config.get_chain_name_digest()
     }
 }

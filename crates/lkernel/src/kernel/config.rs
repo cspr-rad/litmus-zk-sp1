@@ -1,4 +1,5 @@
-use ltypes::chain::BlockHash;
+use camino::Utf8Path;
+use ltypes::chain::{BlockHash, ChainNameDigest};
 use serde::{Deserialize, Serialize};
 use std::fs;
 
@@ -25,8 +26,7 @@ pub enum FetcherConfig {
 // ------------------------------------------------------------------------
 
 impl Config {
-    pub fn new(path_to_toml: String) -> Self {
-        println!("{:?}", path_to_toml);
+    pub fn new(path_to_toml: &Utf8Path) -> Self {
         let path_to_toml = fs::read_to_string(path_to_toml).unwrap();
 
         toml::from_str(&path_to_toml).unwrap()
@@ -48,6 +48,16 @@ impl Config {
 
     pub fn trusted_block_hash(&self) -> &BlockHash {
         &self.trusted_block_hash
+    }
+}
+
+// ------------------------------------------------------------------------
+// Methods.
+// ------------------------------------------------------------------------
+
+impl Config {
+    pub fn get_chain_name_digest(&self) -> ChainNameDigest {
+        ChainNameDigest::new_from_chain_name(&self.name_of_chain)
     }
 }
 
