@@ -9,6 +9,7 @@ name = "litmus-zk"
 path = "src/bin/main.rs"
 
 [dependencies]
+camino = "1.1.9"
 clap = { version = "4.0", features = ["derive", "env"] }
 hex.workspace = true
 humantime = "2.1.0"

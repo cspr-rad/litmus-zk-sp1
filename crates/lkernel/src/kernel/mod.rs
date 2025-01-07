@@ -3,7 +3,7 @@ pub(super) mod config;
 use super::fetcher::FetcherBackend;
 
 pub use super::{cache::Cache, fetcher::Fetcher, prover::Prover};
-pub use config::Config;
+pub use {config::Config, config::FetcherConfig};
 
 // ------------------------------------------------------------------------
 // Declarations.

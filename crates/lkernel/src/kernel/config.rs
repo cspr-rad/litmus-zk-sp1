@@ -8,9 +8,9 @@ use std::fs;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Config {
-    fetcher: FetcherConfig,
-    name_of_chain: String,
-    trusted_block_hash: BlockHash,
+    pub fetcher: FetcherConfig,
+    pub name_of_chain: String,
+    pub trusted_block_hash: BlockHash,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -26,6 +26,7 @@ pub enum FetcherConfig {
 
 impl Config {
     pub fn new(path_to_toml: String) -> Self {
+        println!("{:?}", path_to_toml);
         let path_to_toml = fs::read_to_string(path_to_toml).unwrap();
 
         toml::from_str(&path_to_toml).unwrap()

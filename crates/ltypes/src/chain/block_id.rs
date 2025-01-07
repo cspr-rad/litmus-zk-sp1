@@ -97,6 +97,12 @@ impl fmt::Display for BlockHeight {
     }
 }
 
+impl From<&str> for BlockHeight {
+    fn from(value: &str) -> Self {
+        Self::new(value.parse().unwrap())
+    }
+}
+
 impl From<&str> for BlockHash {
     fn from(value: &str) -> Self {
         Self::new(Digest::from(value))

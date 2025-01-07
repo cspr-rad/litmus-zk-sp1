@@ -1,22 +1,66 @@
 use super::FetcherBackend;
+use camino::Utf8PathBuf;
 use ltypes::chain::{Block, BlockHash, BlockHeight, BlockID};
-use std::{fs, io::Error};
+use std::{
+    fs::{self, DirEntry},
+    io::Error,
+};
 
 // ------------------------------------------------------------------------
 // Declarations.
 // ------------------------------------------------------------------------
 
+#[derive(Debug)]
+struct BlockFileInfo {
+    hash: BlockHash,
+    height: BlockHeight,
+    path: Utf8PathBuf,
+}
+
 pub struct Fetcher {
-    path_to_root: String,
+    block_files: Vec<BlockFileInfo>,
 }
 
 // ------------------------------------------------------------------------
 // Constructors.
 // ------------------------------------------------------------------------
 
+impl BlockFileInfo {
+    fn new(hash: BlockHash, height: BlockHeight, path_to_file: Utf8PathBuf) -> Self {
+        Self {
+            hash,
+            height,
+            path: path_to_file,
+        }
+    }
+}
+
 impl Fetcher {
     pub fn new(path_to_root: String) -> Self {
-        Self { path_to_root }
+        let mut block_files: Vec<BlockFileInfo> = Vec::new();
+        for file in fs::read_dir(Utf8PathBuf::from(path_to_root).as_path()).unwrap() {
+            block_files.push(BlockFileInfo::try_from(&file.unwrap()).unwrap());
+        }
+
+        Self { block_files }
+    }
+}
+
+// ------------------------------------------------------------------------
+// Accessors.
+// ------------------------------------------------------------------------
+
+impl BlockFileInfo {
+    fn hash(&self) -> &BlockHash {
+        &self.hash
+    }
+
+    fn height(&self) -> BlockHeight {
+        self.height
+    }
+
+    fn path(&self) -> &Utf8PathBuf {
+        &self.path
     }
 }
 
@@ -25,16 +69,22 @@ impl Fetcher {
 // ------------------------------------------------------------------------
 
 impl Fetcher {
-    fn get_block_by_hash(&self, block_hash: BlockHash) -> Result<Option<Block>, Error> {
-        let fpattern = format!("block-*-{:?}.json", block_hash);
-        println!("{:?}", fpattern);
+    fn get_block_by_hash(&self, block_id: BlockHash) -> Result<Option<Block>, Error> {
+        for file_info in &self.block_files {
+            if file_info.hash == block_id {
+                return Ok(Option::Some(Block::from(file_info)));
+            }
+        }
 
         Ok(None)
     }
 
-    fn get_block_by_height(&self, block_height: BlockHeight) -> Result<Option<Block>, Error> {
-        let fpattern = format!("block-*{:?}-*.json", block_height);
-        println!("{:?}", fpattern);
+    fn get_block_by_height(&self, block_id: BlockHeight) -> Result<Option<Block>, Error> {
+        for file_info in &self.block_files {
+            if file_info.height() == block_id {
+                return Ok(Option::Some(Block::from(file_info)));
+            }
+        }
 
         Ok(None)
     }
@@ -53,19 +103,31 @@ impl FetcherBackend for Fetcher {
     }
 
     fn init(&self) -> Result<(), Error> {
-        let dir = fs::read_dir(format!("fixtures/chain/blocks")).unwrap();
-        for file in dir {
-            let file = file.unwrap();
-            let parts = file
-                .file_name()
-                .into_string()
-                .unwrap()
-                .split("-")
-                .collect::<Vec<_>>();
+        Ok(())
+    }
+}
 
-            println!("{:?}", file.file_name().into_string().unwrap().split("-"));
-        }
+// ------------------------------------------------------------------------
+// Traits.
+// ------------------------------------------------------------------------
+
+impl From<&BlockFileInfo> for Block {
+    fn from(value: &BlockFileInfo) -> Self {
         unimplemented!()
+    }
+}
+
+impl From<&DirEntry> for BlockFileInfo {
+    fn from(value: &DirEntry) -> Self {
+        let fpath = Utf8PathBuf::from_path_buf(value.path()).unwrap();
+        let fname = value.file_name().into_string().unwrap();
+        let fparts: Vec<&str> = fname.split("-").collect();
+
+        BlockFileInfo::new(
+            BlockHash::from(&fparts[2][..64]),
+            BlockHeight::from(fparts[1]),
+            fpath,
+        )
     }
 }
 
@@ -87,7 +149,6 @@ mod tests {
 
     #[test]
     fn test_that_instance_can_be_instantiated() {
-        let path_to_root = get_path_to_root();
         Fetcher::new(get_path_to_root());
     }
 }

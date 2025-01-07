@@ -1,9 +1,10 @@
 mod fixtures;
 mod utils;
-
+use camino::Utf8PathBuf;
 use clap::Parser;
 use lkernel::Kernel;
 use sp1_sdk::{ProverClient, SP1Stdin};
+use std::{fs, path::PathBuf};
 
 /// The ELF (executable and linkable format) file for the Succinct RISC-V zkVM.
 pub const _ELF: &[u8] = include_bytes!("../../../elf/riscv32im-succinct-zkvm-elf");
@@ -15,26 +16,37 @@ struct Args {
     #[clap(long)]
     execute: bool,
 
+    #[clap(short, long, default_value = "content")]
+    path_to_config: Utf8PathBuf,
+
     #[clap(long)]
     prove: bool,
 }
 
 fn main() {
-    // Set trusted hash & chain name.
-
-    // Set kernel.
-    let kernel = Kernel::new("../env.toml".to_string());
-    kernel.init();
-
-    // Set logger.
-    sp1_sdk::utils::setup_logger();
-
     // Set args.
     let args = Args::parse();
     if args.execute == args.prove {
         eprintln!("Error: You must specify either --execute or --prove");
         std::process::exit(1);
     }
+    if args.path_to_config.exists() == false {
+        eprintln!("Error: Invalid config file path.");
+    }
+
+    // Set kernel.
+    let kernel = Kernel::new(args.path_to_config.to_string());
+    kernel.init();
+
+    // Set logger.
+    // sp1_sdk::utils::setup_logger();
+
+    // Set args.
+    // let args = Args::parse();
+    // if args.execute == args.prove {
+    //     eprintln!("Error: You must specify either --execute or --prove");
+    //     std::process::exit(1);
+    // }
 
     // // Set stdin set ... i.e. a sequence of ZK-VM prover inputs.
     // let set_of_stdin = Vec::<SP1Stdin>::from(fixtures::get_fixtures());

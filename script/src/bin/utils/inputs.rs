@@ -12,12 +12,12 @@ impl From<Fixtures> for Vec<SP1Stdin> {
     fn from(fixtures: Fixtures) -> Self {
         let mut result: Vec<SP1Stdin> = Vec::new();
 
-        // for f in fixtures.set_of_digests {
-        //     result.push(SP1Stdin::try_from(&f).unwrap());
-        // }
-        // for f in fixtures.set_of_signatures {
-        //     result.push(SP1Stdin::try_from(&f).unwrap());
-        // }
+        for f in fixtures.set_of_digests {
+            result.push(SP1Stdin::try_from(&f).unwrap());
+        }
+        for f in fixtures.set_of_signatures {
+            result.push(SP1Stdin::try_from(&f).unwrap());
+        }
         for f in fixtures.set_of_blocks_with_proofs {
             result.push(SP1Stdin::try_from(&f).unwrap());
         }

@@ -3,4 +3,4 @@ mod fetcher;
 mod kernel;
 mod prover;
 
-pub use {kernel::Config as KernelConfig, kernel::Kernel};
+pub use {kernel::Config as KernelConfig, kernel::FetcherConfig, kernel::Kernel};
