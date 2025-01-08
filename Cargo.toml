@@ -4,7 +4,7 @@ members = [
     "crates/lcodecs",
     "crates/lcrypto",
     "crates/lkernel",
-    "crates/ltypeset",
+    "crates/ltypeset", "crates/ltypeset-utils",
     "crates/lverifiers",
     "hack",
     "program",
