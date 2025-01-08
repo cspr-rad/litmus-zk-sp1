@@ -1,5 +1,5 @@
 use super::super::utils::{CodecError, Decode, Encode};
-use ltypes::{crypto::Digest, primitives::bites::Bytes32};
+use ltypeset::{crypto::Digest, primitives::bites::Bytes32};
 
 // ------------------------------------------------------------------------
 // Codec: Digest.

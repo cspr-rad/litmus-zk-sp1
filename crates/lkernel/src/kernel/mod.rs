@@ -3,7 +3,7 @@ pub(super) mod config;
 use super::fetcher::FetcherBackend;
 pub use super::{cache::Cache, fetcher::Fetcher, prover::Prover};
 use camino::Utf8Path;
-use ltypes::chain::{BlockHash, BlockID, BlockWithProofs, ChainNameDigest};
+use ltypeset::chain::{BlockHash, BlockID, BlockWithProofs, ChainNameDigest};
 pub use {config::Config, config::FetcherConfig};
 
 // ------------------------------------------------------------------------

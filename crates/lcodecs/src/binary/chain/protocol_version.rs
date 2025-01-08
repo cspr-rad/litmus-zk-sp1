@@ -1,5 +1,5 @@
 use super::super::utils::{CodecError, Decode, Encode};
-use ltypes::{chain::ProtocolVersion, primitives::SemanticVersion};
+use ltypeset::{chain::ProtocolVersion, primitives::SemanticVersion};
 
 // ------------------------------------------------------------------------
 // Codec: ProtocolVersion.

@@ -1,5 +1,5 @@
 use super::super::utils::{CodecError, Decode, Encode};
-use ltypes::{
+use ltypeset::{
     chain::{TransactionV1Hash, TransactionV2Hash},
     crypto::Digest,
 };

@@ -1,5 +1,5 @@
 use super::super::utils::{CodecError, Decode, Encode};
-use ltypes::chain::{EraEndV2, EraId};
+use ltypeset::chain::{EraEndV2, EraId};
 use std::{collections::BTreeMap, vec::Vec};
 
 // ------------------------------------------------------------------------

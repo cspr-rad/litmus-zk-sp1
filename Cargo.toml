@@ -2,8 +2,9 @@
 resolver = "2"
 members = [
     "crates/lcodecs",
-    "crates/lcrypto", "crates/lkernel",
-    "crates/ltypes",
+    "crates/lcrypto",
+    "crates/lkernel",
+    "crates/ltypeset",
     "crates/lverifiers",
     "hack",
     "program",

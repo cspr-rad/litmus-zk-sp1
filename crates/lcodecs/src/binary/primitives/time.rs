@@ -1,5 +1,5 @@
 use super::super::utils::{CodecError, Decode, Encode};
-use ltypes::primitives::time::Timestamp;
+use ltypeset::primitives::time::Timestamp;
 
 // ------------------------------------------------------------------------
 // Codec: Digest.

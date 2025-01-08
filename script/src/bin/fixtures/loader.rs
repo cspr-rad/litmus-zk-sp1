@@ -6,7 +6,7 @@ use super::{
     Fixtures,
 };
 use crate::utils::fsys;
-use ltypes::{
+use ltypeset::{
     chain::{BlockHash, BlockWithProofs, ChainNameDigest},
     crypto::{Digest, Signature, VerificationKey},
 };

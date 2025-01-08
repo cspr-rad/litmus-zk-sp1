@@ -1,5 +1,5 @@
 use super::super::utils::{CodecError, Decode, Encode};
-use ltypes::{
+use ltypeset::{
     crypto::Signature,
     primitives::bites::{Bytes64, Bytes65},
 };
@@ -59,7 +59,7 @@ mod tests {
     use super::*;
     use crate::binary::utils::assert_codec;
     use hex;
-    use ltypes::primitives::bites::{Bytes32, Bytes33};
+    use ltypeset::primitives::bites::{Bytes32, Bytes33};
 
     const MSG_DIGEST_BLAKE2B_HEX: &str =
         "44682ea86b704fb3c65cd16f84a76b621e04bbdb3746280f25cf062220e471b4";

@@ -1,5 +1,5 @@
 use super::super::utils::{safe_split_at, CodecError, Decode, Encode};
-use ltypes::primitives::bites::{Bytes32, Bytes33, Bytes64, Bytes65};
+use ltypeset::primitives::bites::{Bytes32, Bytes33, Bytes64, Bytes65};
 
 // ------------------------------------------------------------------------
 // Codec: [Byte; N].

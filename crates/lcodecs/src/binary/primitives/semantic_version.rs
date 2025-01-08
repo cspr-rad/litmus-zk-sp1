@@ -1,6 +1,6 @@
 use super::super::constants;
 use super::super::utils::{CodecError, Decode, Encode};
-use ltypes::primitives::semantic_version::SemanticVersion;
+use ltypeset::primitives::semantic_version::SemanticVersion;
 
 // ------------------------------------------------------------------------
 // Codec: SemanticVersion.

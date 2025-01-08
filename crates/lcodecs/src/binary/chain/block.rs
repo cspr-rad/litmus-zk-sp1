@@ -2,7 +2,7 @@ use super::super::{
     constants,
     utils::{CodecError, Decode, Encode},
 };
-use ltypes::{
+use ltypeset::{
     chain::{
         Block, BlockHash, BlockHeight, BlockV1, BlockV1Body, BlockV1Header, BlockV2, BlockV2Body,
         BlockV2Header, EraEndV2, EraId, ProtocolVersion,

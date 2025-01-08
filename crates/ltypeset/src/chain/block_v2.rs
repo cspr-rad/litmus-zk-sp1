@@ -228,11 +228,8 @@ impl BlockHeader {
 
 impl Block {
     /// Returns a sequence of bytes for mapping to a block digest.
-    pub fn get_bytes_for_hash(&self) -> Vec<u8> {
-        let mut result: Vec<u8> = Vec::new();
-        result.extend_from_slice(&self.header().get_bytes_for_hash());
-
-        result
+    pub fn get_bytes_for_digest(&self) -> Vec<u8> {
+        self.header().get_bytes_for_digest()
     }
 
     /// Returns a sequence of bytes to be signed over when commiting to block finality.
@@ -247,9 +244,16 @@ impl Block {
     }
 }
 
+impl BlockBody {
+    /// Returns a sequence of bytes for mapping to a block digest.
+    pub fn get_bytes_for_digest(&self) -> Vec<u8> {
+        unimplemented!()
+    }
+}
+
 impl BlockHeader {
     /// Returns a sequence of bytes for mapping to a block digest.
-    pub fn get_bytes_for_hash(&self) -> Vec<u8> {
+    pub fn get_bytes_for_digest(&self) -> Vec<u8> {
         let mut result: Vec<u8> = Vec::new();
         result.extend_from_slice(self.parent_hash().inner().as_slice());
         result.extend_from_slice(self.state_root_hash().as_slice());

@@ -1,5 +1,5 @@
 use crate::binary::utils::{CodecError, Decode, Encode};
-use ltypes::chain::EraId;
+use ltypeset::chain::EraId;
 
 // ------------------------------------------------------------------------
 // Codec: EraId.

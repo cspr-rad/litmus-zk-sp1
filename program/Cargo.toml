@@ -7,7 +7,7 @@ edition = "2021"
 sp1-build = "2.0.0"
 
 [dependencies]
-ltypes = { path = "../crates/ltypes" }
+ltypeset = { path = "../crates/ltypeset" }
 lverifiers = { path = "../crates/lverifiers" }
 serde.workspace = true
 serde_cbor.workspace = true

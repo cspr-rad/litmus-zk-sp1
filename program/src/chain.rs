@@ -1,4 +1,4 @@
-use ltypes::chain::{BlockWithProofs, ChainNameDigest};
+use ltypeset::chain::{BlockWithProofs, ChainNameDigest};
 use lverifiers;
 
 pub fn verify_block_v1_with_proofs(encoded_block_with_proofs: Vec<u8>) {

@@ -1,4 +1,4 @@
-use ltypes::crypto::{Digest, Signature, VerificationKey};
+use ltypeset::crypto::{Digest, Signature, VerificationKey};
 
 /// Verifies a digest over a byte vector.
 ///

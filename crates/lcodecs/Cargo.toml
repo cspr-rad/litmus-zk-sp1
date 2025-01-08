@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ltypes = { path = "../ltypes" }
+ltypeset = { path = "../ltypeset" }
 num = "0.4.3"
 serde.workspace = true
 

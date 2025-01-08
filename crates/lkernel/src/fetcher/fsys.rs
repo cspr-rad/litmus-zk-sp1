@@ -1,6 +1,6 @@
 use super::FetcherBackend;
 use camino::{Utf8Path, Utf8PathBuf};
-use ltypes::chain::{BlockHash, BlockHeight, BlockID, BlockWithProofs};
+use ltypeset::chain::{BlockHash, BlockHeight, BlockID, BlockWithProofs};
 use std::{
     fs::{self, DirEntry},
     io::Error,

@@ -1,5 +1,5 @@
 use crate::binary::utils::{CodecError, Decode, Encode};
-use ltypes::chain::ValidatorWeight;
+use ltypeset::chain::ValidatorWeight;
 
 // ------------------------------------------------------------------------
 // Codec: Motes.

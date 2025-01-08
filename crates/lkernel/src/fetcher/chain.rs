@@ -1,5 +1,5 @@
 use super::FetcherBackend;
-use ltypes::chain::{BlockID, BlockWithProofs};
+use ltypeset::chain::{BlockID, BlockWithProofs};
 use std::io::Error;
 
 // ------------------------------------------------------------------------

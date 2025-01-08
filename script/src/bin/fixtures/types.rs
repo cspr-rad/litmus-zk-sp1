@@ -1,4 +1,4 @@
-use ltypes::{
+use ltypeset::{
     chain::{BlockHash, BlockWithProofs, ChainNameDigest},
     crypto::{Digest, Signature, VerificationKey},
 };

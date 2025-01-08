@@ -1,5 +1,5 @@
 use camino::Utf8Path;
-use ltypes::chain::{BlockHash, ChainNameDigest};
+use ltypeset::chain::{BlockHash, ChainNameDigest};
 use serde::{Deserialize, Serialize};
 use std::fs;
 

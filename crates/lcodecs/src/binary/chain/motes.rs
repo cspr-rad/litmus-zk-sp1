@@ -1,5 +1,5 @@
 use crate::binary::utils::{CodecError, Decode, Encode};
-use ltypes::chain::Motes;
+use ltypeset::chain::Motes;
 
 // ------------------------------------------------------------------------
 // Codec: Motes.

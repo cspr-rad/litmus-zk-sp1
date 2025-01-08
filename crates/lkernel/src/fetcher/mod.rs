@@ -1,7 +1,7 @@
 use super::kernel::config::{Config, FetcherConfig};
 pub use chain::Fetcher as ChainFetcher;
 pub use fsys::Fetcher as FileSystemFetcher;
-use ltypes::chain::{BlockID, BlockWithProofs};
+use ltypeset::chain::{BlockID, BlockWithProofs};
 use std::io::Error;
 
 pub mod chain;

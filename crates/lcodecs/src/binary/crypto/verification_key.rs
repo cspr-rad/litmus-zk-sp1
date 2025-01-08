@@ -2,7 +2,7 @@ use super::super::{
     constants,
     utils::{CodecError, Decode, Encode},
 };
-use ltypes::{
+use ltypeset::{
     crypto::VerificationKey,
     primitives::bites::{Bytes32, Bytes33},
 };
