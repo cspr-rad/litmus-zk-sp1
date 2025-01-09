@@ -33,6 +33,16 @@ impl SemanticVersion {
 }
 
 // ------------------------------------------------------------------------
+// Traits.
+// ------------------------------------------------------------------------
+
+impl fmt::Display for SemanticVersion {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "SEM-VAR::{}.{}.{}", self.major, self.minor, self.patch)
+    }
+}
+
+// ------------------------------------------------------------------------
 // Traits -> serde.
 // ------------------------------------------------------------------------
 
@@ -81,3 +91,13 @@ impl Serialize for SemanticVersion {
         Ok(serializer.serialize_str(&s).unwrap())
     }
 }
+
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+#[cfg(test)]
+use proptest::prelude::*;
+
+#[cfg(test)]
+use rand::Rng;

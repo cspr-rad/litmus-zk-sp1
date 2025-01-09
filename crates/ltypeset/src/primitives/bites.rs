@@ -19,7 +19,7 @@ const ZERO_ARRAY_65: [u8; SIZE_65] = [0_u8; SIZE_65];
 // Declarations.
 // ------------------------------------------------------------------------
 
-// Generic byte array with constant size of N.
+// Byte array with fixed size of N.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Deserialize, Serialize)]
 pub struct Bytes<const N: usize> {
     #[serde(with = "serde_bytes")]
@@ -43,7 +43,6 @@ pub type Bytes65 = Bytes<SIZE_65>;
 // ------------------------------------------------------------------------
 
 impl<const N: usize> Bytes<N> {
-    // Initializes instance from specific data.
     pub fn new(data: [u8; N]) -> Self {
         Self { data }
     }
@@ -68,11 +67,6 @@ impl<const N: usize> Bytes<N> {
     pub fn inner(&self) -> [u8; N] {
         self.data
     }
-
-    // Returns length of underlying byte array.
-    pub fn len() -> usize {
-        N
-    }
 }
 
 // ------------------------------------------------------------------------
@@ -91,9 +85,9 @@ impl<const N: usize> Bytes<N> {
         }
     }
 
-    // Method: Convert data to vec.
-    pub fn to_vec(&self) -> Vec<u8> {
-        self.data.to_vec()
+    // Returns length of underlying byte array.
+    pub fn len() -> usize {
+        N
     }
 }
 
@@ -103,7 +97,7 @@ impl<const N: usize> Bytes<N> {
 
 impl<const N: usize> Default for Bytes<N> {
     fn default() -> Self {
-        Self::new([0; N])
+        Self::new([0_u8; N])
     }
 }
 
@@ -157,5 +151,123 @@ impl<const N: usize> From<String> for Bytes<N> {
 impl<const N: usize> From<&String> for Bytes<N> {
     fn from(value: &String) -> Self {
         Self::from(value.to_owned())
+    }
+}
+
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+#[cfg(test)]
+use proptest::prelude::*;
+
+#[cfg(test)]
+use rand::Rng;
+
+#[cfg(test)]
+pub fn new_from_random<const N: usize>() -> Bytes<N> {
+    let mut rng = rand::thread_rng();
+    let mut buffer = vec![0u8; N];
+    rng.fill(&mut buffer[..]);
+
+    Bytes::<N>::from(buffer)
+}
+
+#[cfg(test)]
+impl Bytes32 {
+    pub fn new_from_arb() -> impl Strategy<Value = Self> {
+        any::<[u8; SIZE_32]>().prop_map(Self::new)
+    }
+
+    fn new_from_random() -> Bytes32 {
+        new_from_random::<SIZE_32>()
+    }
+}
+
+#[cfg(test)]
+impl Bytes33 {
+    pub fn new_from_arb() -> impl Strategy<Value = Self> {
+        any::<[u8; SIZE_33]>().prop_map(Self::new)
+    }
+
+    fn new_from_random() -> Bytes33 {
+        new_from_random::<SIZE_33>()
+    }
+}
+
+#[cfg(test)]
+impl Bytes64 {
+    pub fn new_from_arb() -> impl Strategy<Value = Self> {
+        any::<[u8; SIZE_64]>().prop_map(Self::new)
+    }
+
+    fn new_from_random() -> Bytes64 {
+        new_from_random::<SIZE_64>()
+    }
+}
+
+#[cfg(test)]
+impl Bytes65 {
+    pub fn new_from_arb() -> impl Strategy<Value = Self> {
+        any::<[u8; SIZE_65]>().prop_map(Self::new)
+    }
+
+    fn new_from_random() -> Bytes65 {
+        new_from_random::<SIZE_65>()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn new_from_random_32() {
+        for _ in 0..10 {
+            let _ = Bytes32::new_from_random();
+        }
+    }
+
+    #[test]
+    fn new_from_random_33() {
+        for _ in 0..10 {
+            let _ = Bytes33::new_from_random();
+        }
+    }
+
+    #[test]
+    fn new_from_random_64() {
+        for _ in 0..10 {
+            let _ = Bytes64::new_from_random();
+        }
+    }
+
+    #[test]
+    fn new_from_random_65() {
+        for _ in 0..10 {
+            let _ = Bytes65::new_from_random();
+        }
+    }
+
+    proptest! {
+        #[test]
+        fn new_from_arb_32(_ in Bytes32::new_from_arb()) {
+            ()
+        }
+
+        #[test]
+        fn new_from_arb_33(_ in Bytes33::new_from_arb()) {
+            ()
+        }
+
+        #[test]
+        fn new_from_arb_64(_ in Bytes64::new_from_arb()) {
+            ()
+        }
+
+        #[test]
+        fn new_from_arb_65(_ in Bytes65::new_from_arb()) {
+            ()
+        }
     }
 }

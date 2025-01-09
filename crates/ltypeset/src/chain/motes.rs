@@ -140,16 +140,3 @@ mod tests {
         }
     }
 }
-
-// #[cfg(test)]
-// mod proptests {
-//     use super::*;
-
-//     proptest! {
-//         #[test]
-//         fn codec_roundtrip(value in Motes::new_from_arb()) {
-//             // bytesrepr::test_serialization_roundtrip(&era_id);
-//             println!("motes: {:?}", value);
-//         }
-//     }
-// }
