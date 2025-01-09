@@ -64,18 +64,11 @@ use rand::Rng;
 
 #[cfg(test)]
 impl EraId {
-    // Returns a random `EraId`.
-    #[cfg(any(feature = "testing", test))]
     pub fn new_from_arb() -> impl Strategy<Value = Self> {
         any::<u64>().prop_map(Self::new)
     }
-}
 
-#[cfg(test)]
-impl EraId {
-    /// Returns a random `EraId`.
-    #[cfg(any(feature = "testing", test))]
-    pub fn random() -> Self {
+    pub fn new_from_random() -> Self {
         Self::new(rand::thread_rng().gen())
     }
 }
@@ -86,21 +79,21 @@ mod tests {
 
     #[test]
     fn test_is_genesis() {
-        for (entity, expected) in [(EraId::MIN, true), (EraId::MAX, false)] {
-            assert_eq!(entity.is_genesis(), expected);
+        assert_eq!(EraId::MIN.is_genesis(), true);
+        assert_eq!(EraId::MAX.is_genesis(), false);
+    }
+
+    #[test]
+    fn new_from_random() {
+        for _ in 0..10 {
+            EraId::new_from_random();
         }
     }
-}
-
-#[cfg(test)]
-mod proptests {
-    use super::*;
 
     proptest! {
         #[test]
-        fn codec_roundtrip(era_id in EraId::new_from_arb()) {
-            // bytesrepr::test_serialization_roundtrip(&era_id);
-            println!("era_id: {:?}", era_id);
+        fn new_from_arb(_ in EraId::new_from_arb()) {
+            ()
         }
     }
 }

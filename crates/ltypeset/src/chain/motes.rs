@@ -41,6 +41,12 @@ impl Motes {
 // Traits.
 // ------------------------------------------------------------------------
 
+impl fmt::Display for Motes {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "MOTES::{}", self.inner())
+    }
+}
+
 impl Add for Motes {
     type Output = Motes;
 
@@ -94,3 +100,56 @@ impl Serialize for Motes {
         Ok(serializer.serialize_u64(self.inner()).unwrap())
     }
 }
+
+// ------------------------------------------------------------------------
+// Tests.
+// ------------------------------------------------------------------------
+
+#[cfg(test)]
+use proptest::prelude::*;
+
+#[cfg(test)]
+use rand::Rng;
+
+#[cfg(test)]
+impl Motes {
+    pub fn new_from_arb() -> impl Strategy<Value = Self> {
+        any::<u64>().prop_map(Self::new)
+    }
+
+    pub fn new_from_random() -> Self {
+        Self::new(rand::thread_rng().gen())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn new_from_random() {
+        for _ in 0..10 {
+            Motes::new_from_random();
+        }
+    }
+
+    proptest! {
+        #[test]
+        fn new_from_arb(_ in Motes::new_from_arb()) {
+            ()
+        }
+    }
+}
+
+// #[cfg(test)]
+// mod proptests {
+//     use super::*;
+
+//     proptest! {
+//         #[test]
+//         fn codec_roundtrip(value in Motes::new_from_arb()) {
+//             // bytesrepr::test_serialization_roundtrip(&era_id);
+//             println!("motes: {:?}", value);
+//         }
+//     }
+// }
