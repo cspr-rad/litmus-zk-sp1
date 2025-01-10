@@ -28,7 +28,7 @@ impl TimeDiff {
     }
 
     // Returns instance hydrated from current system time.
-    pub fn now() -> Self {
+    pub fn new_from_now() -> Self {
         Self(SystemTime::UNIX_EPOCH.elapsed().unwrap())
     }
 }
@@ -39,7 +39,7 @@ impl Timestamp {
     }
 
     // Returns instance hydrated from current system time.
-    pub fn now() -> Self {
+    pub fn new_from_now() -> Self {
         Self(SystemTime::UNIX_EPOCH.elapsed().unwrap().as_millis())
     }
 }
@@ -98,13 +98,13 @@ impl From<u128> for Timestamp {
 
 impl From<&str> for Timestamp {
     fn from(value: &str) -> Self {
-        let system_time = humantime::parse_rfc3339_weak(value).unwrap();
-        let inner = system_time
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap()
-            .as_millis() as u128;
-
-        Self::from(inner)
+        Self::from(
+            humantime::parse_rfc3339_weak(value)
+                .unwrap()
+                .duration_since(SystemTime::UNIX_EPOCH)
+                .unwrap()
+                .as_millis(),
+        )
     }
 }
 
